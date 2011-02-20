@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteCond $1 !^(index\.php|phpinfo\.php|images|BingSiteAuth\.xml|downloads|dload|rat|youtube|files|img|ffmpeg|css|js|xampp|robots\.txt|y_key|favicon.ico)
+RewriteRule ^(.+)$ index.php?$1 [L]
+<FilesMatch “^index.php$”>
+AcceptPathInfo On
+</FilesMatch>
+
+<FilesMatch "\.(amr|3gp|mp4|mp3)$">
+  ForceType application/octet-stream
+  Header set Content-Disposition attachment
+</FilesMatch>
+
+

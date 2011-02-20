@@ -1,0 +1,1 @@
+ ffmpeg -i /home/wap4/public_html/files/uploaded/bad-joke.flv  -ss 0 -t 20  -ab 128000 -ar 44100  /home/wap4/public_html/files/converted/bad-joke-4d6164a87f38e.mp3 2> /home/wap4/public_html/files/keys/4d6164a87f38e.ffmpeg

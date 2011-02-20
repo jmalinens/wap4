@@ -1,0 +1,50 @@
+/* 
+    Document   : css3
+    Created on : 2011.13.1, 14:12:07
+    Author     : juris
+    Description:
+        css3 papildfiichas.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+#mainInfo {
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+input[type=text], input[type=password] {
+    border-radius: 1px;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+}
+
+input[type=submit], #id_create_user, #fb_log, #fb_reg,  form a {
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    
+    box-shadow: 0 1px 0 white;
+    -moz-box-shadow: 0 1px 0 white;
+    -webkit-box-shadow: 0 1px 0 white;
+}
+
+input[type=submit]:hover, #id_create_user:hover, #fb_log:hover, #fb_reg:hover, .qq-upload-button:hover {
+        box-shadow: 0 2px 2px green;
+    -moz-box-shadow: 0 2px 2px green;
+    -webkit-box-shadow: 0 2px 2px green;
+}
+
+h1 {
+	text-shadow: 0 1px 0 white;
+}
+
+#bar_youtube, #bar_convert {
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link href="../client/fileuploader.css" rel="stylesheet" type="text/css">	
+</head>
+<body>		
+	
+	<div id="demo"></div>
+	<ul id="separate-list"></ul>
+    
+    <script src="../client/fileuploader.js" type="text/javascript"></script>
+    <script>        
+        function createUploader(){            
+            var uploader = new qq.FileUploader({
+                element: document.getElementById('demo'),
+                listElement: document.getElementById('separate-list'),
+                action: '../server/php.php',
+                
+                
+                // additional data to send, name-value pairs
+                params: {
+                    param1: 'value1',
+                    param2: 'value2'
+                },
+               
+
+
+                // validation    
+                // ex. ['jpg', 'jpeg', 'png', 'gif'] or []
+                allowedExtensions: [],        
+                // each file size limit in bytes
+                // this option isn't supported in all browsers
+                sizeLimit: 200*1024*1024, // max size   
+                minSizeLimit: 1, // min size
+
+                // set to true to output server response to console
+                debug: false,
+
+                // events         
+                // you can return false to abort submit
+                onSubmit: function(id, fileName){},
+                onProgress: function(id, fileName, loaded, total){},
+                onComplete: function(id, fileName, responseJSON){},
+                onCancel: function(id, fileName){},
+
+                messages: {
+                    // error messages, see qq.FileUploaderBasic for content            
+                },
+                showMessage: function(message){ alert(message); }
+
+                
+                
+                
+                
+            });           
+        }        
+        window.onload = createUploader;     
+    </script>    
+</body>
+</html>
