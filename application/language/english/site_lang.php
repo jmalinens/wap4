@@ -42,8 +42,8 @@ $lang['howto.content'] 	= array("Click \"Converter\" to start converting",
                                 "Second step is to choose new format and converter options, for example, You can cut length of media file",
                                 "After convertion is complete, You will get download link and if You are logged in, You can view and download Your converted files");
 
-$lang['about.content'] 	= array("This service is brought to You by 2nd course student Juris Malinens from Faculty of Computing in University of Latvia",
+$lang['about.content'] 	= array("This service is brought to You by 2nd course student <strong>Juris Malinens</strong> from Faculty of Computing in University of Latvia",
                                 "Service is based on CodeIgniter 2.0 REACTOR web framework, which uses PHP scripting language and MySQL database",
                                 "Videos are converted with FFMPEG ",
-                                "You can download source code of this website on Github <a href=\"https://github.com/jmalinens/wap4.org\">my Github page- github.com/jmalinens/wap4.org</a> (GNU LGPL license)");
+                                "You can download source code of this website on Github <a href=\"https://github.com/jmalinens/wap4\">my Github page- github.com/jmalinens/wap4</a> (GNU LGPL license)");
 

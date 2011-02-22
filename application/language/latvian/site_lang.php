@@ -42,7 +42,7 @@ $lang['howto.content'] 	= array("Spied saiti \"Konvertētājs\", lai atvērtu ko
                                 "Otrais solis ir izvēlēties konvertēšanas opcijas- piemēram, izvēlēties jauno formātu vai uzstādīt audiovizuālā materāla sākuma un beigu laiku",
                                 "Pēc konvertēšanas Tev tiks piedāvāts lejupielādēt konvertēto datni");
 
-$lang['about.content'] 	= array("Šo servisu izveidoja Datorikas fakultātes 2. kursa students Juris Malinens kā praktisko darbu \"Tīmekļa Tehnoloģijās\"",
+$lang['about.content'] 	= array("Šo servisu izveidoja Datorikas fakultātes 2. kursa students <strong>Juris Malinens</strong> kā praktisko darbu \"Tīmekļa Tehnoloģijās\"",
                                 "Serviss ir bāzēts uz CodeIgniter 2.0 REACTOR tīmekļa ietvara, kas izmanto PHP valodu un MySQL datubāzi",
                                 "Konvertēšana notiek ar FFMPEG programmas palīdzību",
-                                "Jebkurš var bez maksas lejupielādēt konvertētāju <a href=\"https://github.com/jmalinens/wap4.org\">manā Github lapā: github.com/jmalinens/wap4.org</a> (GNU LGPL licence)");
+                                "Jebkurš var bez maksas lejupielādēt konvertētāju <a href=\"https://github.com/jmalinens/wap4\">manā Github lapā: github.com/jmalinens/wap4</a> (GNU LGPL licence)");
