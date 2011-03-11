@@ -3,10 +3,14 @@
 <head>
 <title><?=lang('title')?> - <?=getTitle()?></title>
 <meta charset="utf-8"/>
+<meta name="description" content="<?=lang('title.meta')?>" />
 <link rel="stylesheet" href="<?php echo base_url();?>css/style.css"/>
 <link rel="stylesheet" href="<?php echo base_url();?>css/css3.css"/>
 <link rel="stylesheet" href="<?php echo base_url();?>css/fileuploader.css"/>
 <link rel="stylesheet" href="<?php echo base_url();?>css/le-frog/jquery-ui-1.8.9.custom.css"/>
+<?php if(end($this->uri->segment_array()) == "index"){?>
+<link rel="canonical" href="http://wap4.org/<?=str_replace("index", "", $this->uri->uri_string())?>"/>
+<?}?>
 <script src="<?php echo base_url();?>js/fileuploader.js"></script>
 <script src="<?php echo base_url();?>js/jquery.min.js"></script>
 <script src="<?php echo base_url();?>js/jquery-ui-1.8.9.custom.min.js"></script>
@@ -245,6 +249,7 @@ $(".load_ajax").live("click", function(){
       success: function(data) {
         $('.content').html(data);
         $(".link a").addClass("load_ajax"); //pievieno load_ajax klasi prieksh pagination
+        /*$(".link a").attr("rel","nofollow");*/
       }
     });
            return false;
@@ -271,7 +276,7 @@ $(".load_ajax").live("click", function(){
 </head>
 <body> 
 
-      <div id="fb-root"></div>
+      <!--<div id="fb-root"></div>
       <script src="http://connect.facebook.net/en_US/all.js">
       </script>
       <script>
@@ -282,15 +287,15 @@ $(".load_ajax").live("click", function(){
             xfbml:true 
          });
 
-       </script>
+       </script>-->
 
     
     
     
 <div class="container">
 <div class="header">
-	<h1>wap4.org <?=lang('title')?></h1>
-
+	<h1>wap4.org - <?=lang('title.header')?></h1>
+        <h3><?=lang('title.h3')?></h3>
         <ul id="nav">
             <?php foreach ($navigation as $nav):?>
 

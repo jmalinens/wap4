@@ -1,6 +1,9 @@
 <div class="step">
 	<?=$this->lang->line('ffmpeg.1st')?>
 </div>
+<?=lang("upload.formats")?>: <em><?=str_replace("'"," ", $allowed)?></em><br/>
+<?=lang("upload.max_size")?>: <?=$max/1024?> MB<br/>
+
 	<div id="demo">
                 
             <noscript>
@@ -76,7 +79,11 @@ $(document).ready(function(){
      $('#conv').submit(function() {
      $('#converter2').hide("slow");
      $('.media').hide("slow");
+     $('#youtube_uploaded').hide("slow");
+     $('#bar_youtube').hide("slow");
      $('#bar_convert').show("slow");
+     
+     
      
      $("#percents").progressbar({value: 0});
 	

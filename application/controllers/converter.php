@@ -86,7 +86,6 @@ class Converter extends CI_Controller {
         
         $query = parse_url($link,PHP_URL_QUERY);
         parse_str($query);
-        //echo $v;
         
         $url = "http://gdata.youtube.com/feeds/api/videos/". $v;
         $doc = new DOMDocument;
@@ -100,9 +99,14 @@ class Converter extends CI_Controller {
         {
 
             $vidUrl = '';
-            if (eregi('fmt_url_map',$file_contents))
+            if (preg_match("/fmt_url_map/i",$file_contents))
             {
+                if (preg_match("/&amp;fmt_url_map/i",$file_contents))
+                $vidUrl = end(explode('&amp;fmt_url_map=',$file_contents));
+                
+                if (preg_match("/&fmt_url_map/i",$file_contents))
                 $vidUrl = end(explode('&fmt_url_map=',$file_contents));
+                
                 $vidUrl = current(explode('&',$vidUrl));
                 $vidUrl = current(explode('%2C',$vidUrl));
                 $vidUrl = urldecode(end(explode('%7C',$vidUrl)));
@@ -141,8 +145,8 @@ class Converter extends CI_Controller {
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_URL, $_flvUrl);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($ch, CURLOPT_COOKIEFILE, COOKIE);
-            curl_setopt($ch, CURLOPT_COOKIEJAR, COOKIE);
+            @curl_setopt($ch, CURLOPT_COOKIEFILE, COOKIE);
+            @curl_setopt($ch, CURLOPT_COOKIEJAR, COOKIE);
 
             //curl_setopt($ch, CURLOPT_NOPROGRESS, false);
             //curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'callback');
@@ -248,7 +252,7 @@ class Converter extends CI_Controller {
                 
                 $this->ffmpeg->SetKey($_POST["key"]);
                 //set format of  converted file
-                $this->ffmpeg->SetFormat($_POST["format"]);
+                $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
                 //set name of file which will be converted
                 $this->ffmpeg->SetInput_file($_POST["key"].".".end(explode(".",$_FILES['qqfile']['name'])), "no_js");
                 
@@ -273,7 +277,7 @@ class Converter extends CI_Controller {
         //set unique key
         $this->ffmpeg->SetKey($this->uri->segment(4));
         //set format of  converted file
-        $this->ffmpeg->SetFormat($this->uri->segment(5));
+        $this->ffmpeg->SetFormat(rawurldecode($this->uri->segment(5)));
         //set name of file which will be converted
         $this->ffmpeg->SetInput_file($this->uri->segment(6));
 

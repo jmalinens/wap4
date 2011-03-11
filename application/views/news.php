@@ -13,7 +13,7 @@
         <div class="news_content">
             <?=$jaunumi->news?>
         </div>
-        <?php if($admin) echo anchor("news/delete_news/".$jaunumi->id, 'Delete!');?>
+        <?php if(isset($admin)) echo anchor("news/delete_news/".$jaunumi->id, 'Delete!');?>
         <div class="perma">
         <?=anchor('news/archive/'.$jaunumi->id, "http://wap4.org/".$this->lang->lang()."/news/archive/".$jaunumi->id)?> (<?=lang('news.perma')?>) 
         </div>

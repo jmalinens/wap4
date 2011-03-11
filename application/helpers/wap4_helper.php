@@ -93,7 +93,18 @@ if ( ! function_exists('getTitle'))
                 
             }
             
-            return lang("title.".$caur_ajax);
+            /**
+             * Special page title for news archive
+             */
+            if($ci->uri->segment(2) == "news" && $ci->uri->segment(3) == "archive") {
+                $ci->load->model('news_model');
+                $data = $ci->news_model->get_one_news($ci->uri->segment(4));
+                $ci->load->helper('text');
+                $n = $data->result_object();
+                return trim(word_limiter(strip_tags($n[0]->news), 6));
+            }
+            else
+                return lang("title.".$caur_ajax);
     }
 }
 

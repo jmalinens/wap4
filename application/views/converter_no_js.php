@@ -7,6 +7,8 @@
         <?php echo form_open_multipart("converter/convert/no_js", $attr);?>
 
         <?=$this->lang->line('ffmpeg.1st')?><br/>
+        <?=lang("upload.formats")?>: <em><?=str_replace("'"," ", $allowed)?></em><br/>
+        <?=lang("upload.max_size")?>: <?=$max/1024?> MB<br/>
         <input type="file" name="qqfile"/> <br/>
 	
         <?=$this->lang->line('ffmpeg.2nd')?> <br/>
