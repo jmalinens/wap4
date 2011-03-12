@@ -5,11 +5,15 @@
         </div>
 	
         <?php echo form_open_multipart("converter/convert/no_js", $attr);?>
-
+        <!-- file upload-->
         <?=$this->lang->line('ffmpeg.1st')?><br/>
         <?=lang("upload.formats")?>: <em><?=str_replace("'"," ", $allowed)?></em><br/>
         <?=lang("upload.max_size")?>: <?=$max/1024?> MB<br/>
         <input type="file" name="qqfile"/> <br/>
+        
+        <!-- youtube link-->
+	<?=$this->lang->line('ffmpeg.1st2')?><br/>
+        <input type="text" name="youtube" id="youtube_link"/><br/>
 	
         <?=$this->lang->line('ffmpeg.2nd')?> <br/>
 	<?=$this->lang->line('ffmpeg.video')?>: <br/>
@@ -43,18 +47,6 @@
               : <input type="text" name="e_ss" id="e_ss" maxlength="2" size="2" value="00"/><br/>
         </div>  
         
-        <!--resize resolution code-->
-        <!--
-        <?=$this->lang->line('ffmpeg.resize')?><br/>
-        <input type="checkbox" id="resize" name="resize" value="yes"/><br/>
-        
-        <div id="resize_field">
-        <?=$this->lang->line('ffmpeg.width')?><br/>
-        <input type="text" name="width" id="width" maxlength="4" size="4" value=""/><br/>
-        <?=$this->lang->line('ffmpeg.heigth')?><br/>
-        <input type="text" name="heigth" id="heigth" maxlength="4" size="4" value=""/>
-        </div>  
-        -->  
         <?=$this->lang->line('ffmpeg.descr')?>:
         <br/>
         <input type="text" name="apraksts" id="apraksts"/>

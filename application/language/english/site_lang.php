@@ -32,7 +32,7 @@ $lang['upload.max_size']    = "Maximum upload size";
 $lang['news.perma']         = "permalink";
 
 $lang['site.or']            = "or";
-$lang['site.why']           = "to upload and convert up to <b>150MB</b> big files and view previously converted files";
+$lang['site.why']           = "to upload and convert up to <b>300MB</b> big files and view previously converted files";
 
 $lang['feed.admin']         = "Juris Malinens if found @ wap4 at wap4 dot org";
 $lang['feed.name']          = "wap4 online media converter";

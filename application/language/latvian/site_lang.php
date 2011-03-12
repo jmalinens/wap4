@@ -32,7 +32,7 @@ $lang['upload.max_size']    = "Maksimālais augšupielādējamā faila izmērs";
 $lang['news.perma']         = "pastāvīgā saite";
 
 $lang['site.or']            = "vai";
-$lang['site.why']           = "lai varētu konvertēt līdz pat <b>150</b> megabaitus lielus failus un varētu aplūkot iepriekš konvertētos video";
+$lang['site.why']           = "lai varētu konvertēt līdz pat <b>300</b> megabaitus lielus failus un varētu aplūkot iepriekš konvertētos video";
 
 $lang['feed.admin']         = "Jurim Malinenam var rakstīt pa epastu wap4 et wap4 punkts org";
 $lang['feed.name']          = "wap4 online multimediju konvertētājs";

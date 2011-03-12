@@ -6,7 +6,6 @@ class Converter extends CI_Controller {
     {
         parent::__construct();
         $this->load->helper('wap4');
-        //$this->load->library('youtube');
         load_settings();
 
 
@@ -25,18 +24,18 @@ class Converter extends CI_Controller {
         
         parse_str($_SERVER['QUERY_STRING'], $_GET);
     }
-    //redirect if needed, otherwise display the user list
+    /**
+     * 
+     */
     function index() 
     {
 
         if($this->uri->segment(4) && ctype_alnum($this->uri->segment(4)))
         {
             $uniqid             = $this->uri->segment(4);
-        }
-        else {
+        } else {
             $uniqid             = uniqid();
         }
-                
         
 	$this->data['message'] = '';
     	$this->data['users']   = '';
@@ -63,7 +62,6 @@ class Converter extends CI_Controller {
         if(!irAjax())
         $this->load->view('includes/header', $this->data);
         
-    	//$this->load->view('uploader', $this->datb);
         if(irAjax())
         $this->load->view('converter', $this->data);
         else
@@ -81,8 +79,20 @@ class Converter extends CI_Controller {
     function upload_youtube()
     {
         
-        $uniqid = $this->uri->segment(4);
-        $link   = $_POST["link"];
+        
+        if($this->uri->segment(4) != "no_js") {
+            /**
+             * if using ajax
+             */
+            $uniqid = $this->uri->segment(4);
+            $link   = $_POST["link"];
+        } else {
+            /**
+             * if javascript is disabled (mobile phones)
+             */
+            $uniqid = $_POST["key"];
+            $link   = $_POST["youtube"];
+        }
         
         $query = parse_url($link,PHP_URL_QUERY);
         parse_str($query);
@@ -90,6 +100,7 @@ class Converter extends CI_Controller {
         $url = "http://gdata.youtube.com/feeds/api/videos/". $v;
         $doc = new DOMDocument;
         $doc->load($url);
+        global $title;
         $title = $doc->getElementsByTagName("title")->item(0)->nodeValue;
 
         $title = sanitize_name($title);
@@ -121,19 +132,23 @@ class Converter extends CI_Controller {
             curl_setopt($ch, CURLOPT_NOBODY, true);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HEADER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); //not necessary unless the file redirects (like the PHP example we're using here)
+            /**
+             * not necessary unless the file redirects (like the PHP
+             *  example we're using here)
+             */
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             $data = curl_exec($ch);
             curl_close($ch);
 
             $contentLength = 'unknown';
-            $status = 'unknown';
+            $status        = 'unknown';
             if (preg_match('/^HTTP\/1\.[01] (\d\d\d)/', $data, $matches)) {
               $status = (int)$matches[1];
             }
             if (preg_match('/Content-Length: (\d+)/', $data, $matches)) {
               $contentLength = (int)$matches[1];
             }
-            //echo 'Content-Length: ' . $contentLength;
+
             file_put_contents("/home/wap4/public_html/files/keys/".$uniqid.".youtube", $contentLength);
 
              /**
@@ -160,8 +175,7 @@ class Converter extends CI_Controller {
             else
             echo lang('upload.fail');
 
-        }
-        else {
+        } else {
             echo lang('upload.fail');
         }
 
@@ -196,7 +210,9 @@ class Converter extends CI_Controller {
     
     function change_settings() {
         $this->load->library('form_validation');
-        //validate form input
+        /**
+         * validate form input
+         */
     	$this->form_validation->set_rules('unregistered', 'unregistered', 'numeric|min_length[1]|max_length[3]');
 		$this->form_validation->set_rules('registered', 'registered', 'numeric|min_length[1]|max_length[3]');
         
@@ -211,66 +227,83 @@ class Converter extends CI_Controller {
                                       'value'   => $this->form_validation->set_value('registered'),
                                      );
 
-        if ($this->form_validation->run() == true) { //check to see if changing settings
-
+        if ($this->form_validation->run() == true) {
         	
-        	if ($this->site_model->update_sizes($this->input->post('unregistered'), $this->input->post('registered'))) { //if the change is successful
-	        	//redirect them back to the home page
+        	if ($this->site_model->update_sizes($this->input->post('unregistered'), $this->input->post('registered'))) {
+                        /**
+                         * if the change is successful
+                         * redirect back to the home page
+                         */
 	        	$this->session->set_flashdata('message', $this->ion_auth->messages());
 	        	redirect($this->config->item('base_url'), 'refresh');
-	        }
-	        else { //if the setting change was un-successful
-                    
-	        	$this->session->set_flashdata('message', "bad vaues");
-                      
-                        
-                        $this->data['message'] = "bad values";
-                        
-                        $this->load->view('change_settings', $this->data);
+	        } else {
+                    /**
+                     * if the setting change was un-successful
+                     */
+                    $this->session->set_flashdata('message', "bad values");
+                    $this->data['message'] = "bad values";
+                    $this->load->view('change_settings', $this->data);
 
 	        }
-        }
-		else {  //the user is not logging in so display the login page
-	        //set the flash data error message if there is one
-	        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-		    
-
-    		$this->load->view('change_settings', $this->data);
-		}
+        } else {
+            /**
+             * set the flash data error message if there is one
+             */
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+            
+            $this->load->view('change_settings', $this->data);
+            }
     }
 	
-	
+    /**
+     * convert function which handles logic of converting videos
+     */
     function convert() {
         
-        if($this->uri->segment(4) == "no_js")
-        {
-            if(intval($this->data['max']*1024) > intval($_FILES['qqfile']['size']))
+            if($this->uri->segment(4) == "no_js")
             {
-                if(!move_uploaded_file($_FILES['qqfile']['tmp_name'],
-                $this->config->item('ffmpeg_before_dir').$_POST["key"].".".end(explode(".",$_FILES['qqfile']['name']))))
-                die("fatal error, when trying to upload file");
-                
-                $this->ffmpeg->SetKey($_POST["key"]);
-                //set format of  converted file
-                $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
-                //set name of file which will be converted
-                $this->ffmpeg->SetInput_file($_POST["key"].".".end(explode(".",$_FILES['qqfile']['name'])), "no_js");
-                
-                if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes') 
-                $this->ffmpeg->Cut($_REQUEST['s_hh'],$_REQUEST['s_mm'],$_REQUEST['s_ss'],$_REQUEST['e_hh'],$_REQUEST['e_mm'],$_REQUEST['e_ss']);
-                
-                //if(isset($_REQUEST['resize']) && $_REQUEST['resize'] == 'yes') 
-                //$this->ffmpeg->Resize($_REQUEST['width'],$_REQUEST['heigth']);
+                if(isset($_FILES['qqfile']['tmp_name']) && !empty($_FILES['qqfile']['tmp_name'])) {
+                    if(intval($this->data['max']*1024) > intval($_FILES['qqfile']['size']))
+                    {
+                        if(!move_uploaded_file($_FILES['qqfile']['tmp_name'],
+                        $this->config->item('ffmpeg_before_dir').$_POST["key"].".".end(explode(".",$_FILES['qqfile']['name']))))
+                        die("fatal error, when trying to upload file");
 
-                $veids="no_js";
+                        $this->ffmpeg->SetKey($_POST["key"]);
+                        //set format of  converted file
+                        $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
+                        //set name of file which will be converted
+                        $this->ffmpeg->SetInput_file($_POST["key"].".".end(explode(".",$_FILES['qqfile']['name'])), "no_js");
+
+                        if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes') 
+                        $this->ffmpeg->Cut($_REQUEST['s_hh'],$_REQUEST['s_mm'],$_REQUEST['s_ss'],$_REQUEST['e_hh'],$_REQUEST['e_mm'],$_REQUEST['e_ss']);
+
+                        //if(isset($_REQUEST['resize']) && $_REQUEST['resize'] == 'yes') 
+                        //$this->ffmpeg->Resize($_REQUEST['width'],$_REQUEST['heigth']);
+
+                        $veids="no_js";
+                    } else {
+                        die("too big file, max filesize {$this->data['max']} MB");
+                    }
+                }
+                
+                if(isset($_POST["youtube"]) && !empty($_POST["youtube"])) {
+                    $this->upload_youtube();
+                    global $title;
+                    $this->ffmpeg->SetKey($_POST["key"]);
+                    //set format of  converted file
+                    $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
+                    //set name of file which will be converted
+                    $this->ffmpeg->SetInput_file($title.".flv", "no_js");
+
+                    if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes') 
+                    $this->ffmpeg->Cut($_REQUEST['s_hh'],$_REQUEST['s_mm'],$_REQUEST['s_ss'],$_REQUEST['e_hh'],$_REQUEST['e_mm'],$_REQUEST['e_ss']);
+
+                    $veids="no_js";
+                    
+                }
             }
-            else
-            {
-                die("too big file, max filesize {$this->data['max']} MB");
-            }
-            
         
-        }
         else
         {
 	//print_r($_REQUEST);
@@ -337,50 +370,6 @@ class Converter extends CI_Controller {
             echo strtolower($this->uri->segment(4));
         }
 
-    }
-    
- 
-    function upload()
-    {
-        //include_once "/home/juris/Dropbox/xampp/htdocs/ffmpeg/val/server/php.php";
-        /*
-        //$this->load->library("uploader");
-        // list of valid extensions, ex. array("jpg", "png", "jpeg", "xml", "bmp")
-        $allowedExtensions = array();
-        // max file size in bytes
-        $sizeLimit = 150 * 1024 * 1024;
-        include"../libraries/Uploader.php";
-        $uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
-        $result = $uploader->handleUpload($this->config->item('ffmpeg_before_dir'));
-        // to pass data through iframe you will need to encode all html tags
-        echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);
-        //file_put_contents('/home/juris/Dropbox/xampp/htdocs/files/test.txt', $this->config->item('ffmpeg_before_dir').htmlspecialchars(json_encode($result), ENT_NOQUOTES));
-            
-            $config['upload_path']   = $this->config->item('ffmpeg_before_dir');
-            $allowed                 = implode("|", $this->config->item('ffmpeg_allowed'));
-            $config['allowed_types'] = $allowed;
-            $config['max_size']      = $this->max_kb;
-            //print_r($config);
-            //echo $allowed;
-            
-            
-            $this->load->library('upload', $config);
-            if ( ! $this->upload->do_upload())
-            {
-                    $error = array('error' => $this->upload->display_errors());
-
-                    //$this->load->view('uploader', $error);
-                    //file_put_contents('/home/juris/Dropbox/xampp/htdocs/files/test.txt', implode(",", $error));
-                    //echo'{success:false}';
-                    
-            }	
-            else
-            {
-                    $data = array('upload_data' => $this->upload->data());
-                    //echo'{success:true}';        
-                    //$this->load->view('converter', $data);
-            }
-*/
     }
 
 

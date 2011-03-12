@@ -15,19 +15,19 @@
      * You should then be able to use the following code in your page: 
      *
      *
-     * (Español)
-     * Esta librería usa la base de datos Geolite Country (formato binario) 
-     * desde la dirección ip devuelve el país, código de país, provincia, ciudad,
-     * latitud, longitud, código postal, código metropolitano (USA), y código de area.
+     * (Espaï¿½ol)
+     * Esta librerï¿½a usa la base de datos Geolite Country (formato binario) 
+     * desde la direcciï¿½n ip devuelve el paï¿½s, cï¿½digo de paï¿½s, provincia, ciudad,
+     * latitud, longitud, cï¿½digo postal, cï¿½digo metropolitano (USA), y cï¿½digo de area.
      *
      * La base de datos pertenece a la empresa Maxmind especializada en soluciones Geoip profesionales.
-     * Ellos también proveen bases de datos gratuitas y código gratuito.
+     * Ellos tambiï¿½n proveen bases de datos gratuitas y cï¿½digo gratuito.
      * 
-     * Puedes probar su funcionamiento usando el siguiente código en tu página: 
+     * Puedes probar su funcionamiento usando el siguiente cï¿½digo en tu pï¿½gina: 
      *
      * $this->load->library('geoip_lib');
      *
-     * $this->geoip_lib->InfoIP("24.24.24.24"); //For the "XXX.XXX.XXX.XXX" ip address        
+     * $this->geoip_lib->InfoIP("24.24.24.24"); 
      * $this->geoip_lib->InfoIP(); //For the current ip address
      *
      * $array_all_data = $this->geoip_lib->result_array();
@@ -45,7 +45,7 @@
      *
      * Custom vars
      * 
-     *  También puedes usar la función personalizada, para devolver la cadena formateada
+     *  Tambiï¿½n puedes usar la funciï¿½n personalizada, para devolver la cadena formateada
      *
      *   %IP -> Ip Address
      *   %CO -> Country_code
