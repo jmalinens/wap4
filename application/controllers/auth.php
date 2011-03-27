@@ -370,14 +370,14 @@ class Auth extends CI_Controller {
     	$this->form_validation->set_rules('username', 'Username', 'required');
 	$this->form_validation->set_rules('password', 'Password', 'required');
         
-        $this->data['username']   = array('name'    => 'username',
-                                      'id'      => 'username',
-                                      'type'    => 'text',
-                                      'value'   => $this->form_validation->set_value('username'),
+        $this->data['username']   = array('name' => 'username',
+                                      'id'       => 'username',
+                                      'type'     => 'text',
+                                      'value'    => $this->form_validation->set_value('username'),
                                      );
-        $this->data['password']   = array('name'    => 'password',
-                                      'id'      => 'password',
-                                      'type'    => 'password',
+        $this->data['password']   = array('name' => 'password',
+                                      'id'       => 'password',
+                                      'type'     => 'password',
                                      );
 
         if ($this->form_validation->run() == true) { //check to see if the user is logging in
@@ -389,7 +389,10 @@ class Auth extends CI_Controller {
         		$remember = false;
         	}
         	
-        	if ($this->ion_auth->login($this->input->post('username'), $this->input->post('password'), $remember)) { //if the login is successful
+        	if ($this->ion_auth->login(
+                        $this->input->post('username'),
+                        $this->input->post('password'),
+                        $remember)) { //if the login is successful
 	        	//redirect them back to the home page
 	        	$this->session->set_flashdata('message', $this->ion_auth->messages());
 	        	redirect($this->config->item('base_url'), 'refresh');
@@ -398,8 +401,7 @@ class Auth extends CI_Controller {
 	        	//redirect them back to the login page
 	        	$this->session->set_flashdata('message', $this->ion_auth->errors());
                         
-                        
-                        
+                        /*
                         if(!irAjax())
                         $this->load->view('includes/header', $this->data);
                         
@@ -408,9 +410,11 @@ class Auth extends CI_Controller {
                         
                         if(!irAjax())
                         $this->load->view('includes/footer', $this->data);
+                        */
+                        redirect($this->config->item('base_url'), 'refresh');
+                        
 	        }
-        }
-		else {  //the user is not logging in so display the login page
+        } else {  //the user is not logging in so display the login page
 	        //set the flash data error message if there is one
 	        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 		    
@@ -426,7 +430,7 @@ class Auth extends CI_Controller {
                 $this->load->view('includes/footer', $this->data);
                 
 		}
-                //print_r($_GET);
+               
     }
     
     //log the user out
@@ -445,8 +449,15 @@ class Auth extends CI_Controller {
 	function change_password() 
 	{	    
 	    $this->form_validation->set_rules('old', 'Old password', 'required');
-	    $this->form_validation->set_rules('new', 'New Password', 'required|min_length['.$this->config->item('min_password_length', 'ion_auth').']|max_length['.$this->config->item('max_password_length', 'ion_auth').']|matches[new_confirm]');
-	    $this->form_validation->set_rules('new_confirm', 'Confirm New Password', 'required');
+	    $this->form_validation->set_rules('new', 'New Password',
+            'required|min_length['.$this->config->item('min_password_length',
+            'ion_auth').']|max_length['.$this->config->item('max_password_length',
+            'ion_auth').']|matches[new_confirm]');
+            
+	    $this->form_validation->set_rules(
+                    'new_confirm',
+                    'Confirm New Password',
+                    'required');
 	   
 	    if (!$this->ion_auth->logged_in()) {
 	    	redirect('auth/login', 'refresh');
@@ -454,26 +465,26 @@ class Auth extends CI_Controller {
 	    $user = $this->ion_auth->get_user($this->session->userdata('user_id'));
 	    
 	    if ($this->form_validation->run() == false) { //display the form
-	        //set the flash data error message if there is one
-	        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+//set the flash data error message if there is one
+$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 			
-	        $this->data['old_password']           = array('name'    => 'old',
-		                                               	  'id'      => 'old',
-		                                              	  'type'    => 'password',
-		                                                 );
-	        $this->data['new_password']           = array('name'    => 'new',
-		                                               	  'id'      => 'new',
-		                                              	  'type'    => 'password',
-		                                                 );
-        	$this->data['new_password_confirm']   = array('name'    => 'new_confirm',
-                                                      	  'id'      => 'new_confirm',
-                                                      	  'type'    => 'password',
-        												 );
-        	$this->data['user_id']                = array('name'    => 'user_id',
-                                                      	  'id'      => 'user_id',
-                                                      	  'type'    => 'hidden',
-        												  'value'   => $user->id,
-        												 );
+$this->data['old_password']           = array('name'    => 'old',
+                                              'id'      => 'old',
+                                              'type'    => 'password',
+                                             );
+$this->data['new_password']           = array('name'     => 'new',
+                                              'id'      => 'new',
+                                              'type'    => 'password',
+                                             );
+$this->data['new_password_confirm']   = array('name'    => 'new_confirm',
+                                              'id'      => 'new_confirm',
+                                              'type'    => 'password',
+                                             );
+$this->data['user_id']                = array('name'    => 'user_id',
+                                              'id'      => 'user_id',
+                                              'type'    => 'hidden',
+                                              'value'   => $user->id,
+                                              );
 	        
         	//render
         	$this->load->view('auth/change_password', $this->data);		        
@@ -650,11 +661,11 @@ class Auth extends CI_Controller {
 	        //set the flash data error message if there is one
 	        $this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
 			
-			$this->data['username']          = array('name'   => 'username',
-                                                                 'id'      => 'username',
-                                                                 'type'    => 'text',
-		                                                 'value'   => $this->form_validation->set_value('login'),
-                                                                );
+                $this->data['username']= array('name'  => 'username',
+                                             'id'      => 'username',
+                                             'type'    => 'text',
+                                             'value'   => $this->form_validation->set_value('login'),
+                                            );
 		                                             
 			$days = 1;
 			$day = array();
@@ -662,22 +673,22 @@ class Auth extends CI_Controller {
 	            $day[$days]=$days;
 	            $days++;
 	        }
-            $this->data['day']             = $day;
-            $this->lang->load('calendar');
-            $this->data['month']           =    $month=array(
-                                                '01'=>$this->lang->line('cal_january'),
-                                                '02'=>$this->lang->line('cal_february'),
-                                                '03'=>$this->lang->line('cal_march'),
-                                                '04'=>$this->lang->line('cal_april'),
-                                                '05'=>$this->lang->line('cal_may'),
-                                                '06'=>$this->lang->line('cal_june'),
-                                                '07'=>$this->lang->line('cal_july'),
-                                                '08'=>$this->lang->line('cal_august'),
-                                                '09'=>$this->lang->line('cal_september'),
-                                                '10'=>$this->lang->line('cal_october'),
-                                                '11'=>$this->lang->line('cal_november'),
-                                                '12'=>$this->lang->line('cal_december')
-                                            );
+    $this->data['day']             = $day;
+    $this->lang->load('calendar');
+    $this->data['month']           =    $month=array(
+                                        '01'=>$this->lang->line('cal_january'),
+                                        '02'=>$this->lang->line('cal_february'),
+                                        '03'=>$this->lang->line('cal_march'),
+                                        '04'=>$this->lang->line('cal_april'),
+                                        '05'=>$this->lang->line('cal_may'),
+                                        '06'=>$this->lang->line('cal_june'),
+                                        '07'=>$this->lang->line('cal_july'),
+                                        '08'=>$this->lang->line('cal_august'),
+                                        '09'=>$this->lang->line('cal_september'),
+                                        '10'=>$this->lang->line('cal_october'),
+                                        '11'=>$this->lang->line('cal_november'),
+                                        '12'=>$this->lang->line('cal_december')
+                                    );
             
             
 			$years = 2005;
@@ -686,38 +697,38 @@ class Auth extends CI_Controller {
 	            $year[$years] = $years;
 	            $years--;
 	        }
-            $this->data['year']               = $year;
-            
-            $this->data['email']              = array('name'    => 'email',
-                                                      'id'      => 'email',
-                                                      'type'    => 'text',
-                                                      'value'   => $this->form_validation->set_value('email'),
-                                                     );
-            $this->data['gender']             = array('name'    => 'gender',
-                                                      'id'      => 'gender',
-                                                      'type'    => 'text',
-                                                      'value'   => $this->form_validation->set_value('gender'),
-                                                     );
-	    $this->data['password']           = array('name'    => 'password',
-                                                      'id'      => 'password',
-                                                      'type'    => 'password',
-                                                      'value'   => $this->form_validation->set_value('password'),
-                                                     );
-            $this->data['password_confirm']   = array('name'    => 'password_confirm',
-                                                      'id'      => 'password_confirm',
-                                                      'type'    => 'password',
-                                                      'value'   => $this->form_validation->set_value('password_confirm'),
-                                                     );
-            
-            $this->data['security']           = $this->recaptcha->get_html();
-            $this->data['navigation']         = $this->config->item('navigation');
-            
-            $this->data['uniqid']             = uniqid();
-            $this->data['lang']               = $this->lang->lang();
-            
-            $this->load->view('includes/header', $this->data);
-            $this->load->view('auth/create_user', $this->data);
-            $this->load->view('includes/footer');
+$this->data['year']               = $year;
+
+$this->data['email']              = array('name'    => 'email',
+                                          'id'      => 'email',
+                                          'type'    => 'text',
+                                          'value'   => $this->form_validation->set_value('email'),
+                                         );
+$this->data['gender']             = array('name'    => 'gender',
+                                          'id'      => 'gender',
+                                          'type'    => 'text',
+                                          'value'   => $this->form_validation->set_value('gender'),
+                                         );
+$this->data['password']           = array('name'    => 'password',
+                                          'id'      => 'password',
+                                          'type'    => 'password',
+                                          'value'   => $this->form_validation->set_value('password'),
+                                         );
+$this->data['password_confirm']   = array('name'    => 'password_confirm',
+                                          'id'      => 'password_confirm',
+                                          'type'    => 'password',
+                                          'value'   => $this->form_validation->set_value('password_confirm'),
+                                         );
+
+$this->data['security']           = $this->recaptcha->get_html();
+$this->data['navigation']         = $this->config->item('navigation');
+
+$this->data['uniqid']             = uniqid();
+$this->data['lang']               = $this->lang->lang();
+
+$this->load->view('includes/header', $this->data);
+$this->load->view('auth/create_user', $this->data);
+$this->load->view('includes/footer');
 		}
           
           

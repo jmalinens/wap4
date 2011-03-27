@@ -383,6 +383,7 @@ ul.news
 list-style: none;
 padding: 0;
 margin: 0;
+min-height:300px;
 }
 
 ul.news li {

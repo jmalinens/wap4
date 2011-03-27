@@ -1,5 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+ignore_user_abort(true);
+set_time_limit(0);
+setlocale(LC_ALL, 'en_US.UTF8');
 class Converter extends CI_Controller {
  
     function __construct() 
@@ -103,7 +105,7 @@ class Converter extends CI_Controller {
         global $title;
         $title = $doc->getElementsByTagName("title")->item(0)->nodeValue;
 
-        $title = sanitize_name($title);
+        $title = translit(sanitize_name($title));
         
         $file_contents = file_get_contents(trim($link));
         if ($file_contents !== false)
@@ -193,7 +195,7 @@ class Converter extends CI_Controller {
         $doc = new DOMDocument;
         $doc->load($url);
         $title = $doc->getElementsByTagName("title")->item(0)->nodeValue;
-        echo sanitize_name($title);
+        echo translit(sanitize_name($title));
     }
     
     /**

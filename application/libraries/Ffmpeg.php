@@ -34,7 +34,12 @@ public $resize;
 
 	}
    
-        
+        /**
+         * @assert ("sfdfg456tdfg") == true
+         * @assert ("sEWdfF456tdf0") == true
+         * @assert ("$%FDfd") == false
+         * @param string $key_x 
+         */
         function SetKey($key_x)
         {
            if(!ctype_alnum ($key_x))

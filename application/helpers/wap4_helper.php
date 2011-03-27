@@ -200,3 +200,18 @@ if(!function_exists('sanitize_name')) {
         $clean;
     }
 }
+
+if(!function_exists('translit')) {
+    
+    function translit($text) {
+        $text = trim($text, "-");
+        $text = utf8_encode($text);
+        $text = iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $text);
+        $text = utf8_encode($text);
+        $text = iconv("UTF-8", "ASCII//IGNORE", $text);
+        $text = strtolower($text);
+
+        return $text;
+    }
+    
+}

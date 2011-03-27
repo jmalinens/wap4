@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<?=strtolower($this->lang->lang())?>">
 <head>
-<title><?=lang('title')?> - <?=getTitle()?></title>
+<title><?=getTitle()?> - <?=lang('title')?></title>
 <meta charset="utf-8"/>
 <meta name="description" content="<?=lang('title.meta')?>" />
 <link rel="stylesheet" href="<?php echo base_url();?>css/style.css"/>
@@ -14,12 +14,12 @@
 <script src="<?php echo base_url();?>js/fileuploader.js"></script>
 <script src="<?php echo base_url();?>js/jquery.min.js"></script>
 <script src="<?php echo base_url();?>js/jquery-ui-1.8.9.custom.min.js"></script>
-<!--
-<?php if($this->lang->lang() == "en"){
+
+<?php/* if($this->lang->lang() == "en"){
 echo '<script src="http://connect.facebook.net/en_US/all.js"></script>';
 }else{
 echo'<script src="http://connect.facebook.net/'.$this->lang->lang().'_'.strtoupper($this->lang->lang()).'/all.js"></script>';
-}?>-->
+}*/?>
 
 <script>
     var faila_nosaukums;
@@ -29,35 +29,21 @@ echo'<script src="http://connect.facebook.net/'.$this->lang->lang().'_'.strtoupp
             var uploader = new qq.FileUploader({
                 element: document.getElementById('demo'),
                 listElement: document.getElementById('separate-list'),
-                //action: '<?php echo site_url('converter/upload');?>',
                 action: '/ffmpeg/val/server/php.php',
                 multiple: false,
-                
-                // additional data to send, name-value pairs
                 params: {
                     caur_ajax: 'true',
                     key: '<?=$uniqid?>',
                     lang: '<?=$this->lang->lang()?>'
-                },
-
-                // validation    
+                },  
                 // ex. ['jpg', 'jpeg', 'png', 'gif'] or []
                 allowedExtensions: [<?=$allowed?>],        
-                // each file size limit in bytes
-                // this option isn't supported in all browsers
-                sizeLimit: <?=$max?>*1024, // max size   
-                minSizeLimit: 1, // min size
-
-                // set to true to output server response to console
+                sizeLimit: <?=$max?>*1024, 
+                minSizeLimit: 1,
                 debug: true,
-
-                // events         
-                // you can return false to abort submit
                 onSubmit: function(id, fileName){
-				
-				$('.qq-upload-button').hide('fast');
-				
-				},
+                    $('.qq-upload-button').hide('fast');
+		},
                 onProgress: function(id, fileName, loaded, total){},
                 onComplete: function(id, fileName, responseJSON){
                     
@@ -71,7 +57,6 @@ echo'<script src="http://connect.facebook.net/'.$this->lang->lang().'_'.strtoupp
                 onCancel: function(id, fileName){},
 
                 messages: {
-                    // error messages, see qq.FileUploaderBasic for content
                     typeError: "{file} has invalid extension. Only {extensions} are allowed.",
                     sizeError: "{file} is too large, maximum file size is {sizeLimit}.",
                     minSizeError: "{file} is too small, minimum file size is {minSizeLimit}.",
@@ -88,19 +73,20 @@ echo'<script src="http://connect.facebook.net/'.$this->lang->lang().'_'.strtoupp
 $(document).ready(function(){
 
 <?php
+/*
 if($this->uri->segment(4) != "facebook")
 {
-?>
+
 $.ajax({
   url: '/<?=$lang?>/auth/index/<?=$uniqid?>/caur_ajax',
   data: "caur_ajax=true&amp;unikaalais=<?=$uniqid?>",
   success: function(data) {
     $('.right').html(data);
-    //FB.XFBML.parse();
   }
 });
-<?php
+
 }
+*/
 ?>
 
 $(function() {
@@ -110,6 +96,7 @@ $(function() {
         clearInterval(timer);
   }
 });
+<?php
 /*
 $("#fb_log").live("click", function(){
          FB.api('/me', function(user) {
@@ -140,6 +127,7 @@ $("#fb_reg").live("click", function(){
     return false;
 });
 */
+?>
 
 $("#youtube").live("submit", function(){
     $('#bar_youtube').show("slow");
@@ -162,6 +150,7 @@ $("#youtube").live("submit", function(){
            success: function(msg){  
            $('#youtube_uploaded').html(msg);
            $('.media').hide("slow");
+           $('.step').hide("slow");
            $(':button').removeAttr("disabled"); // To enable
            document.getElementById('converter2').style.visibility = 'visible';
            faila_nosaukums = tube_title + ".flv";
@@ -188,15 +177,23 @@ $("#youtube").live("submit", function(){
               $('#youtube_uploaded2').html(response + "%");
               $('#youtube_uploaded2').width(response*3);
               
-              if(response == 100)
+              if(response == 100 || response == 99)
               {
-                  $('#youtube_uploaded').html("<?=lang('upload.done')?>");    
-                  clearInterval(refreshIntervalId2);
+                   $('#youtube_uploaded').html("<?=lang('upload.done')?>");    
+                   clearInterval(refreshIntervalId2);
+                   $('.media').hide("slow");
+                   $('.step').hide("slow");
+                   $(':button').removeAttr("disabled"); // To enable
+                   document.getElementById('converter2').style.visibility = 'visible';
+                   faila_nosaukums = tube_title + ".flv";
+                   $('#youtube_uploaded2').html("100%");
+                   $('#youtube_uploaded2').width(300);
+                   clearInterval(refreshIntervalId2);
               }
               
           }
         });
-        },1500);
+        },2000);
    
        return false;  
      });
@@ -226,7 +223,7 @@ if(window.location.href == "<?php echo base_url();?>"
         
     }); 
  
- 
+
     $('#id_converter').click(function() {
 
     $.ajax({
@@ -239,9 +236,8 @@ if(window.location.href == "<?php echo base_url();?>"
     });
            return false;
     });
-
-
-
+<?php
+/*
 $(".load_ajax").live("click", function(){
 
     $.ajax({
@@ -249,18 +245,14 @@ $(".load_ajax").live("click", function(){
       success: function(data) {
         $('.content').html(data);
         $(".link a").addClass("load_ajax"); //pievieno load_ajax klasi prieksh pagination
-        /*$(".link a").attr("rel","nofollow");*/
       }
     });
            return false;
 });
-
+*/
+?>
 
 });
-
-</script>
-
-<script>
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-4906479-3']);
@@ -276,7 +268,9 @@ $(".load_ajax").live("click", function(){
 </head>
 <body> 
 
-      <!--<div id="fb-root"></div>
+<?php
+/*
+<div id="fb-root"></div>
       <script src="http://connect.facebook.net/en_US/all.js">
       </script>
       <script>
@@ -287,11 +281,10 @@ $(".load_ajax").live("click", function(){
             xfbml:true 
          });
 
-       </script>-->
+       </script>
+       */
+?>
 
-    
-    
-    
 <div class="container">
 <div class="header">
 	<h1>wap4.org - <?=lang('title.header')?></h1>
@@ -299,7 +292,7 @@ $(".load_ajax").live("click", function(){
         <ul id="nav">
             <?php foreach ($navigation as $nav):?>
 
-            <li><?=anchor($nav."/index", $this->lang->line($nav), $nav =="converter"? 'id="id_converter"': 'class="load_ajax"')?></li>
+            <li><?=anchor($nav, $this->lang->line($nav), $nav =="converter"? 'id="id_converter"': 'class="load_ajax"')?></li>
 
             <?php endforeach; ?>
         </ul>

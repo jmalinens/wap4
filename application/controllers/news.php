@@ -23,22 +23,22 @@ class News extends CI_Controller {
     $config['full_tag_close'] = '</div>';
     
     $config['prev_tag_open'] = '<div class="link">';
-    $config['prev_tag_close'] = '<div class="link">';
+    $config['prev_tag_close'] = '</div>';
     
     $config['first_tag_open'] = '<div class="link">';
-    $config['first_tag_close'] = '<div class="link">';
+    $config['first_tag_close'] = '</div>';
     
     $config['last_tag_open'] = '<div class="link">';
-    $config['last_tag_close'] = '<div class="link">';
+    $config['last_tag_close'] = '</div>';
     
     $config['next_tag_open'] = '<div class="link">';
-    $config['next_tag_close'] = '<div class="link">';
+    $config['next_tag_close'] = '</div>';
     
     $config['cur_tag_open'] = '<div class="link">';
-    $config['cur_tag_close'] = '<div class="link">';
+    $config['cur_tag_close'] = '</div>';
     
     $config['num_tag_open'] = '<div class="link">';
-    $config['num_tag_close'] = '<div class="link">';
+    $config['num_tag_close'] = '</div>';
 
     $this->pagination->initialize($config);
 		

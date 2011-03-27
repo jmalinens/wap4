@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Disallow: /*caur_ajax
+Allow: /
+
+User-agent: Googlebot-Mobile
+Disallow: /*caur_ajax
+Allow: /
+
+User-agent: Googlebot
+Disallow: /me
+Allow: /
+
+User-agent: Googlebot-Mobile
+Disallow: /picture
+Allow: /
+

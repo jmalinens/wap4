@@ -6,9 +6,9 @@ $lang['about']              = "About";
 
 $lang['title']              = "online video converter";
 $lang['title.header']       = "convert videos online!";
-$lang['title.meta']         = "This service provides free online tools to convert videos, movies, songs, Youtube videos to other formats";
-$lang['title.h3']           = "Free Youtube to mp3 converter added. All services are  free of charge!";
-$lang['title.main']         = "main";
+$lang['title.meta']         = "wap4.org provides free online tools to convert videos, movies, songs, Youtube videos to other formats";
+$lang['title.h3']           = "Free online Youtube to mp3 converter added. Enjoy!";
+$lang['title.main']         = "Convert videos and Youtube to mp3";
 $lang['title.login']        = "login";
 $lang['title.converter']    = "upload file and convert";
 $lang['title.about']        = "about the audio, video converter";

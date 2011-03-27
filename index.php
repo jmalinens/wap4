@@ -1,6 +1,8 @@
 <?php
 ini_set("cgi.fix_pathinfo","0");
-ini_set("display_errors","On");
+ini_set("display_errors","Off");
+ignore_user_abort(true);
+set_time_limit(0);
 /*
  *---------------------------------------------------------------
  * PHP ERROR REPORTING LEVEL

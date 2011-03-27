@@ -5,7 +5,6 @@
 <?=lang("upload.max_size")?>: <?=$max/1024?> MB<br/>
 
 	<div id="demo">
-                
             <noscript>
                 <?php echo form_open_multipart("/ffmpeg/val/server/php.php");?>
 
@@ -19,8 +18,8 @@
 <div class="step">
 	<?=$this->lang->line('ffmpeg.1st2')?>
 </div>
+
 <?=youtube()?>
-    
 
 <ul id="separate-list"></ul>
         
@@ -39,12 +38,10 @@ $(document).ready(function(){
         } else {
             format = "mp4";
         }
-
         return format;
     };
     
        $('#cut_field').hide();
-       
        
        $('#cut').attr("unchecked");
        $('#cut').change(function () {
@@ -70,20 +67,12 @@ $(document).ready(function(){
         });
      var test;
      
-     
-
-     
-     
-     
-     
      $('#conv').submit(function() {
      $('#converter2').hide("slow");
      $('.media').hide("slow");
      $('#youtube_uploaded').hide("slow");
      $('#bar_youtube').hide("slow");
      $('#bar_convert').show("slow");
-     
-     
      
      $("#percents").progressbar({value: 0});
 	
@@ -121,7 +110,7 @@ $(document).ready(function(){
            $("#percents").append("%");
            $("#percents").progressbar({value: response});
 		   
-           if(response == 100)
+           if(response == 100 || response == 99)
                {
                  var fails          = test+"-<?=$uniqid?>." + getFormat($('#format').val());
                  var saite_uz_failu = '<a href="/files/converted/' + fails + '">' + fails + '</a>';
@@ -133,7 +122,7 @@ $(document).ready(function(){
 
       }
     });
-},500);
+},2000);
 
         $.get("/en/converter/convert/<?=$uniqid?>/" + $('#format').val()+"/"+faila_nosaukums+"/"+$('input:checkbox:checked').val()+"/"+$('#s_hh').val()+"/"+$('#s_mm').val()+"/"+$('#s_ss').val()+"/"+$('#e_hh').val()+"/"+$('#e_mm').val()+"/"+$('#e_ss').val()+"/"+$('#apraksts').val()+"/"+$('#resize').val()+"/"+$('#width').val()+"/"+$('#heigth').val(), {
                 input_file: faila_nosaukums,
@@ -154,7 +143,6 @@ $(document).ready(function(){
                },
 
            function(data){
-             //alert("Data Loaded: " + data);
              clearInterval(refreshIntervalId);
              $('#percents').html("100%"); //uztaisaam 100% arii tad, ja video tiek apgriezts
              $('#percents').width(300);
@@ -197,17 +185,19 @@ $(document).ready(function(){
         
 	</select><br/>
         
-        <!--
-        <?=$this->lang->line('ffmpeg.formats')?>:<br/>
+        <?php
+        /*
+        <?=//$this->lang->line('ffmpeg.formats')?>:<br/>
 	<select name="preset" id="preset">
             
-	<?php /*print_r($presets[0]);*/ foreach($presets as $preset => $key): ?>
-	<option value="<?=$preset?>"><?=$preset?></option>
-	<?php endforeach; ?>
-       
+	<?php //foreach($presets as $preset => $key): ?>
+	<option value="<?=//$preset?>"><?=//$preset?></option>
+	<?php //endforeach; ?>
+
 	</select><br/>
-	-->
-        <!--cut length code-->
+        */
+	?>
+
         <?=$this->lang->line('ffmpeg.cut')?><br/>
         <input type="checkbox" id="cut" name="cut" value="yes"/><br/>
         
@@ -223,30 +213,27 @@ $(document).ready(function(){
           : <input type="text" name="e_ss" id="e_ss" maxlength="2" size="2" value="00"/><br/>
         </div>
         
-        <!--resize resolution code-->
-        <!--
-        <?=$this->lang->line('ffmpeg.resize')?><br/>
+        <?php
+        /*
+        //<?=$this->lang->line('ffmpeg.resize')?><br/>
         <input type="checkbox" id="resize" name="resize" value="yes"/><br/>
         
         <div id="resize_field">
-        <?=$this->lang->line('ffmpeg.width')?><br/>
+        //<?=$this->lang->line('ffmpeg.width')?><br/>
         <input type="text" name="width" id="width" maxlength="4" size="4" value=""/><br/>
-        <?=$this->lang->line('ffmpeg.heigth')?><br/>
+        //<?=$this->lang->line('ffmpeg.heigth')?><br/>
         <input type="text" name="heigth" id="heigth" maxlength="4" size="4" value=""/>
-        </div>  
-        -->
+        </div>
+        */
+        ?>
         <?=$this->lang->line('ffmpeg.descr')?>:
         <br/>
         <input type="text" name="apraksts" id="apraksts"/>
         <br/> 
-      
-      
+
       <p><?php echo form_submit('submit', $this->lang->line('ffmpeg.saakt'));?></p>
 
-      
     <?php echo form_close();?>
-
-
 
 </div>
 
