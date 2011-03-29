@@ -465,3 +465,31 @@ ul.news a {
 .languages_apvalks {
     position: relative;
 }
+
+#footer2 { color: #fff;  background: transparent url(/img/footer2.png) repeat-x; height: 200px; width: 700px;
+
+    border-radius: 0px 0px 29px 29px;
+    -moz-border-radius: 0px 0px 29px 29px;
+    -webkit-border-radius: 0px 0px 29px 29px;
+    
+    box-shadow: 0 3px 0 gray;
+    -moz-box-shadow: 0 3px 0 gray;
+    -webkit-box-shadow: 0 3px 0 gray;
+
+ }
+#footer2 h4 { margin-bottom: 15px; font-size: 18px; }
+#footer2 a { color: #fff; }
+div.footer_section { float: left; padding: 0px 5px; min-height: 145px;}
+#footer_top { padding: 5px 0 5px 0; width: 700px; margin: auto; height: 123px; }
+#footer_bot { clear:both; padding-top:20px; height: 48px; position: relative; width: 700px; margin: auto; text-align: center; font-size:10px;}
+
+#footer_download { border-left: 1px solid #f19e60; width: 210px; position: relative; }
+#footer_download p { margin-bottom: 7px; }
+
+#footer_about {  width: 270px; border-right: 1px solid #f19e60;}
+
+#footer_follow { width: 165px; min-height: 115px;}
+#footer_follow li { padding-left: 30px; background-repeat: no-repeat; background-color: transparent; line-height: 24px; display: block; margin-bottom: 5px; }
+#footer_follow li.social_twitter { background-image: url(/img/social_twitter.png); }
+#footer_follow li.social_rss { background-image: url(/img/social_rss.png); }
+#footer_follow li.social_facebook { background-image: url(/img/social_facebook.png); }

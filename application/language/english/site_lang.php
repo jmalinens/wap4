@@ -34,6 +34,16 @@ $lang['lang.latvian']       = "Latvian";
 $lang['lang.russian']       = "Russian";
 $lang['lang.english']       = "English";
 
+
+$lang['footer.features']    = "Features of wap4.org";
+$lang['footer.support']     = "Support Youtube video conversion to mp3.";
+$lang['footer.allows']      = "Allows converting any video file to mobile phone friendly media formats.";
+$lang['footer.three']       = "It's in three languages.";
+$lang['footer.free']        = "Is free to use. Forever.";
+$lang['footer.follow']      = "Follow Us";
+$lang['footer.download']    = "Download Source Code";
+$lang['footer.created']     = "Created by Juris Malinens";
+
 $lang['news.perma']         = "permalink";
 
 $lang['site.or']            = "or";

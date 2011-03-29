@@ -27,8 +27,7 @@ if ($this->form_validation->run() == true) { //check to see if the user is loggi
         //check for "remember me"
         if ($this->input->post('remember') == 1) {
                 $remember = true;
-        }
-        else {
+        } else {
                 $remember = false;
         }
 
@@ -81,9 +80,44 @@ $this->load->view('auth/login', $this->data);
 ?>
 </div>
 <div class="bottom">
-<p><strong>&copy; Juris Malinens 2011</strong></p>
+<p><strong>&nbsp;</strong></p>
 </div>
 <div class="footer">
+
+	<div id="footer2">
+		<div id="footer_top">
+			<div class="footer_section" id="footer_about">
+				<h4><?=lang('footer.features')?></h4>
+				<ul>
+					<li><?=lang('footer.support')?></li>
+					<li><?=lang('footer.allows')?></li>
+					<li><?=lang('footer.three')?></li>
+					<li><?=lang('footer.free')?></li>
+				</ul>
+			</div>
+			
+			<div class="footer_section" id="footer_follow">
+				<h4><?=lang('footer.follow')?></h4>
+				<ul>
+					<li class="social_twitter"><a href="http://twitter.com/wap4org" target="_blank">Twitter</a></li>
+					<li class="social_facebook"><a href="http://www.facebook.com/pages/wap4org/160222834034783" target="_blank">Facebook</a></li>
+					<li class="social_rss"><a href="http://wap4.org/en/news/rss" target="_blank">RSS</a></li>
+				</ul>
+			</div>
+
+			<div class="footer_section" id="footer_download">
+				<h4><?=lang('footer.download')?></h4>
+				<ul>
+					<li><a href="https://github.com/jmalinens/wap4" target="_blank">@GitHub</a></li>
+					<li><a href="https://sourceforge.net/p/wap4/home/" target="_blank">@SourceForge</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="footer_bot">
+					<?=lang('footer.created')?>, &copy; 2011
+		</div>
+	</div>
+
     <?php
     /*
 		<!--<a href="http://validator.w3.org/check?uri=referer">

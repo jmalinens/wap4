@@ -34,6 +34,15 @@ $lang['lang.latvian']       = "Latviešu";
 $lang['lang.russian']       = "Krievu";
 $lang['lang.english']       = "Angļu";
 
+$lang['footer.features']    = "wap4.org iespējas";
+$lang['footer.support']     = "Var konvertēt Youtube mūzikas klipus mp3 formātā.";
+$lang['footer.allows']      = "Jebkuru videoklipu var pārvērst formātā mobilajiem telefoniem.";
+$lang['footer.three']       = "Konvertētājs ir pieejams 3 valodās.";
+$lang['footer.free']        = "Konvertēt VIENMĒR varēs par velti";
+$lang['footer.follow']      = "Seko mums";
+$lang['footer.download']    = "Lejupielādē aplikācijas izejas kodu";
+$lang['footer.created']     = "Izveidoja Juris Malinens";
+
 $lang['news.perma']         = "pastāvīgā saite";
 
 $lang['site.or']            = "vai";
