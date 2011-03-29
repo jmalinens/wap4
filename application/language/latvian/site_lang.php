@@ -29,6 +29,11 @@ $lang['upload.youtube']     = "video no Youtube";
 $lang['upload.formats']     = "Atļautie failu paplašinājumi";
 $lang['upload.max_size']    = "Maksimālais augšupielādējamā faila izmērs";
 
+$lang['lang.languages']     = "Valodas";
+$lang['lang.latvian']       = "Latviešu";
+$lang['lang.russian']       = "Krievu";
+$lang['lang.english']       = "Angļu";
+
 $lang['news.perma']         = "pastāvīgā saite";
 
 $lang['site.or']            = "vai";

@@ -8,12 +8,16 @@
 <link rel="stylesheet" href="<?php echo base_url();?>css/css3.css"/>
 <link rel="stylesheet" href="<?php echo base_url();?>css/fileuploader.css"/>
 <link rel="stylesheet" href="<?php echo base_url();?>css/le-frog/jquery-ui-1.8.9.custom.css"/>
+<link rel="stylesheet" href="<?php echo base_url();?>css/le-frog/jquery.ui.selectmenu.css"/>
+
 <?php if(end($this->uri->segment_array()) == "index"){?>
 <link rel="canonical" href="http://wap4.org/<?=str_replace("index", "", $this->uri->uri_string())?>"/>
 <?}?>
 <script src="<?php echo base_url();?>js/fileuploader.js"></script>
 <script src="<?php echo base_url();?>js/jquery.min.js"></script>
 <script src="<?php echo base_url();?>js/jquery-ui-1.8.9.custom.min.js"></script>
+
+<!--<script src="/js/jquery.ui.selectmenu.js"></script>-->
 
 <?php/* if($this->lang->lang() == "en"){
 echo '<script src="http://connect.facebook.net/en_US/all.js"></script>';
@@ -71,6 +75,27 @@ echo'<script src="http://connect.facebook.net/'.$this->lang->lang().'_'.strtoupp
     
     
 $(document).ready(function(){
+
+
+$(".dropdown dt a").click(function() {
+    $(".dropdown dd ul").toggle();
+});
+
+$(".dropdown dd ul li a").click(function() {
+    var text = $(this).html();
+    $(".dropdown dt a span").html(text);
+    $(".dropdown dd ul").hide();
+});
+
+function getSelectedValue(id) {
+    return $("#" + id).find("dt a span.value").html();
+}
+
+$(document).bind('click', function(e) {
+    var $clicked = $(e.target);
+    if (! $clicked.parents().hasClass("dropdown"))
+        $(".dropdown dd ul").hide();
+});
 
 <?php
 /*
@@ -236,6 +261,19 @@ if(window.location.href == "<?php echo base_url();?>"
     });
            return false;
     });
+
+    var size = 20;
+    $('#langSelector').click(function() {
+        if ( size == 20 ) {
+            size = 100;
+          $('.right').css('padding-top', '100px');
+        } else {
+            size = 20;
+          $('.right').css('padding-top', '20px');
+        }
+    });
+    
+//$('.right').css('padding-top', '220px');
 <?php
 /*
 $(".load_ajax").live("click", function(){
@@ -295,14 +333,40 @@ $(".load_ajax").live("click", function(){
             <li><?=anchor($nav, $this->lang->line($nav), $nav =="converter"? 'id="id_converter"': 'class="load_ajax"')?></li>
 
             <?php endforeach; ?>
+            
         </ul>
- <div class="languages">      
- <?=anchor($this->lang->switch_uri('en'), "EN")?>
- <span>.</span> <?=anchor($this->lang->switch_uri('ru'), "RU")?>
- <span>.</span> <?=anchor($this->lang->switch_uri('lv'), "LV")?>
- </div>
+
+
+<div class="languages_apvalks">
+<div class="languages">
+    <dl id="sample" class="dropdown">
+        <dt><a href="#" id="langSelector"><span><?=lang('lang.languages')?>...</span></a></dt>
+        <dd>
+            <ul>
+                <li>
+                    <a href="/<?=$this->lang->switch_uri('en')?>"><?=lang('lang.english')?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="value"><?=lang('lang.english')?></span></a>
+                    <img class="flag" src="/img/UK.png" alt="" /><div class="clear"></div>
+                </li>
+                <li>
+                    <a href="/<?=$this->lang->switch_uri('ru')?>"><?=lang('lang.russian')?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="value"><?=lang('lang.russian')?></span></a>
+                    <img class="flag" src="/img/Russia.png" alt="" /><div class="clear"></div>
+                </li>
+                <li>
+                    <a href="/<?=$this->lang->switch_uri('lv')?>"><?=lang('lang.latvian')?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="value"><?=lang('lang.latvian')?></span></a>
+                    <img class="flag" src="/img/Latvia.png" alt="" /><div class="clear"></div>
+                </li>
+            </ul>
+        </dd>
+    </dl>
+</div>
+</div>
 
 </div>
 <div class="wrapper">
 
 <div class="content">
+    
+    

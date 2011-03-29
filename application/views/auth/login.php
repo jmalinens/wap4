@@ -63,7 +63,7 @@ $user = json_decode(file_get_contents('https://graph.facebook.com/me?access_toke
       <?=lang("site.why")?>
       
     <div class="step">      
-    <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwap4.org&amp;layout=box_count&amp;show_faces=false&amp;width=100&amp;action=recommend&amp;colorscheme=light&amp;height=65"
+    <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwap4.org&amp;layout=box_count&amp;show_faces=false&amp;width=100&amp;action=like&amp;colorscheme=light&amp;height=65"
             scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:65px;" allowTransparency="true">
     </iframe>
     </div>    

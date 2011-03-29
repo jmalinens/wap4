@@ -1,6 +1,7 @@
 </div>
 
 <div class="right">
+    
 <?php
 if (!$this->ion_auth->logged_in()) {
 

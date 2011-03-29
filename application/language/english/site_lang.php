@@ -29,6 +29,11 @@ $lang['upload.youtube']     = "get Youtube video";
 $lang['upload.formats']     = "Allowed file formats";
 $lang['upload.max_size']    = "Maximum upload size";
 
+$lang['lang.languages']     = "Languages";
+$lang['lang.latvian']       = "Latvian";
+$lang['lang.russian']       = "Russian";
+$lang['lang.english']       = "English";
+
 $lang['news.perma']         = "permalink";
 
 $lang['site.or']            = "or";
