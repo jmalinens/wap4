@@ -9,9 +9,7 @@ class Converter extends CI_Controller {
      * @var array
      */
     var $aError;
-    /**
-     * 
-     */
+
     function __construct() 
     {
         parent::__construct();
@@ -48,7 +46,7 @@ class Converter extends CI_Controller {
     
     
     /**
-     * 
+     * Shows converter interface
      */
     function index()
     {
@@ -96,7 +94,7 @@ class Converter extends CI_Controller {
    
     
     /**
-     * uploads video from Youtube
+     * Uploads video from Youtube
      */
     function upload_youtube()
     {
@@ -196,7 +194,7 @@ class Converter extends CI_Controller {
     }
     
     /**
-     * How much percents uploaded already
+     * How much percents uploaded already for Youtube videos
      * @uses ajax
      */
     function youtube_upload_status($key, $title, $return = false)
@@ -211,6 +209,9 @@ class Converter extends CI_Controller {
 
     }
     
+    /**
+     * Allows changing max upload sizes for administrator level users
+     */
     function change_settings() {
         $this->load->library('form_validation');
         /**
@@ -257,7 +258,12 @@ class Converter extends CI_Controller {
             $this->load->view('change_settings', $this->data);
             }
     }
-
+    
+    /**
+     * Outputs progress of conversion for mobile devices
+     * @param string $key - uniqid key
+     * @param type $type 
+     */
     function mobile_status($key, $type) {
 
         header("Cache-Control: no-cache, must-revalidate");
@@ -294,8 +300,10 @@ class Converter extends CI_Controller {
         
         echo "</html>";
     }
+    
     /**
      * convert function which handles logic of converting videos
+     * @global string $title - sanitized title of Youtube video
      */
     function convert() {
         
@@ -430,6 +438,12 @@ class Converter extends CI_Controller {
         echo current(explode(".", strtolower($this->uri->segment(6))));
     }
     
+    /**
+     * Returns percents complete of conversion
+     * @param string $unikaalais - uniqid string
+     * @param boolean $return - true- returns result, false- outputs result
+     * @return type 
+     */
     function statuss($unikaalais, $return = false) {
         $this->ffmpeg->SetKey($unikaalais);
         if(!$return)
@@ -440,6 +454,7 @@ class Converter extends CI_Controller {
 
     /**
      * removes everything after last dot symbol if dot is in string
+     * and outputs result
      */
     function change_body() {
 	//$gabals = substr($this->uri->segment(4), 0, -4);
@@ -496,6 +511,10 @@ class Converter extends CI_Controller {
         return true;
     }
     
+    /**
+     * To run web pages in background with long loading time
+     * @param string $link 
+     */
     function ping_link($link) {
             $encoded = '';
             foreach($_GET as $name => $value) {
@@ -515,6 +534,11 @@ class Converter extends CI_Controller {
             exit;
     }
     
+    /**
+     * Get direct link to .flv file of Vimeo video
+     * @param string $link
+     * @return boolean on failure, string on success 
+     */
     function get_vimeo_video($link) {
         
         if(substr($link, 0, 7) != "http://")
@@ -548,6 +572,11 @@ class Converter extends CI_Controller {
         }
     }
     
+    /**
+     * Get direct link to .flv file of Youtube video
+     * @param string  $link
+     * @return string on success, boolean false on failure
+     */
     function get_youtube_video($link) {
         
         if(substr($link, 0, 7) != "http://")
@@ -598,6 +627,11 @@ class Converter extends CI_Controller {
 
     }
     
+    /**
+     * Reads headers of web page to get content size
+     * @param string $link
+     * @return integer on success, boolean false on failure 
+     */
     function get_content_length($link) {
         
             $ch = curl_init($link);
@@ -620,6 +654,12 @@ class Converter extends CI_Controller {
 
     }
     
+    /**
+     * Parses url and makes standard url which can  be sent later to extract
+     *  location of video file
+     * @param string $type - vimeo, youtube etc.
+     * @return string on success, boolean false on failure 
+     */
     function normalize_link($type) {
         switch($type) {
             
