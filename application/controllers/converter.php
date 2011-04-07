@@ -152,9 +152,16 @@ class Converter extends CI_Controller {
     }
     
     /**
-     * get Youtube title from Youtube feed for ajax
+     * Get Youtube title from Youtube feed for ajax or mobile
+     * @global string $title
+     * @param string $link
+     * @param boolean $return
+     * @return boolean false if failure, string if title found 
      */
     function get_youtube_title($link = false, $return = false) {
+        
+        global $title;
+        
         if(isset($_POST["link"]))
             $link   = $_POST["link"];
         
@@ -175,19 +182,21 @@ class Converter extends CI_Controller {
         $doc->load($url);
         $title = $doc->getElementsByTagName("title")->item(0)->nodeValue;
         
+        $title = translit(sanitize_name($title));
+        
         if($title == "youtube-videos") {
             $this->aError[] = "File title `youtube-videos` not allowed";
             if($return) return false;
         }
         
         if(!$return)
-            echo translit(sanitize_name($title));
+            echo $title;
         else
-            return translit(sanitize_name($title));
+            return $title;
     }
     
     /**
-     * how much percents uploaded already
+     * How much percents uploaded already
      * @uses ajax
      */
     function youtube_upload_status($key, $title, $return = false)
@@ -309,6 +318,7 @@ class Converter extends CI_Controller {
             $encoded = substr($encoded, 0, strlen($encoded)-1);
 
             $proc_command = "wget --post-data '$encoded&from=wget' http://".$_SERVER["SERVER_NAME"]."/".$this->lang->lang()."/converter/convert/no_js -q -b >/dev/null 2>&1";
+
             $proc = popen($proc_command, "r");
             pclose($proc);
 
@@ -464,26 +474,26 @@ class Converter extends CI_Controller {
             $this->aError[] = "Can put file content from external file: $link to location: $location";
         }
         */ 
-            $file = fopen($location, 'w');
-            if($file === false) {
-                $this->aError[] = "Can not open file: $location for writing";
-                return false;
-            }
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_FILE, $file);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_URL, $link);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            @curl_setopt($ch, CURLOPT_COOKIEFILE, COOKIE);
-            @curl_setopt($ch, CURLOPT_COOKIEJAR, COOKIE);
-            if(!curl_exec($ch)) {
-                $this->aError[] = "Failed to download file: $link";
-                return false;
-            }
-            curl_close($ch);
-            fclose($file);
-            
-            return true;
+        $file = fopen($location, 'w');
+        if($file === false) {
+            $this->aError[] = "Can not open file: $location for writing";
+            return false;
+        }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_FILE, $file);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_URL, $link);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        @curl_setopt($ch, CURLOPT_COOKIEFILE, COOKIE);
+        @curl_setopt($ch, CURLOPT_COOKIEJAR, COOKIE);
+        if(!curl_exec($ch)) {
+            $this->aError[] = "Failed to download file: $link";
+            return false;
+        }
+        curl_close($ch);
+        fclose($file);
+
+        return true;
     }
     
     function ping_link($link) {
