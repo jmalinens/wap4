@@ -215,3 +215,16 @@ if(!function_exists('translit')) {
     }
     
 }
+
+if(!function_exists('isMobile')) {
+
+    function isMobile() {
+
+        if($_SERVER["SERVER_NAME"] == "m.wap4.org" || $_SERVER["SERVER_NAME"] == "testm.wap4.org")
+            return true;
+        else
+            return false;
+
+    }
+
+}

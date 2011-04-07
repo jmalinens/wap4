@@ -7,27 +7,34 @@
      
         
       
-      <p><?=$this->lang->line('login_male')?> <?=form_radio('gender', '0', TRUE)?> <?=$this->lang->line('login_female')?> <?=form_radio('gender', '1', FALSE)?> <span class="gender"><?=$this->lang->line('login_gender')?></span>
+      <p>
+              <?=$this->lang->line('login_male')?> <?=form_radio('gender', '0', TRUE)?> <?=$this->lang->line('login_female')?> <?=form_radio('gender', '1', FALSE)?> <span class="gender"><?=$this->lang->line('login_gender')?></span>
+      </p>
       
           
       <p>
-      <?=form_dropdown('day', $day, 15);?> - <?=form_dropdown('month',$month,'06')?> - <?=form_dropdown('year',$year, 2000)?>  <?=$this->lang->line('login_birthday')?> 
+              <?=form_dropdown('day', $day, 15);?> - <?=form_dropdown('month',$month,'06')?> - <?=form_dropdown('year',$year, 2000)?>  <?=$this->lang->line('login_birthday')?> 
       </p>
       
-      <p><?=form_input($email)?> <?=$this->lang->line('login_email')?>
+      <p>
+              <?=form_input($email)?> <?=$this->lang->line('login_email')?>
       </p>
       
-      <p><?=form_input($old_password)?> <?=$this->lang->line('login_oldpasswd')?>
+      <p>
+              <?=form_input($old_password)?> <?=$this->lang->line('login_oldpasswd')?>
       </p>
       
-      <p><?=form_input($password)?> <?=$this->lang->line('login_newpasswd')?>
+      <p>
+              <?=form_input($password)?> <?=$this->lang->line('login_newpasswd')?>
       </p>
       
-      <p><?=form_input($password_confirm)?> <?=$this->lang->line('login_confirm')?>
+      <p>
+              <?=form_input($password_confirm)?> <?=$this->lang->line('login_confirm')?>
+      </p>
         
         
       <p>
-      	<input type=checkbox name="reset_password"> <label for="reset_password"><?=$this->lang->line('login_changepasswd')?></label>
+      	<input type="checkbox" name="reset_password"/> <label for="reset_password"><?=$this->lang->line('login_changepasswd')?></label>
       </p>
       
       <?php echo form_input($user_id);?>

@@ -7,7 +7,7 @@ $lang['about']              = "Par servisu";
 $lang['title']              = "tiešsaistes video konvertēšanas rīks";
 $lang['title.header']       = "bezmaksas online konvertētājs!";
 $lang['title.meta']         = "Ērta online konvertēšanas programma, lai konvertētu videoklipus dažādos formātos, piemēram, Youtube video uz mp3";
-$lang['title.h3']           = "+Iespējams konvertēt Youtube video uz mp3. Visi pakalpojumi pieejami bez maksas!!";
+$lang['title.h3']           = "Tagad konvertē arī Youtube video uz mp3 bez maksas!";
 $lang['title.main']         = "Youtube-mp3 galvenā ";
 $lang['title.login']        = "ieiet savā profilā";
 $lang['title.converter']    = "video augšupielāde un konvertēšana";
@@ -15,6 +15,13 @@ $lang['title.about']        = "par audio, video konvertēšanas rīku";
 $lang['title.howto']        = "kā lietot šo tīmekļa programmu";
 $lang['title.create_user']  = "jauna lietotāja profila izveide";
 $lang['title.news']         = "svarīgi paziņojumi";
+
+$lang['mobile.upl_perc']    = "Auģšupielādēts";
+$lang['mobile.conv_perc']   = "Konvertēts";
+$lang['mobile.reload']      = "Pārladēt lapu";
+$lang['mobile.download']    = "Konvertēšana pabeigta! Lejupielādē šeit";
+$lang['mobile.m_vers']      = "Apmeklē mobilo/WAP versiju";
+$lang['mobile.w_vers']      = "Apmeklē aplikācijas WEB versiju";
 
 $lang['add_news']           = "Pievienot ziņu";
 $lang['user.list']          = "Lietotāju saraksts";
@@ -58,7 +65,7 @@ $lang['video.nofiles']      = "Vēl neviens fails nav konvertēts";
 $lang['site.offline']       = "Portāls uz laiku slēgts.";
 
 $lang['howto.content']      = array("Spied saiti \"Konvertētājs\", lai atvērtu konvertētāja galveno izvēlni",
-                                "Pirmais solis ir izvēlēties datni, kuru Jūs vēlaties konvertēt vai arī iekopēt videoklipa adresi no Youtube portāla",
+                                "Pirmais solis ir izvēlēties datni, kuru Jūs vēlaties konvertēt vai arī iekopēt videoklipa adresi no Youtube portāla norādītajā formātā",
                                 "Otrais solis ir izvēlēties konvertēšanas opcijas- piemēram, izvēlēties jauno formātu vai uzstādīt audiovizuālā materāla sākuma un beigu laiku",
                                 "Pēc konvertēšanas Tev tiks piedāvāts lejupielādēt konvertēto datni");
 

@@ -80,7 +80,7 @@ $this->load->view('auth/login', $this->data);
 ?>
 </div>
 <div class="bottom">
-<p><strong>&nbsp;</strong></p>
+<p><strong>&#160;</strong></p>
 </div>
 <div class="footer">
 
@@ -101,7 +101,7 @@ $this->load->view('auth/login', $this->data);
 				<ul>
 					<li class="social_twitter"><a href="http://twitter.com/wap4org" target="_blank">Twitter</a></li>
 					<li class="social_facebook"><a href="http://www.facebook.com/pages/wap4org/160222834034783" target="_blank">Facebook</a></li>
-					<li class="social_rss"><a href="http://wap4.org/en/news/rss" target="_blank">RSS</a></li>
+					<li class="social_rss"><a href="http://wap4.org/en/feed/rss" target="_blank">RSS</a></li>
 				</ul>
 			</div>
 
@@ -114,7 +114,14 @@ $this->load->view('auth/login', $this->data);
 			</div>
 		</div>
 		<div id="footer_bot">
-					<?=lang('footer.created')?>, &copy; 2011
+                    <?php
+                    if($_SERVER["SERVER_NAME"] == "m.wap4.org") {
+                            echo lang('mobile.w_vers'), ": <a href=\"http://wap4.org\">http://wap4.org</a>";
+                        } else {
+                            echo lang('mobile.m_vers'), ": <a href=\"http://m.wap4.org\">http://m.wap4.org</a>";
+                        }
+?>
+					<br/><?=lang('footer.created')?>, &#169; 2011
 		</div>
 	</div>
 

@@ -16,6 +16,13 @@ $lang['title.howto']        = "how to use converter";
 $lang['title.create_user']  = "register an account";
 $lang['title.news']         = "updates and news";
 
+$lang['mobile.upl_perc']    = "Uploaded";
+$lang['mobile.conv_perc']   = "Converted";
+$lang['mobile.reload']      = "Reload page";
+$lang['mobile.download']    = "File successfully converted! Download here";
+$lang['mobile.m_vers']      = "Visit our mobile (WAP) version";
+$lang['mobile.w_vers']      = "Visit our web version from computer";
+
 $lang['add_news']           = "Add news";
 $lang['user.list']          = "User list";
 $lang['video.list']         = "Video list";

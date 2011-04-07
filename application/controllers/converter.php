@@ -3,13 +3,22 @@ ignore_user_abort(true);
 set_time_limit(0);
 setlocale(LC_ALL, 'en_US.UTF8');
 class Converter extends CI_Controller {
- 
+    
+    /**
+     * Array of errors
+     * @var array
+     */
+    var $aError;
+    /**
+     * 
+     */
     function __construct() 
     {
         parent::__construct();
         $this->load->helper('wap4');
         load_settings();
-
+        
+        $this->aError = array();
 
         $this->load->model('site_model');
         $this->data['status'] = $this->site_model->get_site_status();
@@ -26,10 +35,22 @@ class Converter extends CI_Controller {
         
         parse_str($_SERVER['QUERY_STRING'], $_GET);
     }
+   
+   /**
+    * Destructor to log errors
+    */
+   function __destruct() {
+       if(!empty($this->aError)) {
+           file_put_contents($this->config->item("ffmpeg_files_dir")."error_log",
+                             implode(" ** ", $this->aError)." ** ".date("Y-m-d H:i:s")."\n", FILE_APPEND);
+       }
+   }
+    
+    
     /**
      * 
      */
-    function index() 
+    function index()
     {
 
         if($this->uri->segment(4) && ctype_alnum($this->uri->segment(4)))
@@ -44,7 +65,8 @@ class Converter extends CI_Controller {
         $this->data['attr']    = array('id' => 'conv');
 	$this->data['formats'] = $this->ffmpeg->ffmpeg_formats;
         $this->data['uniqid']  = $uniqid;
-                
+        $this->data['extensions'] = $this->config->item('ffmpeg_extensions');
+        
 	$this->datb['allowed'] = "'".implode("','", $this->config->item('ffmpeg_allowed'))."'";
         $this->datb['max']     = $this->max_kb;
         $this->datb['uniqid']  = $uniqid;
@@ -61,15 +83,13 @@ class Converter extends CI_Controller {
         $this->data['presets']    = $arrXml;
         
         
-        if(!irAjax())
         $this->load->view('includes/header', $this->data);
         
-        if(irAjax())
-        $this->load->view('converter', $this->data);
-        else
+        if($_SERVER["SERVER_NAME"] == "m.wap4.org" || $_SERVER["SERVER_NAME"] == "testm.wap4.org")
         $this->load->view('converter_no_js', $this->data);
+        else
+        $this->load->view('converter', $this->data);
         
-        if(!irAjax())
         $this->load->view('includes/footer', $this->data);
     	
     }
@@ -80,133 +100,105 @@ class Converter extends CI_Controller {
      */
     function upload_youtube()
     {
+        $uniqid = isset($_POST["key"]) ? $_POST["key"] : $this->uri->segment(4);
         
-        
-        if($this->uri->segment(4) != "no_js") {
-            /**
-             * if using ajax
-             */
-            $uniqid = $this->uri->segment(4);
-            $link   = $_POST["link"];
-        } else {
-            /**
-             * if javascript is disabled (mobile phones)
-             */
-            $uniqid = $_POST["key"];
-            $link   = $_POST["youtube"];
+        $link = $this->normalize_link("youtube");
+        if($link === false) {
+            echo lang('upload.fail');
         }
         
-        $query = parse_url($link,PHP_URL_QUERY);
-        parse_str($query);
+        $title = $this->get_youtube_title($link, true);
+        if($title === false) {
+            echo lang('upload.fail');
+        }
         
-        $url = "http://gdata.youtube.com/feeds/api/videos/". $v;
-        $doc = new DOMDocument;
-        $doc->load($url);
-        global $title;
-        $title = $doc->getElementsByTagName("title")->item(0)->nodeValue;
-
-        $title = translit(sanitize_name($title));
+        file_put_contents("/home/wap4/public_html/files/keys/$uniqid.name", $title);
         
-        $file_contents = file_get_contents(trim($link));
-        if ($file_contents !== false)
-        {
+        /**
+         * Get direct link to Youtube .flv file
+         */
+        $_flvUrl = $this->get_youtube_video($link);
+        if($_flvUrl  === false) {
+            echo lang('upload.fail');
+        }
 
-            $vidUrl = '';
-            if (preg_match("/fmt_url_map/i",$file_contents))
-            {
-                if (preg_match("/&amp;fmt_url_map/i",$file_contents))
-                $vidUrl = end(explode('&amp;fmt_url_map=',$file_contents));
-                
-                if (preg_match("/&fmt_url_map/i",$file_contents))
-                $vidUrl = end(explode('&fmt_url_map=',$file_contents));
-                
-                $vidUrl = current(explode('&',$vidUrl));
-                $vidUrl = current(explode('%2C',$vidUrl));
-                $vidUrl = urldecode(end(explode('%7C',$vidUrl)));
-            }
-            $_flvUrl = $vidUrl;
-            
+        /**
+         * Get youtube video length in bytes by HEAD request (found in stackoverflow)
+         */
+        $contentLength = $this->get_content_length($_flvUrl);
+        if($contentLength  === false) {
+            echo lang('upload.fail');
+        }
 
-            /**
-             * get youtube video length in bytes by HEAD request (found in stackoverflow)
-             */
-            $ch = curl_init($_flvUrl);
-            curl_setopt($ch, CURLOPT_NOBODY, true);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HEADER, true);
-            /**
-             * not necessary unless the file redirects (like the PHP
-             *  example we're using here)
-             */
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            $data = curl_exec($ch);
-            curl_close($ch);
+        file_put_contents("/home/wap4/public_html/files/keys/".$uniqid.".youtube", $contentLength);
 
-            $contentLength = 'unknown';
-            $status        = 'unknown';
-            if (preg_match('/^HTTP\/1\.[01] (\d\d\d)/', $data, $matches)) {
-              $status = (int)$matches[1];
-            }
-            if (preg_match('/Content-Length: (\d+)/', $data, $matches)) {
-              $contentLength = (int)$matches[1];
-            }
+         /**
+         * download youtube video and save
+         */
+        if(!$this->download_link($_flvUrl,
+                "/home/wap4/public_html/files/uploaded/".$title.".flv")) {
+            $this->aError[] = "Failed to download and save link: $_flvUrl";
+        }
 
-            file_put_contents("/home/wap4/public_html/files/keys/".$uniqid.".youtube", $contentLength);
 
-             /**
-             * download youtube video and save
-             */
-            $file = fopen("/home/wap4/public_html/files/uploaded/".$title.".flv", 'w');
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_FILE, $file);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_URL, $_flvUrl);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            @curl_setopt($ch, CURLOPT_COOKIEFILE, COOKIE);
-            @curl_setopt($ch, CURLOPT_COOKIEJAR, COOKIE);
-
-            //curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-            //curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, 'callback');
-            
-            curl_exec($ch);
-            curl_close($ch);
-            fclose($file);
-            
-            if(is_file("/home/wap4/public_html/files/uploaded/".$title.".flv"))
+        if(is_file("/home/wap4/public_html/files/uploaded/".$title.".flv"))
             echo lang('upload.done');
-            else
-            echo lang('upload.fail');
-
-        } else {
+        else {
+            $this->aError[] = "File /home/wap4/public_html/files/uploaded/".$title.".flv does not exist";
             echo lang('upload.fail');
         }
+
 
     }
     
     /**
      * get Youtube title from Youtube feed for ajax
      */
-    function get_youtube_title() {
-        $link   = $_POST["link"];
+    function get_youtube_title($link = false, $return = false) {
+        if(isset($_POST["link"]))
+            $link   = $_POST["link"];
+        
+        if(!$link) {
+            $this->aError[] = "Youtube link not found";
+        }
+        
         $query = parse_url($link,PHP_URL_QUERY);
         parse_str($query);
-        //echo $v;
+        
+        if(!isset($v) || empty($v)) {
+            $this->aError[] = "Can not parse \$v: $v from \$link: $link in get_youtube_title() function";
+            if($return) return false;
+        }
+        
         $url = "http://gdata.youtube.com/feeds/api/videos/". $v;
         $doc = new DOMDocument;
         $doc->load($url);
         $title = $doc->getElementsByTagName("title")->item(0)->nodeValue;
-        echo translit(sanitize_name($title));
+        
+        if($title == "youtube-videos") {
+            $this->aError[] = "File title `youtube-videos` not allowed";
+            if($return) return false;
+        }
+        
+        if(!$return)
+            echo translit(sanitize_name($title));
+        else
+            return translit(sanitize_name($title));
     }
     
     /**
      * how much percents uploaded already
      * @uses ajax
      */
-    function youtube_upload_status()
+    function youtube_upload_status($key, $title, $return = false)
     {
-        $size_remote = file_get_contents("/home/wap4/public_html/files/keys/".$this->uri->segment(4).".youtube");
-        $size_local  = filesize("/home/wap4/public_html/files/uploaded/".$this->uri->segment(5).".flv");
-        echo round(($size_local/$size_remote)*100);
+        $size_remote = file_get_contents("/home/wap4/public_html/files/keys/".$key.".youtube");
+        $size_local  = filesize("/home/wap4/public_html/files/uploaded/".$title.".flv");
+        
+        if(!$return)
+            echo round(($size_local/$size_remote)*100);
+        else
+            return round(($size_local/$size_remote)*100);
 
     }
     
@@ -256,59 +248,133 @@ class Converter extends CI_Controller {
             $this->load->view('change_settings', $this->data);
             }
     }
-	
+
+    function mobile_status($key, $type) {
+
+        header("Cache-Control: no-cache, must-revalidate");
+        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+        header("Content-type: text/html");
+        $title = file_get_contents("/home/wap4/public_html/files/keys/$key.name");
+        
+        $Youtube_percents_complete = $this->youtube_upload_status($key, $title, true);
+        $Convert_percents_complete = $this->statuss($key, true);
+        echo "<html>
+        <head>
+        <meta http-equiv=\"expires\" content=\"0\"/>
+        <meta http-equiv=\"pragma\" content=\"no-cache\"/>
+        <meta http-equiv=\"cache-control\" content=\"no-cache, must-revalidate\"/>
+        <title>m.wap4.org</title></head>";
+        echo lang('mobile.upl_perc').": $Youtube_percents_complete %<br/>\n";
+        echo lang('mobile.conv_perc').": $Convert_percents_complete %<br/><br/>\n";
+        
+        if($Youtube_percents_complete == 100 && $Convert_percents_complete == 100) {
+            $extension = "mp3";
+            $file = file("/home/wap4/public_html/files/keys/$key.ffmpeg");
+            foreach($file as $f) {
+                if(substr($f, 0, 6) == "Output") {
+                    $extension = substr(end(explode(".", $f)), 0, -3);
+                    break;
+                }
+            }
+            echo lang('mobile.download').": <br/>\n
+                <a href=\"http://".$_SERVER["SERVER_NAME"]."/files/converted/file-".$title.".".$extension."\">http://".$_SERVER["SERVER_NAME"]."/files/converted/file-".$title.".".$extension."</a><br/><br/>\n";
+        } else
+            echo anchor('converter/mobile_status/'.$key, lang('mobile.reload'))."<br/><br/>\n";
+        
+        echo "<a href=\"http://".$_SERVER["SERVER_NAME"]."\">m.wap4.org</a>\n";
+        
+        echo "</html>";
+    }
     /**
      * convert function which handles logic of converting videos
      */
     function convert() {
         
-            if($this->uri->segment(4) == "no_js")
-            {
-                if(isset($_FILES['qqfile']['tmp_name']) && !empty($_FILES['qqfile']['tmp_name'])) {
-                    if(intval($this->data['max']*1024) > intval($_FILES['qqfile']['size']))
-                    {
-                        if(!move_uploaded_file($_FILES['qqfile']['tmp_name'],
-                        $this->config->item('ffmpeg_before_dir').$_POST["key"].".".end(explode(".",$_FILES['qqfile']['name']))))
+        /**
+         * Youtube converter for mobile devices
+         */
+        if( isMobile() &&
+            !isset($_POST["from"]) &&
+            isset($_POST["youtube"]) &&
+            !empty($_POST["youtube"])) {
+
+            $encoded = '';
+            foreach($_GET as $name => $value) {
+              $encoded .= urlencode($name).'='.urlencode($value).'&';
+            }
+            foreach($_POST as $name => $value) {
+              $encoded .= urlencode($name).'='.urlencode($value).'&';
+            }
+            // chop off last ampersand
+            $encoded = substr($encoded, 0, strlen($encoded)-1);
+
+            $proc_command = "wget --post-data '$encoded&from=wget' http://".$_SERVER["SERVER_NAME"]."/".$this->lang->lang()."/converter/convert/no_js -q -b >/dev/null 2>&1";
+            $proc = popen($proc_command, "r");
+            pclose($proc);
+
+            redirect('converter/mobile_status/'.$_POST["key"], 'location');
+            exit;
+
+        }
+        
+        if($this->uri->segment(4) == "no_js")
+        {
+            if(isset($_FILES['qqfile']['tmp_name']) && !empty($_FILES['qqfile']['tmp_name'])) {
+                if(intval($this->data['max']*1024) > intval($_FILES['qqfile']['size']))
+                {
+                    if(!move_uploaded_file($_FILES['qqfile']['tmp_name'],
+                    $this->config->item('ffmpeg_before_dir').$_POST["key"].".".end(explode(".",$_FILES['qqfile']['name'])))) {
+                        $this->aError[] = "move_uploaded_file error, when trying
+                            to upload file in no_js";
                         die("fatal error, when trying to upload file");
-
-                        $this->ffmpeg->SetKey($_POST["key"]);
-                        //set format of  converted file
-                        $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
-                        //set name of file which will be converted
-                        $this->ffmpeg->SetInput_file($_POST["key"].".".end(explode(".",$_FILES['qqfile']['name'])), "no_js");
-
-                        if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes') 
-                        $this->ffmpeg->Cut($_REQUEST['s_hh'],$_REQUEST['s_mm'],$_REQUEST['s_ss'],$_REQUEST['e_hh'],$_REQUEST['e_mm'],$_REQUEST['e_ss']);
-
-                        //if(isset($_REQUEST['resize']) && $_REQUEST['resize'] == 'yes') 
-                        //$this->ffmpeg->Resize($_REQUEST['width'],$_REQUEST['heigth']);
-
-                        $veids="no_js";
-                    } else {
-                        die("too big file, max filesize {$this->data['max']} MB");
                     }
-                }
-                
-                if(isset($_POST["youtube"]) && !empty($_POST["youtube"])) {
-                    $this->upload_youtube();
-                    global $title;
+
                     $this->ffmpeg->SetKey($_POST["key"]);
                     //set format of  converted file
                     $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
                     //set name of file which will be converted
-                    $this->ffmpeg->SetInput_file($title.".flv", "no_js");
+                    $this->ffmpeg->SetInput_file($_POST["key"].".".end(explode(".",$_FILES['qqfile']['name'])), "no_js");
 
                     if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes') 
-                    $this->ffmpeg->Cut($_REQUEST['s_hh'],$_REQUEST['s_mm'],$_REQUEST['s_ss'],$_REQUEST['e_hh'],$_REQUEST['e_mm'],$_REQUEST['e_ss']);
+                    $this->ffmpeg->Cut( $_REQUEST['s_hh'],
+                                        $_REQUEST['s_mm'],
+                                        $_REQUEST['s_ss'],
+                                        $_REQUEST['e_hh'],
+                                        $_REQUEST['e_mm'],
+                                        $_REQUEST['e_ss']);
+
+                    //if(isset($_REQUEST['resize']) && $_REQUEST['resize'] == 'yes') 
+                    //$this->ffmpeg->Resize($_REQUEST['width'],$_REQUEST['heigth']);
 
                     $veids="no_js";
-                    
+                } else {
+                    $this->aError[] = "too big file {$_FILES['qqfile']['size']},
+                    max filesize {$this->data['max']} MB";
+                    die("too big file, max filesize {$this->data['max']} MB");
                 }
             }
-        
-        else
-        {
-	//print_r($_REQUEST);
+
+            if(isset($_POST["youtube"]) && !empty($_POST["youtube"])) {
+                $this->upload_youtube();
+                global $title;
+                $this->ffmpeg->SetKey($_POST["key"]);
+                //set format of  converted file
+                $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
+                //set name of file which will be converted
+                $this->ffmpeg->SetInput_file($title.".flv", "no_js");
+
+                if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes') 
+                $this->ffmpeg->Cut( $_REQUEST['s_hh'],
+                                    $_REQUEST['s_mm'],
+                                    $_REQUEST['s_ss'],
+                                    $_REQUEST['e_hh'],
+                                    $_REQUEST['e_mm'],
+                                    $_REQUEST['e_ss']);
+
+                $veids="no_js";
+            }
+            
+        } else {
         //set unique key
         $this->ffmpeg->SetKey($this->uri->segment(4));
         //set format of  converted file
@@ -354,9 +420,12 @@ class Converter extends CI_Controller {
         echo current(explode(".", strtolower($this->uri->segment(6))));
     }
     
-    function statuss($unikaalais) {
+    function statuss($unikaalais, $return = false) {
         $this->ffmpeg->SetKey($unikaalais);
-        echo $this->ffmpeg->GetPercentsComplete();
+        if(!$return)
+            echo $this->ffmpeg->GetPercentsComplete();
+        else
+            return $this->ffmpeg->GetPercentsComplete();
     }
 
     /**
@@ -373,6 +442,207 @@ class Converter extends CI_Controller {
         }
 
     }
+    
+    /**
+     * Downloads and saves external file
+     * @param string $link address of file
+     * @param string $location location where to save
+     * @return boolean true if success, false if failure
+     */
+    function download_link($link, $location) {
+        /*
+        $bgas = end(explode(".", $link));
+       if(!in_array($bgas, $this->config->item("ffmpeg_allowed"))) {
+           $this->aError[] = "Link $link has unsupported file extension";
+       }
+        $url   = trim(stripslashes($link));
+        $video = file_get_contents($url);
+        if(!$video) {
+           $this->aError[] = "Can not download external file: $link";
+       }
+        if(!file_put_contents($location, $video)) {
+            $this->aError[] = "Can put file content from external file: $link to location: $location";
+        }
+        */ 
+            $file = fopen($location, 'w');
+            if($file === false) {
+                $this->aError[] = "Can not open file: $location for writing";
+                return false;
+            }
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_FILE, $file);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_URL, $link);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            @curl_setopt($ch, CURLOPT_COOKIEFILE, COOKIE);
+            @curl_setopt($ch, CURLOPT_COOKIEJAR, COOKIE);
+            if(!curl_exec($ch)) {
+                $this->aError[] = "Failed to download file: $link";
+                return false;
+            }
+            curl_close($ch);
+            fclose($file);
+            
+            return true;
+    }
+    
+    function ping_link($link) {
+            $encoded = '';
+            foreach($_GET as $name => $value) {
+              $encoded .= urlencode($name).'='.urlencode($value).'&';
+            }
+            foreach($_POST as $name => $value) {
+              $encoded .= urlencode($name).'='.urlencode($value).'&';
+            }
+            // chop off last ampersand
+            $encoded = substr($encoded, 0, strlen($encoded)-1);
 
+            $proc_command = "wget --post-data '$encoded&from=wget' http://".$_SERVER["SERVER_NAME"]."/".$this->lang->lang()."/converter/convert/no_js -q -b -O /dev/null -o /home/wap4/public_html/files/ping.status >/dev/null 2>&1";
+            $proc = popen($proc_command, "r");
+            pclose($proc);
+
+            redirect('converter/mobile_status/'.$_POST["key"], 'location');
+            exit;
+    }
+    
+    function get_vimeo_video($link) {
+        
+        if(substr($link, 0, 7) != "http://")
+        $link = "http://".$link;
+        
+        
+        if(is_numeric($link)) {
+            $id = $link;
+        } else {
+            $pos = stripos($link, "/");
+            if($pos !== false) {
+                $id = end(explode($link));
+                if(!is_numeric($link)) {
+                    $this->aError[] = "Failed to parse Vimeo link";
+                    return false;
+                }
+            }
+        }
+        
+        $xmlstr = file_get_contents("http://www.vimeo.com/moogaloop/load/clip:".$id);
+        
+        $xml = new SimpleXMLElement($xmlstr);
+        
+        $req_sign = $xml->xml->request_signature;
+        $req_sign_exp = $xml->xml->request_signature_expires;
+        if(!empty($req_sign) && !empty($req_sign_exp)) {
+            return "http://www.vimeo.com/moogaloop/play/clip:$id/$req_sign/$req_sign_exp/?q=sd";
+        } else {
+            $this->aError[] = "`$req_sign` or `$req_sign_exp` is empty";
+                    return false;
+        }
+    }
+    
+    function get_youtube_video($link) {
+        
+        if(substr($link, 0, 7) != "http://")
+        $link = "http://".$link;
+                
+        $query = parse_url($link,PHP_URL_QUERY);
+        
+        parse_str($query);
+        
+        if(!isset($v) || empty($v)) {
+            $this->aError[] = "Can not parse \$v: $v from \$link: $link in upload_youtube() function";
+            return false;
+        }
+        
+        $link = "http://www.youtube.com/watch?v=".$v;
+        
+        $file_contents = file_get_contents(trim($link));
+        if ($file_contents !== false)
+        {
+
+            $vidUrl = '';
+            if (preg_match("/fmt_url_map/i",$file_contents))
+            {
+                if (preg_match("/&amp;fmt_url_map/i",$file_contents))
+                $vidUrl = end(explode('&amp;fmt_url_map=',$file_contents));
+                
+                if (preg_match("/&fmt_url_map/i",$file_contents))
+                $vidUrl = end(explode('&fmt_url_map=',$file_contents));
+                
+                $vidUrl = current(explode('&',$vidUrl));
+                $vidUrl = current(explode('%2C',$vidUrl));
+                $vidUrl = urldecode(end(explode('%7C',$vidUrl)));
+            } else {
+                $this->aError[] = "Can not get fmt_url_map";
+                return false;
+            }
+            
+            if(empty($vidUrl)) {
+                $this->aError[] = "empty vidUrl";
+                return false;
+            } else
+                return  $vidUrl;
+            
+        } else {
+            $this->aError[] = "Can not get contents from `$link`";
+            return false;
+        }
+
+    }
+    
+    function get_content_length($link) {
+        
+            $ch = curl_init($link);
+            curl_setopt($ch, CURLOPT_NOBODY, true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            $data = curl_exec($ch);
+            curl_close($ch);
+
+            //if (preg_match('/^HTTP\/1\.[01] (\d\d\d)/', $data, $matches)) {
+            //  $status = (int)$matches[1];
+            //}
+            if (preg_match('/Content-Length: (\d+)/', $data, $matches)) {
+              return (int)$matches[1];
+            } else {
+                $this->aError[] = "Unknown content length for url: $link";
+                return false;
+            }
+
+    }
+    
+    function normalize_link($type) {
+        switch($type) {
+            
+        default: //youtube
+            
+            if(isset($_POST["link"]) && !empty($_POST["link"]))
+                $link = $_POST["link"];
+            elseif(isset($_POST["youtube"]) && !empty($_POST["youtube"]))
+                $link = $_POST["youtube"];
+            else
+                $link = base64_decode($this->uri->segment(5));
+
+
+            if(substr($link, 0, 7) != "http://")
+                    $link = "http://".$link;
+
+            $query = parse_url($link,PHP_URL_QUERY);
+
+            parse_str($query);
+
+            if(!isset($v) || empty($v)) {
+                $this->aError[] = "Can not parse \$v: $v from \$link: $link in upload_youtube() function";
+                return false;
+            }
+
+            $link = "http://www.youtube.com/watch?v=".$v;
+        
+        break;
+        
+        }
+        
+        return $link;
+        
+    }
 
 }

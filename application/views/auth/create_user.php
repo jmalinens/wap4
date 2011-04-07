@@ -11,12 +11,15 @@
       <p><?php echo form_input($username);?> <?=$this->lang->line('login_username')?>
       </p>
       
-      <p><div class="gender"> 
- <?=$this->lang->line('login_male')?> 
- <?=form_radio('gender', 'male', TRUE)?> 
- <?=$this->lang->line('login_female')?> 
- <?=form_radio('gender', 'female', FALSE)?> 
-      </div> <div class="gender2"><?=$this->lang->line('login_gender')?></div>
+<p>
+    <div class="gender"> 
+        <?=$this->lang->line('login_male')?> 
+        <?=form_radio('gender', 'male', TRUE)?> 
+        <?=$this->lang->line('login_female')?> 
+        <?=form_radio('gender', 'female', FALSE)?> 
+    </div>
+</p>
+      <div class="gender2"><?=$this->lang->line('login_gender')?></div>
       <div class="clear"></div>
       
           

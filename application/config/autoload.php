@@ -80,7 +80,7 @@ $autoload['helper'] = array('url','language','form','wap4','text');
 |
 */
 
-$autoload['config'] = array('site');
+$autoload['config'] = array('site','ffmpeg');
 
 
 /*

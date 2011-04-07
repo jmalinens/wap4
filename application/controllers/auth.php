@@ -181,11 +181,11 @@ class Auth extends CI_Controller {
                             'styles' => array(
                                     //Creating a new style named "style 1"
                                     'style 1' => array (
-                                            'name' 		=> 	'Blue Title',
+                                            'name' 	=> 	'Blue Title',
                                             'element' 	=> 	'h2',
-                                            'styles' => array(
-                                                    'color' 	=> 	'Blue',
-                                                    'font-weight' 	=> 	'bold'
+                                            'styles'    => array(
+                                                    'color'       => 	'Blue',
+                                                    'font-weight' => 	'bold'
                                             )
                                     ),
                                     //Creating a new style named "style 2"
@@ -194,7 +194,7 @@ class Auth extends CI_Controller {
                                             'element' 	=> 	'h2',
                                             'styles' => array(
                                                     'color' 		=> 	'Red',
-                                                    'font-weight' 		=> 	'bold',
+                                                    'font-weight' 	=> 	'bold',
                                                     'text-decoration'	=> 	'underline'
                                             )
                                     )
@@ -216,57 +216,55 @@ class Auth extends CI_Controller {
         $user = $this->ion_auth->get_user();
         $username = $user->username;
         if ($this->form_validation->run() == true) { //check to see if the user is logging in
-        
-        	
-			
-		$update = array(
-					'birthday' => mysql_real_escape_string($_REQUEST['year']."-".$_REQUEST['month']."-".$_REQUEST['day']),
-					'gender' => intval($_REQUEST['gender']),
-					'email' => mysql_real_escape_string($_REQUEST['email']),
-					 );
-		$this->ion_auth->update_user($user->id, $update);
+	
+            $update = array(
+                            'birthday' => mysql_real_escape_string($_REQUEST['year']."-".$_REQUEST['month']."-".$_REQUEST['day']),
+                            'gender' => intval($_REQUEST['gender']),
+                            'email' => mysql_real_escape_string($_REQUEST['email']),
+                             );
+            $this->ion_auth->update_user($user->id, $update);
 
-			//check for "reset password"
-        	if ($this->input->post('reset_password') == "on") {
-                    $reset = true;
-                    $identity = $this->session->userdata($this->config->item('identity', 'ion_auth'));
+                    //check for "reset password"
+            if ($this->input->post('reset_password') == "on") {
+                $reset = true;
+                $identity = $this->session->userdata($this->config->item('identity', 'ion_auth'));
 
-                    $change = $this->ion_auth->change_password($identity, $this->input->post('old_password'), $this->input->post('password'));
+                $change = $this->ion_auth->change_password($identity, $this->input->post('old_password'), $this->input->post('password'));
 
-                    if ($change) { //if the password was successfully changed
-                            $this->session->set_flashdata('message', $this->ion_auth->messages());
-                            $this->logout();
-                    }
-                    else {
-                            $this->session->set_flashdata('message', $this->ion_auth->errors());
-                            redirect('auth/change_password', 'refresh');
-                    }
-                
-                    
-                    if ($this->ion_auth->login($username, $this->input->post('password'), true)) { //if the login is successful
-	        	//redirect them back to the home page
-	        	$this->session->set_flashdata('message', $this->ion_auth->messages());
-	        	redirect($this->config->item('base_url'), 'refresh');
-	        }
-	        else { //if the login was un-successful
-	        	//redirect them back to the login page
-	        	$this->session->set_flashdata('message', $this->ion_auth->errors());
-                        
-                        $this->load->view('includes/header', $this->data);
-	        	//redirect('auth/index/error', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
-                        $this->data['message'] = $this->ion_auth->errors();
-                        
-                        $this->load->view('auth/login', $this->data);
-                        $this->load->view('includes/footer', $this->data);
-	        }
-                    
-                    
-                    
-        	}
-        	else {
-        		$reset = false;
-				redirect($this->config->item('base_url'), 'refresh');
-        	}
+                if ($change) { //if the password was successfully changed
+                        $this->session->set_flashdata('message', $this->ion_auth->messages());
+                        $this->logout();
+                }
+                else {
+                        $this->session->set_flashdata('message', $this->ion_auth->errors());
+                        redirect('auth/change_password', 'refresh');
+                }
+
+
+                if ($this->ion_auth->login($username, $this->input->post('password'), true)) { //if the login is successful
+                    //redirect them back to the home page
+                    $this->session->set_flashdata('message', $this->ion_auth->messages());
+                    redirect($this->config->item('base_url'), 'refresh');
+            }
+            else { //if the login was un-successful
+                    //redirect them back to the login page
+                    $this->session->set_flashdata('message', $this->ion_auth->errors());
+
+                    $this->load->view('includes/header', $this->data);
+                    //redirect('auth/index/error', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+                    $this->data['message'] = $this->ion_auth->errors();
+
+                    $this->load->view('auth/login', $this->data);
+                    $this->load->view('includes/footer', $this->data);
+            }
+
+
+
+            }
+            else {
+                    $reset = false;
+                            redirect($this->config->item('base_url'), 'refresh');
+            }
         	
         }
         else {
@@ -284,22 +282,22 @@ class Auth extends CI_Controller {
 	            $day[$days]=$days;
 	            $days++;
 	        }
-            $this->data['day']             = $day;
+            $this->data['day']   = $day;
             $this->lang->load('calendar');
-            $this->data['month']           =    $month=array(
-                                                '01'=>$this->lang->line('cal_january'),
-                                                '02'=>$this->lang->line('cal_february'),
-                                                '03'=>$this->lang->line('cal_march'),
-                                                '04'=>$this->lang->line('cal_april'),
-                                                '05'=>$this->lang->line('cal_may'),
-                                                '06'=>$this->lang->line('cal_june'),
-                                                '07'=>$this->lang->line('cal_july'),
-                                                '08'=>$this->lang->line('cal_august'),
-                                                '09'=>$this->lang->line('cal_september'),
-                                                '10'=>$this->lang->line('cal_october'),
-                                                '11'=>$this->lang->line('cal_november'),
-                                                '12'=>$this->lang->line('cal_december')
-                                            );
+            $this->data['month'] = $month=array(
+                                    '01'=>$this->lang->line('cal_january'),
+                                    '02'=>$this->lang->line('cal_february'),
+                                    '03'=>$this->lang->line('cal_march'),
+                                    '04'=>$this->lang->line('cal_april'),
+                                    '05'=>$this->lang->line('cal_may'),
+                                    '06'=>$this->lang->line('cal_june'),
+                                    '07'=>$this->lang->line('cal_july'),
+                                    '08'=>$this->lang->line('cal_august'),
+                                    '09'=>$this->lang->line('cal_september'),
+                                    '10'=>$this->lang->line('cal_october'),
+                                    '11'=>$this->lang->line('cal_november'),
+                                    '12'=>$this->lang->line('cal_december')
+                                );
             
             
 			$years = 2005;
@@ -315,7 +313,7 @@ class Auth extends CI_Controller {
             
             $this->data['email']              = array('name'    => 'email',
                                                       'id'      => 'email',
-                                                      'type'    => 'text',
+                                                      'type'    => 'email',
                                                       'value'   => $user->email,
                                                      );
             $this->data['gender']             = array('name'    => 'gender',
@@ -608,7 +606,7 @@ $this->data['user_id']                = array('name'    => 'user_id',
     //create a new user
 	function create_user() 
 	{
-            
+        if(!isMobile())
         $this->load->library('recaptcha');
         $this->load->library('form_validation');
         $this->lang->load('recaptcha');
@@ -644,7 +642,7 @@ $this->data['user_id']                = array('name'    => 'user_id',
         if ($this->form_validation->run() == true && $this->ion_auth->register($username,$password,$email,$additional_data)) { //check to see if we are creating the user
                 //redirect them back to the admin page
         	
-            
+            if(!isMobile())
             $this->load->view('recaptcha_demo',array('recaptcha'=>'Yay! You got it right!'));
             
             
@@ -673,22 +671,22 @@ $this->data['user_id']                = array('name'    => 'user_id',
 	            $day[$days]=$days;
 	            $days++;
 	        }
-    $this->data['day']             = $day;
+    $this->data['day']   = $day;
     $this->lang->load('calendar');
-    $this->data['month']           =    $month=array(
-                                        '01'=>$this->lang->line('cal_january'),
-                                        '02'=>$this->lang->line('cal_february'),
-                                        '03'=>$this->lang->line('cal_march'),
-                                        '04'=>$this->lang->line('cal_april'),
-                                        '05'=>$this->lang->line('cal_may'),
-                                        '06'=>$this->lang->line('cal_june'),
-                                        '07'=>$this->lang->line('cal_july'),
-                                        '08'=>$this->lang->line('cal_august'),
-                                        '09'=>$this->lang->line('cal_september'),
-                                        '10'=>$this->lang->line('cal_october'),
-                                        '11'=>$this->lang->line('cal_november'),
-                                        '12'=>$this->lang->line('cal_december')
-                                    );
+    $this->data['month'] = $month=array(
+                                '01'=>$this->lang->line('cal_january'),
+                                '02'=>$this->lang->line('cal_february'),
+                                '03'=>$this->lang->line('cal_march'),
+                                '04'=>$this->lang->line('cal_april'),
+                                '05'=>$this->lang->line('cal_may'),
+                                '06'=>$this->lang->line('cal_june'),
+                                '07'=>$this->lang->line('cal_july'),
+                                '08'=>$this->lang->line('cal_august'),
+                                '09'=>$this->lang->line('cal_september'),
+                                '10'=>$this->lang->line('cal_october'),
+                                '11'=>$this->lang->line('cal_november'),
+                                '12'=>$this->lang->line('cal_december')
+                            );
             
             
 			$years = 2005;
@@ -719,7 +717,7 @@ $this->data['password_confirm']   = array('name'    => 'password_confirm',
                                           'type'    => 'password',
                                           'value'   => $this->form_validation->set_value('password_confirm'),
                                          );
-
+if(!isMobile())
 $this->data['security']           = $this->recaptcha->get_html();
 $this->data['navigation']         = $this->config->item('navigation');
 

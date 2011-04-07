@@ -27,7 +27,7 @@ a:hover {
 }
 .right{
     padding-top: 20px;
-    
+    margin-bottom:121px;
 }
 
 .right a {
@@ -44,16 +44,6 @@ a:hover {
     height: 18px;
     background: orange;
     color: white;
-}
-
-.facebook a {
-    background:none;
-    display:inline;
-}
-
-.facebook a:hover {
-    background:none;
-    display:inline;
 }
 
 .bottom{background:#fff}
@@ -113,32 +103,6 @@ background-image: url(/img/navigacija2.png);
     color:white;
 }
 
-
-
-.footer img {
-	height: 31px;
-	width: 100px;
-	float: left;
-	display: block;
-        border-style: none;
-        margin-left:2px;
-        margin-right:2px;
-        margin-bottom:2px;
-}
-
-.footer img:hover {
-	height: 31px;
-	width: 100px;
-	float: left;
-	display: block;
-        border-spacing: 1px;
-	border-style: dashed;
-	border-color: gray;
-        margin-left:0px;
-        margin-right:0px;
-        margin-bottom:0px;
-}
-
 #mainInfo {
 	width: 300px;
 	background: #f0f0f0 url(/img/login_bg.jpg) repeat-x 0 0;
@@ -195,7 +159,7 @@ input {
 }
 
 
-input[type=submit], #id_create_user, .fb_log, form a {
+input[type=submit], #id_create_user{
     border: none;
     margin-right: 1em;
     padding: 6px;
@@ -213,24 +177,8 @@ input[type=submit], #id_create_user, .fb_log, form a {
     width: 110px;
 }
 
- #fb_log, #fb_reg {
-    font-size: 15px;
-    text-align: center;
-    margin-left: 10px;
-    margin-top:20px;
-    background: #3B5998;
-    width: 110px;
-    height: 35px;
-    color:black;
-    text-decoration: none;
-}
 
-#fb_log:hover, #fb_reg:hover {
-    color:white;
-}
-
-
-input[type=submit]:hover, #id_create_user:hover, .fb_log:hover, form a:hover {
+input[type=submit]:hover, #id_create_user:hover, form a:hover {
 	background: yellow;
         color: black;
 	cursor: pointer;
@@ -456,14 +404,14 @@ ul.news a {
 
 .dropdown img.flag { border:none; vertical-align:middle; margin-right:10px; float: right; }
 
-.languages {
-    position: absolute;
-    top:-14px;
-    left:540px;
+.languages_apvalks {
+position: relative;
 }
 
-.languages_apvalks {
-    position: relative;
+.languages {
+position: absolute;
+top:-38px;
+left:540px;
 }
 
 #footer2 { color: #fff;  background: transparent url(/img/footer2.png) repeat-x; height: 200px; width: 700px;
@@ -493,3 +441,7 @@ div.footer_section { float: left; padding: 0px 5px; min-height: 145px;}
 #footer_follow li.social_twitter { background-image: url(/img/social_twitter.png); }
 #footer_follow li.social_rss { background-image: url(/img/social_rss.png); }
 #footer_follow li.social_facebook { background-image: url(/img/social_facebook.png); }
+.languages a {
+display:block;
+min-width: 80px;
+}

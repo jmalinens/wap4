@@ -18,7 +18,23 @@ class Welcome extends CI_Controller {
 
 	function index()
 	{
-                $uniqid                = uniqid();
+            
+                if($this->uri->segment(4) && ctype_alnum($this->uri->segment(4)))
+                {
+                    $uniqid             = $this->uri->segment(4);
+                } else {
+                    $uniqid             = uniqid();
+                }
+
+                $xmlUrl = "/home/wap4/public_html/files/presets.xml"; // XML feed file/URL
+                $xmlStr = file_get_contents($xmlUrl);
+
+                $xmlObj = simplexml_load_string($xmlStr);
+                $arrXml = objectsIntoArray($xmlObj);
+
+                array_sort($arrXml, 'category', SORT_DESC);
+
+                $this->data['presets']    = $arrXml;
             	$this->data['allowed'] = "'".implode("','", $this->config->item('ffmpeg_allowed'))."'";
                 $this->data['uniqid']  = $uniqid;
                 $this->data['message'] = '';
@@ -27,9 +43,13 @@ class Welcome extends CI_Controller {
                 $this->data['formats'] = $this->ffmpeg->ffmpeg_formats;
                 $this->data['max']     	= $this->max_kb;
 		$this->data['navigation'] = $this->config->item('navigation');
+                $this->data['extensions'] = $this->config->item('ffmpeg_extensions');
                 $this->data['lang'] = $this->lang->lang();
                 $this->load->view('includes/header', $this->data);
-		//$this->load->view('main_menu', $this->data);
+                if(!isMobile())
+                    $this->load->view('converter', $this->data);
+                else
+                    $this->load->view('converter_no_js', $this->data);   
                 $this->load->view('includes/footer', $this->data);
 	}
 }
