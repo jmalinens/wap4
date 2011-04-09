@@ -10,6 +10,7 @@ public $input_file;
 public $file_body;
 public $cut;
 public $resize;
+public $ffmpeg_files_dir;
 
 	public function __construct()
 	{
@@ -24,6 +25,7 @@ public $resize;
                 
                 
 		$this->ffmpeg_path	 = $this->ci->config->item('ffmpeg_path');
+                $this->ffmpeg_files_dir	 = $this->ci->config->item('ffmpeg_files_dir');
 		$this->ffmpeg_prefix     = $this->ci->config->item('ffmpeg_prefix');
 		$this->ffmpeg_suffix     = $this->ci->config->item('ffmpeg_suffix');
 		$this->ffmpeg_before_dir = $this->ci->config->item('ffmpeg_before_dir');
@@ -218,30 +220,46 @@ public $resize;
 	
 	public function StartConvert($mode="js")
 	{
+            
+            $ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i ".$this->ffmpeg_before_dir."".$this->input_file." ".$this->GetFfmpegOptions()." ".$this->ffmpeg_after_dir."".$this->file_body."-$this->key.".$this->GetExtension()." 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg";
+            
+            $gif_optimize = "gifsicle --batch --optimize $this->ffmpeg_after_dir.
+                    $this->file_body-".$this->key.".".$this->GetExtension();
 
+            
+            $proc = popen($ffmpeg_command, "r");
+            pclose($proc);
+            
+            if($this->GetExtension() == "gif") {
+            $proc = popen($gif_optimize, "r");
+            pclose($proc);
+            }
+            /**
+             * Log last ffmpeg command
+             */
+            file_put_contents($this->ffmpeg_files_dir.'last_ffmpeg_command.txt',
+                $ffmpeg_command);
+            
             if($mode=="js")
             {
-            pclose(popen("".$this->ffmpeg_prefix." ".$this->ffmpeg_path." -i ".$this->ffmpeg_before_dir."".$this->input_file." ".$this->GetFfmpegOptions()." ".$this->ffmpeg_after_dir."".$this->file_body."-".$this->key.".".$this->GetExtension()." 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg", "r"));
-            
-            if($this->GetExtension() == "gif")
-            pclose(popen("gifsicle --batch --optimize ".$this->ffmpeg_after_dir."".$this->file_body."-".$this->key.".".$this->GetExtension(), "r"));
-            
-            @file_put_contents('/home/wap4/public_html/files/test.txt', "".$this->ffmpeg_prefix." ".$this->ffmpeg_path." -i ".$this->ffmpeg_before_dir."".$this->input_file." ".$this->GetFfmpegOptions()." ".$this->ffmpeg_after_dir."".$this->file_body."-".$this->key.".".$this->GetExtension()." 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg");
+                return true;
             }
              else
             {
-            pclose(popen("".$this->ffmpeg_prefix." ".$this->ffmpeg_path." -i ".$this->ffmpeg_before_dir."".$this->input_file." ".$this->GetFfmpegOptions()." ".$this->ffmpeg_after_dir."file-".$this->file_body.".".$this->GetExtension()." 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg", "r"));
             
-            if($this->GetExtension() == "gif")
-            pclose(popen("gifsicle --batch --optimize ".$this->ffmpeg_after_dir."file-".$this->file_body.".".$this->GetExtension(), "r"));
-
             echo"<html><title>".$_SERVER["SERVER_NAME"]."</title>";
-            echo lang('mobile.download').": <br/>\n<a href=\"http://".$_SERVER["SERVER_NAME"]."/files/converted/file-{$this->file_body}.{$this->GetExtension()}\">file-{$this->file_body}.{$this->GetExtension()}</a><br/>";
-            echo"<a href=\"http://".$_SERVER["SERVER_NAME"]."\">&lt;&lt; ".$_SERVER["SERVER_NAME"]."</a></html>";
-            @file_put_contents('/home/wap4/public_html/files/test.txt', "".$this->ffmpeg_prefix." ".$this->ffmpeg_path." -i ".$this->ffmpeg_before_dir."".$this->input_file." ".$this->GetFfmpegOptions()." ".$this->ffmpeg_after_dir."".$this->file_body."-".$this->key.".".$this->GetExtension()." 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg");       
-            }
-            return true;
+            
+            echo lang('mobile.download').": <br/>\n<a href=\"http://".
+            $_SERVER["SERVER_NAME"]."/files/converted/".$this->file_body."-".
+            $this->key.".".$this->GetExtension()."\">".
+            $this->file_body."-".$this->key.".".
+            $this->GetExtension()."</a><br/>";
+            
+            echo"<a href=\"http://".$_SERVER["SERVER_NAME"]."\">&lt;&lt; ".
+            $_SERVER["SERVER_NAME"]."</a></html>";
+            
 	}
 
+}
 
 }

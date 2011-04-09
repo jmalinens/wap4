@@ -241,7 +241,7 @@ fieldset {
 #bar_youtube, #bar_convert {
     width: 300px;
     height: 22px;
-    font-size: 2em;
+    font-size: 1.8em;
     background-color: #79B30B;
     display: none;
 }
@@ -444,4 +444,8 @@ div.footer_section { float: left; padding: 0px 5px; min-height: 145px;}
 .languages a {
 display:block;
 min-width: 80px;
+}
+
+.media .step {
+    text-align: left;
 }

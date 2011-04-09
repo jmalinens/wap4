@@ -16,7 +16,7 @@
             </noscript>   
         </div>
 <div class="step">
-	<?=$this->lang->line('ffmpeg.1st2')?>
+	<?=$this->lang->line('ffmpeg.1st22')?>
 </div>
 
 <?=youtube()?>

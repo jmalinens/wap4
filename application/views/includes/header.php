@@ -101,7 +101,17 @@
         
 </div>
 <div class="wrapper">
-
 <div class="content">
-    
-    
+<?php if(!isMobile()) {?>
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-2212583322739900";
+/* wap4.org test */
+google_ad_slot = "9205790398";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<?php }?>

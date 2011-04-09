@@ -15,17 +15,17 @@ $config['ffmpeg_max']        = 150*1024; //in kilobytes
         
 $config['ffmpeg_formats']    = array(
     
-'mp3-128kbps'               => ' -ab 128000 -ar 44100 ',
-'amr-mono-12kbps'           => ' -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k ',
-'3gp-176x144-amr'           => ' -f 3gp -s 176x144 -vcodec h263 -b 80k -r 15 -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k -y ',
-'mp4-320x240-aac'           => ' -f mp4 -s qvga -vcodec mpeg4 -b 256k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 48k -y ',
-'ipod-320x240-4-3'          => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 320x240 -b 400kb -strict -1 -y ',
-'ipod-320x240-16-9'         => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 320x176 -b 400kb -strict -1 -y ',
-'ipod-nano-176x128'         => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 176x128 -b 256kb -strict -1 -y ',
-'psp'                       => ' -b 300 -s 320x240 -vcodec mpeg4 -ab 32kb -ar 44100 -acodec libfaac ',
-'gif'                       => ' -pix_fmt rgb24 ',
-'aac'                       => ' -acodec libfaac -ar 44100 ',
-'ogg-audio-video'           => ' -acodec vorbis -ac 2 ',
+'mp3-128kbps'               => ' -ab 128000 -ar 44100 -y -threads 1 ',
+'amr-mono-12kbps'           => ' -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k -y -threads 1 ',
+'3gp-176x144-amr'           => ' -f 3gp -s 176x144 -vcodec h263 -b 80k -r 15 -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k -y -threads 1 ',
+'mp4-320x240-aac'           => ' -f mp4 -s qvga -vcodec mpeg4 -b 256k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 48k -y -threads 1 ',
+'ipod-320x240-4-3'          => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 320x240 -b 400kb -strict -1 -y -threads 1 ',
+'ipod-320x240-16-9'         => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 320x176 -b 400kb -strict -1 -y -threads 1 ',
+'ipod-nano-176x128'         => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 176x128 -b 256kb -strict -1 -y -threads 1 ',
+'psp'                       => ' -b 300 -s 320x240 -vcodec mpeg4 -ab 32kb -ar 44100 -acodec libfaac -y -threads 1 ',
+'gif'                       => ' -pix_fmt rgb24 -y -threads 1 ',
+'aac'                       => ' -acodec libfaac -ar 44100 -y -threads 1 ',
+'ogg-audio-video'           => ' -acodec vorbis -ac 2 -y -threads 1 ',
     
 );
 

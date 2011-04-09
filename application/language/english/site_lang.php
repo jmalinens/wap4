@@ -31,8 +31,8 @@ $lang['settings.change']    = "Change settings";
 $lang['upload.file']        = "Upload local file...";
 $lang['upload.done']        = "Upload successful";
 $lang['upload.fail']        = "Upload failed";
-$lang['upload.example']     = "Example";
-$lang['upload.youtube']     = "get Youtube video";
+$lang['upload.example']     = "Examples";
+$lang['upload.youtube']     = "get video";
 $lang['upload.formats']     = "Allowed file formats";
 $lang['upload.max_size']    = "Maximum upload size";
 

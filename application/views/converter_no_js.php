@@ -12,8 +12,12 @@
         <input type="file" name="qqfile"/> <br/>
         
         <!-- youtube link-->
-	<?=$this->lang->line('ffmpeg.1st2')?><br/>
+	<?=$this->lang->line('ffmpeg.1st2')?>:<br/>
         <input type="text" name="youtube" id="youtube_link"/><br/>
+        
+        <!-- vimeo link-->
+	<?=$this->lang->line('ffmpeg.1st3')?>:<br/>
+        <input type="text" name="vimeo" id="vimeo_link"/><br/>
 	
         <?=$this->lang->line('ffmpeg.2nd')?> <br/>
 	<?=$this->lang->line('ffmpeg.video')?>: <br/>

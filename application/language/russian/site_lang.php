@@ -20,6 +20,8 @@ $lang['mobile.upl_perc']    = "Загружено";
 $lang['mobile.conv_perc']   = "Преобразование";
 $lang['mobile.reload']      = "Перезагрузить страницу";
 $lang['mobile.download']    = "Файл успешно преобразован. Ссылка для скачивания";
+$lang['mobile.m_vers']      = "Мобильная версия (WAP)";
+$lang['mobile.w_vers']      = "Веб-версия (с компьютера)";
 
 $lang['add_news']           = "Добавить новость";
 $lang['user.list']          = "Пользователи";
@@ -29,8 +31,8 @@ $lang['settings.change']    = "Настройки";
 $lang['upload.file']        = "Загрузить файл...";
 $lang['upload.done']        = "Загрузка завершена";
 $lang['upload.fail']        = "Ошибка при загрузке";
-$lang['upload.example']     = "Пример";
-$lang['upload.youtube']     = "видео с Youtube";
+$lang['upload.example']     = "Примеры";
+$lang['upload.youtube']     = "видео с сайта";
 $lang['upload.formats']     = "Список разрешенных форматов";
 $lang['upload.max_size']    = "Максимальный размер загружаемого файла";
 
