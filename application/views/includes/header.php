@@ -8,9 +8,9 @@
 <html lang="<?=strtolower($this->lang->lang())?>">
 <?php } ?>
 <head>
-<title><?=getTitle()?> - <?=lang('title')?></title>
+<title><?=getTitle()?> - <?=(!isMobile()) ? lang('title') : lang('title.mobile')?></title>
 <meta charset="utf-8"/>
-<meta name="description" content="<?=lang('title.meta')?>" />
+<meta name="description" content="<?=(isset($meta)) ? lang('meta.'.$meta) : lang('title.meta')?>" />
 
 <?php if(!isMobile()){ ?>
 <link rel="stylesheet" href="<?php echo base_url();?>css/style.css"/>
@@ -39,7 +39,10 @@
 
 <div class="container">
     
-<?php if(isMobile()) {?>
+<?php if(isMobile()) {
+include_once "/home/wap4/public_html/mobgold_m_wap4.php";
+echo "<br/>";
+    ?>
 
 <ul class="languages">
     <li>
@@ -54,7 +57,10 @@
 </ul>
 
     <div class="clear"></div>
-<?php } ?>
+<?php
+include_once "/home/wap4/public_html/MkhojAd_m_wap4_simple.php";
+echo "<br/>";
+} ?>
     
     
 <div class="header">

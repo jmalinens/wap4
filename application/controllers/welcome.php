@@ -5,6 +5,9 @@ class Welcome extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
+                
+                check_mobile();
+                
                 $this->load->library('ffmpeg');
                 $this->config->load('ffmpeg');
                 $this->load->model('site_model');

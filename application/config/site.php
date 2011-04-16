@@ -11,6 +11,7 @@ $config['navigation']          =  array('converter',
 					'about');
 
 $config['mobile_host']		   = "m.wap4.org";
+$config['web_host']		   = "wap4.org";
 	
 //for linux
 

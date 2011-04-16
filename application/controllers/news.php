@@ -13,6 +13,8 @@ class News extends CI_Controller {
     //if(irAjax()) echo "ir caur ajax!!!!!"; else echo "nav ajax";
     // load pagination class
     $this->load->library('pagination');
+    $this->data["meta"] = "news";
+    
     $config['base_url'] = base_url().'/'.$this->lang->lang().'/news/index/';
     $this->db->where('lang', $this->lang->lang());
     $this->db->from('news');

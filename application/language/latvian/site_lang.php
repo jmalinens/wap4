@@ -3,8 +3,10 @@ $lang['converter']          = "Konvertētājs";
 $lang['news']               = "Jaunumi";
 $lang['howto']              = "Kā lietot?";
 $lang['about']              = "Par servisu";
+$lang['main']               = "Galvenā";
 
 $lang['title']              = "tiešsaistes video konvertēšanas rīks";
+$lang['title.mobile']       = "videoklipu, youtube konvertētšana caur mobilo";
 $lang['title.header']       = "bezmaksas online konvertētājs!";
 $lang['title.meta']         = "Ērta online konvertēšanas programma, lai konvertētu videoklipus dažādos formātos, piemēram, Youtube video uz mp3";
 $lang['title.h3']           = "Tagad konvertē arī Youtube video uz mp3 bez maksas!";
@@ -15,6 +17,16 @@ $lang['title.about']        = "par audio, video konvertēšanas rīku";
 $lang['title.howto']        = "kā lietot šo tīmekļa programmu";
 $lang['title.create_user']  = "jauna lietotāja profila izveide";
 $lang['title.news']         = "svarīgi paziņojumi";
+$lang['title.codecs']       = "visi atbalstītie kodeki";
+$lang['title.formats']      = "atbalstītie konvertētāja formāti";
+
+$lang['meta.howto']         = "Jautājumi un atbildes par to, kā konvertēt video tiešsaistē";
+$lang['meta.create_user']   = "Reģistrējot bezmaksas kontu, tu trīskāršo video augšupielādes maksimālo izmēru";
+$lang['meta.news']          = "Jaunākie atjauninājumi un jaunākā funkcionalitāte video modificēšanā";
+$lang['meta.codecs']        = "Pilns saraksts atbalstītajiem kodekiem, iekodēšanai un dekodēšanai";
+$lang['meta.about']         = "Informācija par šīs tiešsaistes aplikācijas veidotāju";
+$lang['meta.converter']     = "Pārveido video tiešsaistē no dažādiem avotiem uz citiem multimediju formātiem";
+$lang['meta.formats']       = "Saraksts ar videoklipu un audio failu palašinājumiem, kurus atbalsta konvertētājs";
 
 $lang['mobile.upl_perc']    = "Auģšupielādēts";
 $lang['mobile.conv_perc']   = "Konvertēts";
@@ -60,6 +72,20 @@ $lang['feed.name']          = "wap4 online multimediju konvertētājs";
 $lang['feed.descr']         = "Pārvērt dažādus audio un video failus mobilajiem telefoniem un pleijeriem saprotamos formātos";
 $lang['feed.lang']          = "lv-LV";
 
+$lang['table.description']  = "Apraksts";
+$lang['table.codec_name']   = "Kodeka nosaukums";
+$lang['table.format_name']  = "Formāta apraksts";
+$lang['table.decoding']     = "Kodētājs";
+$lang['table.encoding']     = "Dekodētājs";
+$lang['table.codec']        = "Kodeks";
+$lang['table.audio']        = "Skaņa";
+$lang['table.video']        = "Attēls";
+$lang['table.subtitle']     = "Titri";
+$lang['table.extension']    = "Datnes paplašinājums";
+
+$lang['codecs']             = "Kodeki";
+$lang['formats']            = "Formāti";
+
 $lang['video.nofiles']      = "Vēl neviens fails nav konvertēts";
 
 $lang['site.offline']       = "Portāls uz laiku slēgts.";
@@ -68,6 +94,8 @@ $lang['howto.content']      = array("Spied saiti \"Konvertētājs\", lai atvērt
                                 "Pirmais solis ir izvēlēties datni, kuru Jūs vēlaties konvertēt vai arī iekopēt videoklipa adresi no Youtube portāla norādītajā formātā",
                                 "Otrais solis ir izvēlēties konvertēšanas opcijas- piemēram, izvēlēties jauno formātu vai uzstādīt audiovizuālā materāla sākuma un beigu laiku",
                                 "Pēc konvertēšanas Tev tiks piedāvāts lejupielādēt konvertēto datni");
+$lang['howto.codecs']       = "Saraksts ar atbalstītajiem video, audio and subtitru kodekiem";
+$lang['howto.formats']      = "Saraksts ar atbalstītajiem audio un video klipu failu paplašinājumiem (formātiem)";
 
 $lang['about.content']      = array("Šo servisu izveidoja Datorikas fakultātes 2. kursa students <strong>Juris Malinens</strong> kā praktisko darbu \"Tīmekļa Tehnoloģijās\"",
                                 "Serviss ir bāzēts uz CodeIgniter 2.0 REACTOR tīmekļa ietvara, kas izmanto PHP valodu un MySQL datubāzi",

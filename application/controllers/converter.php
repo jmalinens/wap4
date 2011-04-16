@@ -29,6 +29,7 @@ class Converter extends CI_Controller {
         load_settings();
         
         $this->aError = array();
+        $this->data["meta"] = "converter";
 
         $this->load->model('site_model');
         $this->data['status'] = $this->site_model->get_site_status();
@@ -156,7 +157,7 @@ class Converter extends CI_Controller {
          * Download youtube video and save
          */
         
-        $saved_file = $this->config->item("ffmpeg_before_dir")."".$title.".flv";
+        $saved_file = $title.".flv";
         
         if(!$this->download_link($_flvUrl, $saved_file)) {
             $this->aError[] = "Failed to download and save link: $_flvUrl";
@@ -246,14 +247,13 @@ class Converter extends CI_Controller {
 
         $remote = $this->config->item("ffmpeg_key_dir")."".$key;
         if(is_file($remote.".vimeo")) {
-            $size_remote = $this->get_content_length("", "vimeo");
+            $status = $this->parse_wget_upload($key, true);
         } else {
             $size_remote = file_get_contents($remote.".length");
+            $size_local  = filesize($this->config->item("ffmpeg_before_dir")."".$title.".flv");
+            $status      =  round(($size_local/$size_remote)*100);
         }
         
-        $size_local  = filesize($this->config->item("ffmpeg_before_dir")."".$title.".flv");
-        
-        $status =  round(($size_local/$size_remote)*100);
         if($status > 100) {
             $status = 100;
         }
@@ -332,7 +332,7 @@ class Converter extends CI_Controller {
         <meta http-equiv=\"expires\" content=\"0\"/>
         <meta http-equiv=\"pragma\" content=\"no-cache\"/>
         <meta http-equiv=\"cache-control\" content=\"no-cache, must-revalidate\"/>
-        <link rel=\"stylesheet\" href=\"css/mobile.css\"/>
+        <link rel=\"stylesheet\" href=\"/css/mobile.css\"/>
         <title>".$_SERVER["SERVER_NAME"]."</title></head>";
         echo lang('mobile.upl_perc').": $Upload_percents_complete %<br/>\n";
         echo lang('mobile.conv_perc').": $Convert_percents_complete %<br/><br/>\n";
@@ -352,8 +352,8 @@ class Converter extends CI_Controller {
                 http://".$_SERVER["SERVER_NAME"]."/files/converted/".$title."-".$key.".".$extension."
                 </a><br/><br/>\n";
         } else
-            echo anchor('converter/mobile_status/'.$key, lang('mobile.reload'))."<br/><br/>\n";
-        
+            echo anchor('converter/mobile_status/'.$key.'/'.uniqid(), lang('mobile.reload'))."<br/><br/>\n";
+      
         echo "<a href=\"http://".$_SERVER["SERVER_NAME"]."\">".$this->config->item("mobile_host")."</a>\n";
         
         echo "</html>";
@@ -602,8 +602,22 @@ class Converter extends CI_Controller {
                 
             break;
         
+            case "direct_download":
+                $ext      = $this->config->item("ffmpeg_allowed");
+                $file_end = end(explode(".", $link));
+                if(!in_array(strtolower($file_end), $ext)) {
+                    $this->aError[] = "Start Vimeo convert with command: $save_vimeo";
+                    log_message('error', 'security warning: upload file extension not allowed');
+                    return false;
+                }
+                
+            /**
+             * Don't break and continue default case execution
+             */
+        
             default:
-            $file = fopen($location, 'w');
+            $loc  = $this->config->item("ffmpeg_before_dir")."".$location;
+            $file = fopen($loc, 'w');
             if($file === false) {
                 $this->aError[] = "Can not open file: $location for writing";
                 return false;
@@ -772,7 +786,7 @@ class Converter extends CI_Controller {
                 if($file === false) {
                     $this->aError[] = "Can not read $loc key";
                 }
-                
+                //Content-Length: 35707 for head, buet neder...
                 $length = 0;
                 foreach($file as $f) {
                     $pos = strpos($f, "Length:");
@@ -786,7 +800,7 @@ class Converter extends CI_Controller {
                 return $length;
                 
             break;
-            
+
             default:
             $ch = curl_init($link);
             curl_setopt($ch, CURLOPT_NOBODY, true);
@@ -865,6 +879,82 @@ class Converter extends CI_Controller {
         }
         
         return $link;
+        
+    }
+    
+    /**
+     * Returns percents already downloaded with wget
+     * @param string $uniqid
+     * @param boolean $return
+     * @return integer 
+     */
+    function parse_wget_upload($uniqid, $return = false) {
+        
+        $file_path = $this->config->item("ffmpeg_key_dir").$uniqid.".vimeo";
+        
+        if(!is_file($file_path)) {
+            $this->aError[] = "File $uniqid.vimeo not found";
+        }
+        
+        $aLines = file($file_path);
+        
+        $sPrev_line = "%";
+        $bStartSearch = false;
+        $nPrecents = 0;
+        foreach($aLines as $l):
+            /**
+             * Set parse flag on when we get 1st empty line and 
+             * jump to next line
+             */
+            $trimmed_line = trim($l);
+            if(empty($trimmed_line) && $bStartSearch === false) {
+                $bStartSearch = true;
+                continue;
+            }
+            
+            /**
+             * If we get line without percent symbol, it means previous line
+             * was last download progress line and we need parse $sPrev_line
+             */
+            $pos = stripos($l, "%");
+            
+            if($bStartSearch && $pos === false) {
+
+                $aLineParts = explode(" ", $sPrev_line);
+                foreach($aLineParts as $sPart):
+                    
+                    $pos = stripos($sPart, "%");
+                    if($pos !== false) {
+                        /**
+                         * Chop off percent symbol
+                         */
+                        $nPrecents = substr($sPart, 0, -1);
+                        break 2;
+                    }
+                endforeach;
+            }
+            
+            /**
+             * If line had percent symbol, we update $sPrev_line string
+             */
+            $pos = stripos($l, "%");
+            if($pos !== false) {
+                $sPrev_line = $l;
+                continue;
+            }
+            
+        endforeach;
+        
+        if($return)
+            return $nPrecents;
+        else
+            echo $nPrecents;
+        
+    }
+    
+    function direct_download($return = false){
+        
+        $bIs_Downloaded = download_link($link, $location, "direct_download");
         
     }
 

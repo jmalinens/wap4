@@ -3,11 +3,10 @@ class About extends CI_Controller {
  
 	function index()
 	{
-                //$this->load->helper('wap4');
                 load_settings();
 
-		// you might want to just autoload these two helpers
-                $data['content'] = lang("about.content");
+                $data['content']    = lang("about.content");
+                $this->data["meta"] = "about";
                 
                 if(!irAjax())
                 $this->load->view('includes/header', $this->data);

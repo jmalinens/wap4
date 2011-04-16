@@ -613,6 +613,7 @@ $this->data['user_id']                = array('name'    => 'user_id',
         
         
         $this->data['title'] = "Create User";
+        $this->data["meta"]  = "create_user";
               
 		//if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
 		//	redirect('auth', 'refresh');

@@ -8,9 +8,9 @@
     </wurfl>
     <persistence>
      <provider>memcache</provider>
-     <params>serverIp=127.0.0.1</params>
+     <params>serverIp=127.0.0.1,port=11211</params>
     </persistence>
     <cache>
-     <provider>null</provider>
+     <provider>memcache</provider>
     </cache>
 </wurfl-config>

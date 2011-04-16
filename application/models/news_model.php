@@ -1,12 +1,17 @@
 <?php
 class news_model extends CI_Model {
+    
   function __construct(){
     parent::__construct();
   }
 
-  function get_news($num, $offset) {
+  function get_news($num, $offset, $lang = "") {
+      
+     if(empty($lang))
+         $lang = $this->lang->lang();
+     
     //if(!is_numeric($offset)) $offset = false;
-    $this->db->select('id,username,news,date')->from('news')->where('lang', $this->lang->lang())->limit($num, $offset)->order_by("id", "desc");
+    $this->db->select('id,username,news,date')->from('news')->where('lang', $lang)->limit($num, $offset)->order_by("id", "desc");
     $query = $this->db->get();
     
     return $query;

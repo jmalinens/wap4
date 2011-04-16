@@ -247,7 +247,10 @@ public $ffmpeg_files_dir;
              else
             {
             
-            echo"<html><title>".$_SERVER["SERVER_NAME"]."</title>";
+            echo"<html>
+                <head>
+                    <title>".$_SERVER["SERVER_NAME"]."</title>
+                </head><body>";
             
             echo lang('mobile.download').": <br/>\n<a href=\"http://".
             $_SERVER["SERVER_NAME"]."/files/converted/".$this->file_body."-".
@@ -256,7 +259,8 @@ public $ffmpeg_files_dir;
             $this->GetExtension()."</a><br/>";
             
             echo"<a href=\"http://".$_SERVER["SERVER_NAME"]."\">&lt;&lt; ".
-            $_SERVER["SERVER_NAME"]."</a></html>";
+            $_SERVER["SERVER_NAME"]."</a>
+                </body></html>";
             
 	}
 

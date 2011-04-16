@@ -1,11 +1,44 @@
 <?php
 if(!defined('BASEPATH')) exit('No direct script access allowed');
+
+if ( ! function_exists('check_mobile'))
+{
+    /**
+     * Redirects to mobile versionif user agent is detected as mobile phone by
+     * wurfl library
+     */
+    function check_mobile()
+    {
+            $ci=& get_instance();
+            
+            if(!isMobile()) {
+                
+                $ci->load->library('wurfl');
+		$ci->wurfl->load($_SERVER);
+                $bIsMobile = $ci->wurfl->getCapability("is_wireless_device");
+                if($bIsMobile == "true")
+                {
+                    redirect("http://".$ci->config->item('mobile_host'), "location");
+                    exit;
+                }
+                
+            }
+            
+    }
+}
+
+
 if ( ! function_exists('load_settings'))
 {
+    /**
+     * Loads all basic settings
+     */
     function load_settings()
     {
             $ci=& get_instance();
             
+            check_mobile();
+
             $ci->load->library('ffmpeg');
             $ci->config->load('ffmpeg');
             $uniqid                   = uniqid();
@@ -31,6 +64,11 @@ if ( ! function_exists('load_settings'))
 
 if ( ! function_exists('irAjax'))
 {
+    /**
+     * Checks if request is intended as ajax request by going trough
+     * request_uri parts and searching for "caur_ajax" part
+     * @return boolean true if it is ajax request, otherwise- false
+     */
     function irAjax()
     {
             $caur_ajax = false;
@@ -52,12 +90,18 @@ if ( ! function_exists('irAjax'))
 
 if ( ! function_exists('getTitle'))
 {
+    /**
+     * Returns title tag for header
+     * @return string 
+     */
     function getTitle()
     {
             $caur_ajax = "main";
             $ci=& get_instance();
             $segs = $ci->uri->segment_array();
-
+            
+            $additional_title = "";
+            
             foreach ($segs as $segment)
             {
                 if($segment == "login")
@@ -65,30 +109,39 @@ if ( ! function_exists('getTitle'))
                     $caur_ajax = "login";
                     break;
                 }
-                if($segment == "converter")
+                elseif($segment == "converter")
                 {
                     $caur_ajax = "converter";
                     break;
                 }
-                if($segment == "about")
+                elseif($segment == "about")
                 {
                     $caur_ajax = "about";
                     break;
                 }
-                if($segment == "howto")
+                elseif($segment == "howto")
                 {
                     $caur_ajax = "howto";
                     break;
                 }
-                if($segment == "create_user")
+                elseif($segment == "create_user")
                 {
                     $caur_ajax = "create_user";
                     break;
                 }
-                if($segment == "news")
+                elseif($segment == "news")
                 {
                     $caur_ajax = "news";
+                    if(is_numeric($ci->uri->segment(4))) {
+                        $additional_title = " ".$ci->uri->segment(4)." ";
+                    }
                     break;
+                }elseif($segment == "codecs")
+                {
+                    $caur_ajax = "codecs";
+                    break;
+                } else {
+                    
                 }
                 
             }
@@ -104,7 +157,7 @@ if ( ! function_exists('getTitle'))
                 return trim(word_limiter(strip_tags($n[0]->news), 6));
             }
             else
-                return lang("title.".$caur_ajax);
+                return lang("title.".$caur_ajax).$additional_title;
     }
 }
 
@@ -175,6 +228,9 @@ if ( ! function_exists('objectsIntoArray'))
 
 if ( ! function_exists('youtube'))
 {
+    /**
+     * loads Youtube view
+     */
     function youtube()
     {
         $ci=& get_instance();
@@ -186,6 +242,13 @@ if ( ! function_exists('youtube'))
 }
 
 if(!function_exists('sanitize_name')) {
+    /**
+     * Sanitizes string for seo
+     * @param string $string
+     * @param boolean $force_lowercase
+     * @param boolean $anal
+     * @return type 
+     */
     function sanitize_name($string, $force_lowercase = true, $anal = false) {
     $strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]",
                    "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
@@ -202,7 +265,11 @@ if(!function_exists('sanitize_name')) {
 }
 
 if(!function_exists('translit')) {
-    
+    /**
+     * Returns transliterated string
+     * @param string $text
+     * @return string 
+     */
     function translit($text) {
         $text = trim($text, "-");
         $text = utf8_encode($text);
@@ -217,7 +284,10 @@ if(!function_exists('translit')) {
 }
 
 if(!function_exists('isMobile')) {
-    
+    /**
+     * Checks if it is mobile version of converter
+     * @return boolean
+     */
     function isMobile() {
         $ci=& get_instance();
         if($_SERVER["SERVER_NAME"] == $ci->config->item("mobile_host") || $_SERVER["SERVER_NAME"] == "testm.wap4.org")

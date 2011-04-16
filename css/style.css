@@ -449,3 +449,7 @@ min-width: 80px;
 .media .step {
     text-align: left;
 }
+
+.green {
+    color: green;
+}
