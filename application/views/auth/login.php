@@ -6,28 +6,23 @@
 	
     <?php
     $attributes = array('id' => 'login_submit');
-    echo form_open("auth/login", $attributes);?>
-    	
+    echo form_open("auth/login", $attributes);?><div>
       <p>
-      	<label for="email"><?php echo lang('login_username'); ?>:</label>
+      	<label for="username"><?php echo lang('login_username'); ?>:</label>
       	<?php echo form_input($username);?>
       </p>
-      
       <p>
       	<label for="password"><?php echo lang('login_password'); ?>:</label>
       	<?php echo form_input($password);?>
       </p>
-      
       <p>
-        <label for="remember"><?php echo lang('login_remember'); ?>:</label>
+        <?php echo lang('login_remember'); ?>:
        <?php echo form_checkbox('remember', '1', FALSE);?>
       </p>
-      
-      
       <p><?php echo form_submit('submit', lang('login_login'));?></p>
 
       
-    <?php echo form_close();?>
+    </div><?php echo form_close();?>
       <div class="step">
       <?=lang("site.or")?>
       </div>

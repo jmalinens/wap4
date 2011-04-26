@@ -21,6 +21,12 @@ class Converter extends CI_Controller {
      * @var string 
      */
     public $uniqid;
+    
+    /**
+     * Extension of uploaded file
+     * @var string 
+     */
+    public $extension;
 
     function __construct() 
     {
@@ -120,11 +126,13 @@ class Converter extends CI_Controller {
         $link = $this->normalize_link("youtube", $link);
         if($link === false) {
             echo lang('upload.fail');
+            $this->write_fail_report("fail.normalize $link", $this->uniqid);
         }
         
         $title = $this->get_title($link, true);
         if($title === false) {
             echo lang('upload.fail');
+            $this->write_fail_report("fail.title $link", $this->uniqid);
         }
         
         /**
@@ -138,6 +146,7 @@ class Converter extends CI_Controller {
         $_flvUrl = $this->get_youtube_video($link);
         if($_flvUrl  === false) {
             echo lang('upload.fail');
+            $this->write_fail_report("fail.getyoutube $link", $this->uniqid);
         }
 
         /**
@@ -146,6 +155,7 @@ class Converter extends CI_Controller {
         $contentLength = $this->get_content_length($_flvUrl, "youtube");
         if($contentLength  === false) {
             echo lang('upload.fail');
+            $this->write_fail_report("fail.length $_flvUrl", $this->uniqid);
         }
         
         /**
@@ -161,6 +171,7 @@ class Converter extends CI_Controller {
         
         if(!$this->download_link($_flvUrl, $saved_file)) {
             $this->aError[] = "Failed to download and save link: $_flvUrl";
+            $this->write_fail_report("fail.download $_flvUrl", $this->uniqid);
         }
 
 
@@ -169,6 +180,7 @@ class Converter extends CI_Controller {
         else {
             $this->aError[] = "File $saved_file does not exist";
             echo lang('upload.fail');
+            //$this->write_fail_report("fail.save $saved_file", $this->uniqid);
         }
 
 
@@ -237,7 +249,39 @@ class Converter extends CI_Controller {
         else
             return $title;
     }
-    
+
+    /**
+     * Get Title from link and save to file
+     * @param string $link
+     * @return string $this->title
+     */
+    function get_direct_title($link, $uniqid) {
+        if(!$link) {
+            $this->aError[] = "Direct link not found";
+        }
+        
+        /**
+         * Get everything after last slash
+         */
+        $link = end(explode("/", $link));
+        
+        /**
+         * If after slash there is dot somewhere, we get everything
+         * before first dot symbol
+         */
+        $pos = stripos($link, ".");
+        if($pos !== false) {
+            $link = current(explode(".", $link));
+        }
+        
+        $this->title = translit(sanitize_name($link));
+        /**
+         * Put Direct link title in $uniqid.title
+         */
+        file_put_contents($this->config->item("ffmpeg_key_dir")."".$uniqid.".title", $this->title);
+        
+        return $this->title;
+    }
     /**
      * How much percents uploaded already for Youtube/Vimeo/other videos
      * @uses ajax
@@ -250,7 +294,13 @@ class Converter extends CI_Controller {
             $status = $this->parse_wget_upload($key, true);
         } else {
             $size_remote = file_get_contents($remote.".length");
-            $size_local  = filesize($this->config->item("ffmpeg_before_dir")."".$title.".flv");
+            
+            if(is_file($this->config->item("ffmpeg_key_dir")."".$key.".extension"))
+                $file_extension = file_get_contents($this->config->item("ffmpeg_key_dir")."".$key.".extension");
+            else
+                $file_extension = "flv";
+            
+            $size_local  = filesize($this->config->item("ffmpeg_before_dir")."".$title.".".$file_extension);
             $status      =  round(($size_local/$size_remote)*100);
         }
         
@@ -319,25 +369,15 @@ class Converter extends CI_Controller {
      * @param string $key - uniqid key
      */
     function mobile_status($key) {
-        $this->uniqid = $key;
-        header("Cache-Control: no-cache, must-revalidate");
-        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-        header("Content-type: text/html");
+        $data["key"]   = $this->uniqid = $key;
         $title = file_get_contents($this->config->item("ffmpeg_key_dir")."$key.title");
         
-        $Upload_percents_complete = $this->upload_status($key, $title, true);
-        $Convert_percents_complete = $this->statuss($key, true);
-        echo "<html>
-        <head>
-        <meta http-equiv=\"expires\" content=\"0\"/>
-        <meta http-equiv=\"pragma\" content=\"no-cache\"/>
-        <meta http-equiv=\"cache-control\" content=\"no-cache, must-revalidate\"/>
-        <link rel=\"stylesheet\" href=\"/css/mobile.css\"/>
-        <title>".$_SERVER["SERVER_NAME"]."</title></head>";
-        echo lang('mobile.upl_perc').": $Upload_percents_complete %<br/>\n";
-        echo lang('mobile.conv_perc').": $Convert_percents_complete %<br/><br/>\n";
+        $data["Upload_percents_complete"]  = $this->upload_status($key, $title, true);
+        $data["Convert_percents_complete"] = $this->statuss($key, true);
         
-        if($Convert_percents_complete >= 100) {
+        $data["fail_array"] = $this->read_file_report_into_array($key);
+        
+        if($data["Convert_percents_complete"] >= 100) {
             $extension = "mp3";
             $file = file($this->config->item("ffmpeg_key_dir")."$key.ffmpeg");
             foreach($file as $f) {
@@ -346,17 +386,10 @@ class Converter extends CI_Controller {
                     break;
                 }
             }
-            echo lang('mobile.download').": <br/>\n
-                <a href=\"http://".$_SERVER["SERVER_NAME"].
-                "/files/converted/".$title."-".$key.".".$extension."\">
-                http://".$_SERVER["SERVER_NAME"]."/files/converted/".$title."-".$key.".".$extension."
-                </a><br/><br/>\n";
-        } else
-            echo anchor('converter/mobile_status/'.$key.'/'.uniqid(), lang('mobile.reload'))."<br/><br/>\n";
-      
-        echo "<a href=\"http://".$_SERVER["SERVER_NAME"]."\">".$this->config->item("mobile_host")."</a>\n";
-        
-        echo "</html>";
+            $data["download_url"] = $_SERVER["SERVER_NAME"].
+            "/files/converted/".$title."-".$key.".".$extension;
+        }
+        $this->load->view("mobile_status", $data);
     }
     
     /**
@@ -370,29 +403,37 @@ class Converter extends CI_Controller {
          */
         if( isMobile() &&
             !isset($_REQUEST["from"]) &&
-            isset($_REQUEST["youtube"]) &&
-            !empty($_REQUEST["youtube"])
+                $_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"] &&
+            (
+                isset($_REQUEST["youtube"]) &&
+                !empty($_REQUEST["youtube"])
+            )
+                ||
+            (
+                isset($_REQUEST["vimeo"]) && 
+                !empty($_REQUEST["vimeo"])
+            )
+                
+                ||
+            (
+                isset($_REQUEST["direct"]) && 
+                !empty($_REQUEST["direct"])
+            )
+                
            ) {
-
+            
+            if($_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"]) {
+            file_put_contents(
+                    $this->config->item("ffmpeg_key_dir")."".$_REQUEST["key"].".lala",
+                    http_build_query($_REQUEST).$_SERVER["REMOTE_ADDR"]."\n", FILE_APPEND);
+            
+            
+            if(!is_file($this->config->item("ffmpeg_key_dir")."".$_REQUEST["key"].".wget"))
             $this->ping_link("http://".$_SERVER["SERVER_NAME"]."/".$this->lang->lang()."/converter/convert/no_js", $_REQUEST["key"]);
             
             redirect('converter/mobile_status/'.$_REQUEST["key"], 'location');
             exit;
-
-        }
-        
-        if( isMobile() &&
-            !isset($_REQUEST["from"]) &&
-            isset($_REQUEST["vimeo"]) && 
-            !empty($_REQUEST["vimeo"])
-                )
-            {
-
-            $this->ping_link("http://".$_SERVER["SERVER_NAME"]."/".$this->lang->lang()."/converter/convert/no_js", $_REQUEST["key"]);
-            
-            redirect('converter/mobile_status/'.$_REQUEST["key"], 'location');
-            exit;
-
+            }
         }
         
         if($this->uri->segment(4) == "no_js")
@@ -409,6 +450,7 @@ class Converter extends CI_Controller {
                     
                     if(!in_array(strtolower($file_end), $ext)) {
                         log_message('error', 'security warning: upload file extension not allowed');
+                        $this->write_fail_report("fail.extension $ext", $_POST["key"]);
                         die('security warning: security warning: upload file extension not allowed');
                     }
                     
@@ -416,6 +458,7 @@ class Converter extends CI_Controller {
                     $this->config->item('ffmpeg_before_dir')."".$file_body.".".$file_end)) {
                         $this->aError[] = "move_uploaded_file error, when trying
                             to upload file in no_js";
+                        $this->write_fail_report("fail.upload", $_POST["key"]);
                         die("fatal error, when trying to upload file");
                     }
 
@@ -443,6 +486,7 @@ class Converter extends CI_Controller {
                      */
                     $this->aError[] = "too big file {$_FILES['qqfile']['size']},
                     max filesize {$this->data['max']} MB";
+                    $this->write_fail_report("fail.size ".$_FILES['qqfile']['size'], $_POST["key"]);
                     die("too big file, max filesize {$this->data['max']} MB");
                 }
             }
@@ -474,6 +518,7 @@ class Converter extends CI_Controller {
                 $id = $this->normalize_link("vimeo", $_POST["vimeo"]);
                 if($id === false) {
                     echo 'Incorrect Vimeo link';
+                    $this->write_fail_report("fail.vimeo ".$_POST['vimeo'], $_POST["key"]);
                 }
                 
                 $bIsVimeoDOwnloaded = $this->get_vimeo_video($id);
@@ -483,6 +528,37 @@ class Converter extends CI_Controller {
                 $this->ffmpeg->SetFormat(rawurldecode($_REQUEST["format"]));
                 //set name of file which will be converted
                 $this->ffmpeg->SetInput_file($this->title.".flv", "no_js");
+
+                if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes')
+                $this->ffmpeg->Cut( $_REQUEST['s_hh'],
+                                    $_REQUEST['s_mm'],
+                                    $_REQUEST['s_ss'],
+                                    $_REQUEST['e_hh'],
+                                    $_REQUEST['e_mm'],
+                                    $_REQUEST['e_ss']);
+
+                $veids="no_js";
+            }
+            
+            if(isset($_REQUEST["direct"]) && !empty($_REQUEST["direct"])) {
+                
+                $this->uniqid = $_POST["key"];
+                
+                $this->aError[] = "Direct convert start ".$_REQUEST["direct"];
+                
+                $better_url = $this->normalize_link("direct", $_REQUEST["direct"]);
+                if($better_url === false) {
+                    echo 'Incorrect direct link';
+                    $this->write_fail_report("fail.direct ".$_REQUEST['direct'], $_POST["key"]);
+                }
+                
+                $bIsDirectDownloaded = $this->direct_download($better_url, $_REQUEST["key"]);
+                
+                $this->ffmpeg->SetKey($_REQUEST["key"]);
+                //set format of  converted file
+                $this->ffmpeg->SetFormat(rawurldecode($_REQUEST["format"]));
+                //set name of file which will be converted
+                $this->ffmpeg->SetInput_file($this->title.".".$this->extension, "no_js");
 
                 if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes')
                 $this->ffmpeg->Cut( $_REQUEST['s_hh'],
@@ -606,10 +682,13 @@ class Converter extends CI_Controller {
                 $ext      = $this->config->item("ffmpeg_allowed");
                 $file_end = end(explode(".", $link));
                 if(!in_array(strtolower($file_end), $ext)) {
-                    $this->aError[] = "Start Vimeo convert with command: $save_vimeo";
+                    $this->aError[] = "Direct upload file extension not allowed";
                     log_message('error', 'security warning: upload file extension not allowed');
                     return false;
                 }
+                $this->extension = $file_end;
+                file_put_contents($this->config->item("ffmpeg_key_dir")."".$this->uniqid.".extension", $this->extension);
+                $location = $location.".".$file_end;
                 
             /**
              * Don't break and continue default case execution
@@ -649,12 +728,12 @@ class Converter extends CI_Controller {
             
             $_GETPOST = array_merge($_GET, $_POST); 
             $encoded  = http_build_query($_GETPOST);
-            $command = "wget --post-data '$encoded&from=wget&uniq_id=$key' $link -b -O /dev/null -o /home/wap4/public_html/files/keys/$key.wget >/dev/null 2>&1";
-            $this->aError[] = "wget --post-data '$encoded&from=wget&uniq_id=$key' $link -b -O /dev/null -o /home/wap4/public_html/files/keys/$key.wget >/dev/null 2>&1";
+            $command = "wget --post-data '$encoded&from=wget&uniq_id=$key' $link -b -O /dev/null -o ".$this->config->item("ffmpeg_key_dir")."".$key.".wget >/dev/null 2>&1";
+            
+            $this->aError[] = $command;
             exec($command, $arrr);
 
     }
-    
     
     function ajax_upload() {
         
@@ -786,7 +865,7 @@ class Converter extends CI_Controller {
                 if($file === false) {
                     $this->aError[] = "Can not read $loc key";
                 }
-                //Content-Length: 35707 for head, buet neder...
+                //Content-Length: 35707 for head, bet neder...
                 $length = 0;
                 foreach($file as $f) {
                     $pos = strpos($f, "Length:");
@@ -856,6 +935,13 @@ class Converter extends CI_Controller {
                 }
             }
         }
+        break;
+        
+        case "direct":
+            
+            if(substr($link, 0, 7) != "http://")
+                    $link = "http://".$link;
+            
         break;
     
         default: //youtube
@@ -952,10 +1038,74 @@ class Converter extends CI_Controller {
         
     }
     
-    function direct_download($return = false){
+    function direct_download($link = false, $key = false){
+        $this->uniqid = $key;
+        $nFileLength = $this->get_content_length($link, "direct");
         
-        $bIs_Downloaded = download_link($link, $location, "direct_download");
+        if($nFileLength === false || $nFileLength == 0) {
+            $this->aError[] = "Filesize for $link is empty";
+            $nFileLength = 0;
+            return false;
+        }
+        
+        $this->title = $this->get_direct_title($link, $this->uniqid);
+        
+        file_put_contents($this->config->item("ffmpeg_key_dir")."".$this->uniqid.".length", $nFileLength);
+        
+        $bIs_Downloaded = $this->download_link($link, $this->title, "direct_download");
+        
+        if($bIs_Downloaded === false) {
+            $this->aError[] = "Download failed for link: $link";
+            return false;
+        } else 
+            return true;
         
     }
+    
+    /**
+     * Create or append .fail file
+     * file structure:
+     *  language_constant(required) [space] some_data(not required)
+     * @param string $text
+     * @param string $uniqid 
+     */
+    function write_fail_report($text, $uniqid) {
+        
+        file_put_contents(
+                $this->config->item("ffmpeg_key_dir")."".$uniqid.".fail",
+                $text."\n", FILE_APPEND);
+        
+    }
+    
+    /**
+     * Get array of fails
+     * @param string $uniqid
+     * @return array 
+     */
+    function read_file_report_into_array($uniqid) {
+        
+        $aFailArray = array();
+        
+        $file = file($this->config->item("ffmpeg_key_dir")."".$uniqid.".fail");
+        if(count($file) > 0) {
+            foreach($file as $f) {
+                
+                $pos = stripos($f, " ");
+                if($pos !== false) {
+                    
+                    $parts = explode(" ", $f);
+                    $aFailArray[] = lang($parts[0]).": ".$parts[1];
+                    
+                } else {
+                    
+                    $aFailArray[] = lang($f);
+                    
+                }
+
+            }
+        }
+        return $aFailArray;
+    }
+    
 
 }

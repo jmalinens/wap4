@@ -1,8 +1,7 @@
 </div>
+<div class="right"><?php
+$bIsMobile = isMobile();
 
-<div class="right">
-    
-<?php
 if (!$this->ion_auth->logged_in()) {
 
 if($this->uri->segment(4) != "facebook") {
@@ -77,16 +76,18 @@ $this->load->view('auth/login', $this->data);
     $this->load->view('auth/index', $this->data);
 
 }
-?>
-</div>
+?></div>
 <div class="bottom">
 <p><strong>&#160;</strong></p>
 </div>
 <div class="footer">
-
 	<div id="footer2">
 		<div id="footer_top">
 			<div class="footer_section" id="footer_about">
+                                <?php if($bIsMobile):?>
+                                    <h3><?=lang('title.h3')?></h3>
+                                <?php endif;?>
+                                
 				<h4><?=lang('footer.features')?></h4>
 				<ul>
 					<li><?=lang('footer.support')?></li>
@@ -95,23 +96,23 @@ $this->load->view('auth/login', $this->data);
 					<li><?=lang('footer.free')?></li>
 				</ul>
 			</div>
-			
 			<div class="footer_section" id="footer_follow">
 				<h4><?=lang('footer.follow')?></h4>
 				<ul>
-					<li class="social_twitter"><a href="http://twitter.com/wap4org" target="_blank">Twitter</a></li>
-					<li class="social_facebook"><a href="http://www.facebook.com/pages/wap4org/160222834034783" target="_blank">Facebook</a></li>
-					<li class="social_rss"><a href="http://wap4.org/en/feed/rss" target="_blank">RSS</a></li>
+					<li class="social_twitter"><a href="http://twitter.com/wap4org"<?=(!$bIsMobile) ? ' target="_blank"' : ''?>>Twitter</a></li>
+					<li class="social_facebook"><a href="http://www.facebook.com/pages/wap4org/160222834034783"<?=(!$bIsMobile) ? ' target="_blank"' : ''?>>Facebook</a></li>
+					<li class="social_rss"><a href="http://wap4.org/en/feed/rss"<?=(!$bIsMobile) ? ' target="_blank"' : ''?>>RSS</a></li>
 				</ul>
 			</div>
-
+<?php if(!$bIsMobile): ?>
 			<div class="footer_section" id="footer_download">
 				<h4><?=lang('footer.download')?></h4>
 				<ul>
-					<li><a href="https://github.com/jmalinens/wap4" target="_blank">@GitHub</a></li>
-					<li><a href="https://sourceforge.net/p/wap4/home/" target="_blank">@SourceForge</a></li>
+					<li><a href="https://github.com/jmalinens/wap4"<?=(!$bIsMobile) ? ' target="_blank"' : ''?>>@GitHub</a></li>
+					<li><a href="https://sourceforge.net/p/wap4/home/"<?=(!$bIsMobile) ? ' target="_blank"' : ''?>>@SourceForge</a></li>
 				</ul>
 			</div>
+<?php endif; ?>
 		</div>
 		<div id="footer_bot">
                     <?php
@@ -120,12 +121,9 @@ $this->load->view('auth/login', $this->data);
                         } else {
                             echo lang('mobile.m_vers'), ": <a href=\"http://m.wap4.org\">http://m.wap4.org</a>";
                         }
-?>
-					<br/><?=lang('footer.created')?>, &#169; 2011
+?><br/><?=lang('footer.created')?>, &#169; 2011
 		</div>
-	</div>
-
-    <?php
+	</div><?php
     /*
 		<!--<a href="http://validator.w3.org/check?uri=referer">
 			<img src="/img/valid-xhtml10-converter.png" alt="Valid XHTML 1.0 Strict" height="31" width="88" />

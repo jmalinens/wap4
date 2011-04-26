@@ -8,14 +8,20 @@ $lang['main']               = "Galvenā";
 $lang['title']              = "tiešsaistes video konvertēšanas rīks";
 $lang['title.mobile']       = "videoklipu, youtube konvertētšana caur mobilo";
 $lang['title.header']       = "bezmaksas online konvertētājs!";
+$lang['title.mheader']      = "bezmaksas online mobilais konvertētājs!";
 $lang['title.meta']         = "Ērta online konvertēšanas programma, lai konvertētu videoklipus dažādos formātos, piemēram, Youtube video uz mp3";
+$lang['title.mmeta']        = "Ērta online video konvertēšanas programma priekš mobilajiem telefoniem";
 $lang['title.h3']           = "Tagad konvertē arī Youtube video uz mp3 bez maksas!";
 $lang['title.main']         = "Youtube-mp3 galvenā ";
+$lang['title.mmain']        = "No Youtube uz mp3 galvenā ";
 $lang['title.login']        = "ieiet savā profilā";
 $lang['title.converter']    = "video augšupielāde un konvertēšana";
 $lang['title.about']        = "par audio, video konvertēšanas rīku";
+$lang['title.mabout']       = "par mobilo video konvertēšanas rīku";
 $lang['title.howto']        = "kā lietot šo tīmekļa programmu";
+$lang['title.mhowto']       = "kā lietot šo mobilo programmu";
 $lang['title.create_user']  = "jauna lietotāja profila izveide";
+$lang['title.mcreate_user'] = " lietotāja profila izveidošana";
 $lang['title.news']         = "svarīgi paziņojumi";
 $lang['title.codecs']       = "visi atbalstītie kodeki";
 $lang['title.formats']      = "atbalstītie konvertētāja formāti";
@@ -31,6 +37,8 @@ $lang['meta.formats']       = "Saraksts ar videoklipu un audio failu palašināj
 $lang['mobile.upl_perc']    = "Auģšupielādēts";
 $lang['mobile.conv_perc']   = "Konvertēts";
 $lang['mobile.reload']      = "Pārladēt lapu";
+$lang['mobile.whyreload']   = "Atjaunojot lapu, tu redzēsi konvertēšanas progresu.
+    Konvertētā faila lejupielādes links būs pieejams, kad gan augšupielāde, gan konvertēšana būs pie 100%.";
 $lang['mobile.download']    = "Konvertēšana pabeigta! Lejupielādē šeit";
 $lang['mobile.m_vers']      = "Apmeklē mobilo/WAP versiju";
 $lang['mobile.w_vers']      = "Apmeklē aplikācijas WEB versiju";
@@ -53,6 +61,8 @@ $lang['lang.latvian']       = "Latviešu";
 $lang['lang.russian']       = "Krievu";
 $lang['lang.english']       = "Angļu";
 
+$lang['bookmark.us']        = "Saglabā mūs grāmatzīmēs!";
+
 $lang['footer.features']    = "wap4.org iespējas";
 $lang['footer.support']     = "Var konvertēt Youtube mūzikas klipus mp3 formātā.";
 $lang['footer.allows']      = "Jebkuru videoklipu var pārvērst formātā mobilajiem telefoniem.";
@@ -63,6 +73,7 @@ $lang['footer.download']    = "Lejupielādē aplikācijas izejas kodu";
 $lang['footer.created']     = "Izveidoja Juris Malinens";
 
 $lang['news.perma']         = "pastāvīgā saite";
+$lang['news.archive']       = "Jaunumu arhīvs";
 
 $lang['site.or']            = "vai";
 $lang['site.why']           = "lai varētu konvertēt līdz pat <b>300</b> megabaitus lielus failus un varētu aplūkot iepriekš konvertētos video";
@@ -102,3 +113,15 @@ $lang['about.content']      = array("Šo servisu izveidoja Datorikas fakultātes
                                 "Konvertēšana notiek ar <a href=\"http://ffmpeg.org\">FFMPEG</a> programmas palīdzību,  
                                     kra izmanto <a href=\"http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html\">LGPLv2.1</a> licenci",
                                 "Jebkurš var bez maksas lejupielādēt konvertētāju <a href=\"https://github.com/jmalinens/wap4\">manā Github lapā: github.com/jmalinens/wap4</a> (GNU LGPL licence)");
+
+$lang['fail.download']      = "Neizdevās lejupielāde";
+$lang['fail.save']          = "Neizdevās saglabāšana";
+$lang['fail.getyoutube']    = "Neizdevās iegūt Youtube videoklipu";
+$lang['fail.normalize']     = "Neizdevās iegūt labu informāciju no norādītās saites";
+$lang['fail.title']         = "Neizdevās iegūt faila nosaukumu";
+$lang['fail.length']        = "Neizdevās iegūt faila izmēru";
+$lang['fail.extension']     = "Neizdevās iegūt faila paplašinājumu vai arī tas ir neatļauts";
+$lang['fail.upload']        = "Neizdevās augšupielāde";
+$lang['fail.size']          = "Faila izmērs pārāk liels";
+$lang['fail.vimeo']         = "Neizdevās iegūt Vimeo video";
+$lang['fail.direct']        = "Neizdevās iegūt tiešo saite uzy videoklipu";

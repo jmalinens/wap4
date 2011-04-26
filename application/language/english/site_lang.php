@@ -6,16 +6,22 @@ $lang['about']              = "About";
 $lang['main']               = "Main page";
 
 $lang['title']              = "online video converter";
-$lang['title.mobile']       = "mobile video, youtube converter";
+$lang['title.mobile']       = "mobile video converter";
 $lang['title.header']       = "convert videos online!";
+$lang['title.mheader']      = "mobile video converter!";
 $lang['title.meta']         = "wap4.org provides free online tools to convert videos, movies, songs, Youtube videos to other formats";
+$lang['title.mmeta']        = "m.wap4.org is free mobile web app for converting videos, songs, Youtube to mobile phone formats";
 $lang['title.h3']           = "Free online Youtube to mp3 converter added. Enjoy!";
 $lang['title.main']         = "Convert videos and Youtube to mp3";
+$lang['title.mmain']        = "WAP video, Youtube converter to mp3";
 $lang['title.login']        = "login";
 $lang['title.converter']    = "upload file and convert";
 $lang['title.about']        = "about the audio, video converter";
+$lang['title.mabout']       = "about the mobile application";
 $lang['title.howto']        = "how to use converter";
+$lang['title.mhowto']       = "questions, answers about converter";
 $lang['title.create_user']  = "register an account";
+$lang['title.mcreate_user'] = "create an account";
 $lang['title.news']         = "updates and news";
 $lang['title.codecs']       = "all supported converter codecs";
 $lang['title.formats']      = "all supported converter file extensions, containers, formats";
@@ -31,6 +37,8 @@ $lang['meta.formats']       = "List of all supported file extensions, containers
 $lang['mobile.upl_perc']    = "Uploaded";
 $lang['mobile.conv_perc']   = "Converted";
 $lang['mobile.reload']      = "Reload page";
+$lang['mobile.whyreload']   = "Refresh page to see conversion progress.
+    Download link will be available when uploaded and converted will be at 100%.";
 $lang['mobile.download']    = "File successfully converted! Download here";
 $lang['mobile.m_vers']      = "Visit our mobile (WAP) version";
 $lang['mobile.w_vers']      = "Visit our web version from computer";
@@ -53,6 +61,7 @@ $lang['lang.latvian']       = "Latvian";
 $lang['lang.russian']       = "Russian";
 $lang['lang.english']       = "English";
 
+$lang['bookmark.us']        = "Bookmark us!";
 
 $lang['footer.features']    = "Features of wap4.org";
 $lang['footer.support']     = "Support Youtube video conversion to mp3.";
@@ -64,6 +73,7 @@ $lang['footer.download']    = "Download Source Code";
 $lang['footer.created']     = "Created by Juris Malinens";
 
 $lang['news.perma']         = "permalink";
+$lang['news.archive']       = "News archive";
 
 $lang['site.or']            = "or";
 $lang['site.why']           = "to upload and convert up to <b>300MB</b> big files and view previously converted files";
@@ -104,3 +114,14 @@ $lang['about.content']      = array("This service is brought to You by 2nd cours
                                     licensed under the <a href=\"http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html\">LGPLv2.1</a>",
                                 "You can download source code of this website on Github <a href=\"https://github.com/jmalinens/wap4\">my Github page- github.com/jmalinens/wap4</a> (GNU LGPL license)");
 
+$lang['fail.download']      = "Failed to download";
+$lang['fail.save']          = "Failed to save file";
+$lang['fail.getyoutube']    = "Failed to get Youtube";
+$lang['fail.normalize']     = "Failed to extract good information from link";
+$lang['fail.title']         = "Failed to get file title";
+$lang['fail.length']        = "Failed to get file length or it is empty";
+$lang['fail.extension']     = "Failed to get extension or extension is not allowed";
+$lang['fail.upload']        = "Failed to upload file";
+$lang['fail.size']          = "File size too big";
+$lang['fail.vimeo']         = "Failed to get Vimeo video";
+$lang['fail.direct']        = "Failed to get direct link";

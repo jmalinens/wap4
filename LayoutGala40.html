@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Layout 40</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<style type="text/css">
+html,body{margin:0;padding:0}
+body{font: 76% arial,sans-serif;text-align:center}
+p{margin:0 10px 10px}
+#header h1 {
+font-size:4em;
+color: #363636;
+}
+#header h2 {
+font-size:1.4em;
+color: #b6b6b6;
+margin-top:-40px;
+margin-left:20px;
+}
+
+a {
+display:block;
+padding:10px;
+}
+
+#login a {
+display: inline;
+text-decoration: underline;
+color: white;
+padding:0px;
+}
+
+
+
+#top_navigation {
+height: 45px;
+background-color: #e5e5e5;
+border-radius: 6px;
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+}
+
+#nav_list {
+list-style: none;
+margin-left:-40px;
+}
+
+#nav_list li {
+float: left;
+}
+
+#nav_list li a{
+margin-top:1px;
+font-size: 1.6em;
+text-decoration: none;
+color: #767676;
+}
+
+#nav_list li:hover{
+background-color: white;
+}
+
+#nav_list li a.nav_selected {
+color: #cb2121;
+}
+
+#top_line {
+height:5px;
+width: 100%;
+background-color: #cb2121;
+}
+
+#login {
+float: right;
+margin-top:-120px;
+background-color: #cb2121;
+padding: 4px;
+border-radius: 2px 2px 6px 6px;
+-moz-border-radius: 2px 2px 6px 6px;
+-webkit-border-radius: 2px 2px 6px 6px;
+color: #fff;
+}
+
+.clear {
+clear:both;
+}
+
+.top_bottom {
+float: left;
+clear: both;
+}
+
+.float_container {
+float: left;
+padding-right: 5px;
+}
+
+#header input[type=text], input[type=password] {
+width: 80px;
+border:2px solid #a41818;
+}
+
+#header input[type=submit] {
+margin-top: 1px;
+heigth: 60px;
+font-size:2em;
+}
+
+.go {
+background: #fff url('go.png');
+width: 34px;
+heigth: 34px;
+}
+
+#container{text-align:left}
+#content p{line-height:1.4}
+#navigation{background:#B9CAFF}
+#extra{background:#FF8539}
+#footer{background: #333;color: #FFF}
+#footer p{margin:0;padding:5px 10px}
+
+#container{width:960px;margin:0 auto}
+#navigation{float:right;width:350px}
+#extra{float:left;width:350px}
+#footer{clear:both;width:100%}
+</style>
+</head>
+<body>
+<div id="top_line"></div>
+<div id="container">
+<div id="header">
+	<h1>WAP4.org</h1>
+	<h2>convert videos online</h2>
+	<div id="login">
+		<div class="float_container">
+			<div class="top_bottom">Login</div>
+			<div class="top_bottom">
+				<input type="text" name="login" placeholder="username"/>
+			</div>
+		</div>
+		<div class="float_container">
+			<div class="top_bottom">Password</div>
+			<div class="top_bottom">
+				<input type="text" name="password" placeholder="password"/>
+			</div>
+		</div>
+		<div class="float_container">
+			<div class="go"></div>
+			 <!--<input type="submit" value="Login"/>-->
+		</div>
+	<div class="clear"></div>
+	or create a <a href="/en/auth/create_user">New account</a>
+	</div>
+	<div class="clear"></div>
+</div>
+<div id="top_navigation">
+    <ul id="nav_list">
+        <li>
+            <a href="/en/converter" class="nav_selected">Converter</a>
+		</li>
+        <li>
+            <a href="/en/news">News</a>
+		</li>
+        <li>
+            <a href="/en/howto">HowTo</a>
+		</li>
+        <li>
+			<a href="/en/about">About</a>
+		</li>
+    </ul>
+</div>
+<div id="wrapper">
+<div id="content">
+<p><strong>1) Content here.</strong> column long long column very long fill fill fill long text text column text silly very make long very fill silly make make long make text fill very long text column silly silly very column long very column filler fill long make filler long silly very long silly silly silly long filler make column filler make silly long long fill very.</p>
+<p>very make make fill silly long long filler column long make silly silly column filler fill fill very filler text fill filler column make fill make text very make make very fill fill long make very filler column very long very filler silly very make filler silly make make column column </p>
+<p>fill long make long text very make long fill column make text very silly column filler silly text fill text filler filler filler make make make make text filler fill column filler make silly make text text fill make very filler column very </p>
+<p>column text long column make silly long text filler silly very very very long filler fill very fill silly very make make filler text filler text make silly text text long fill fill make text fill long text very silly long long filler filler fill silly long make column make silly long column long make very </p>
+</div>
+</div>
+<div id="navigation">
+<p><strong>2) Navigation here.</strong> long long fill filler very fill column column silly filler very filler fill fill filler text fill very silly fill text filler silly silly filler fill very make fill column text column very very column fill fill very silly column silly silly fill fill long filler </p>
+</div>
+<div id="extra">
+<p><strong>3) More stuff here.</strong> very text make long column make filler fill make column column silly filler text silly column fill silly fill column text filler make text silly filler make filler very silly make text very very text make long filler very make column make silly column fill silly column long make silly filler column filler silly long long column fill silly column very </p>
+</div>
+<div id="footer"><p>Here it goes the footer</p></div>
+</div>
+</body>
+</html>

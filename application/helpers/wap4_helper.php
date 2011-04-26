@@ -98,7 +98,7 @@ if ( ! function_exists('getTitle'))
     {
             $caur_ajax = "main";
             $ci=& get_instance();
-            $segs = $ci->uri->segment_array();
+            $segs = array_reverse($ci->uri->segment_array());
             
             $additional_title = "";
             
@@ -116,17 +116,35 @@ if ( ! function_exists('getTitle'))
                 }
                 elseif($segment == "about")
                 {
-                    $caur_ajax = "about";
+                    if(!isMobile())
+                        $caur_ajax = "about";
+                    else
+                        $caur_ajax = "mabout";
+                    break;
+                }
+                elseif($segment == "codecs")
+                {
+                    $caur_ajax = "codecs";
+                    break;
+                }elseif($segment == "formats")
+                {
+                    $caur_ajax = "formats";
                     break;
                 }
                 elseif($segment == "howto")
                 {
-                    $caur_ajax = "howto";
+                    if(!isMobile())
+                        $caur_ajax = "howto";
+                    else
+                        $caur_ajax = "mhowto";
                     break;
                 }
                 elseif($segment == "create_user")
                 {
-                    $caur_ajax = "create_user";
+                    if(!isMobile())
+                        $caur_ajax = "create_user";
+                    else
+                        $caur_ajax = "mcreate_user";
                     break;
                 }
                 elseif($segment == "news")
@@ -135,10 +153,6 @@ if ( ! function_exists('getTitle'))
                     if(is_numeric($ci->uri->segment(4))) {
                         $additional_title = " ".$ci->uri->segment(4)." ";
                     }
-                    break;
-                }elseif($segment == "codecs")
-                {
-                    $caur_ajax = "codecs";
                     break;
                 } else {
                     
@@ -154,7 +168,8 @@ if ( ! function_exists('getTitle'))
                 $data = $ci->news_model->get_one_news($ci->uri->segment(4));
                 $ci->load->helper('text');
                 $n = $data->result_object();
-                return trim(word_limiter(strip_tags($n[0]->news), 6));
+                $nWordsInTitle = (isMobile()) ? 4 : 6;
+                return trim(word_limiter(strip_tags($n[0]->news), $nWordsInTitle));
             }
             else
                 return lang("title.".$caur_ajax).$additional_title;

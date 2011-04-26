@@ -1,7 +1,13 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Auth extends CI_Controller {
- 
+    
+    /**
+     * Is it is mobile or web version?
+     * @var boolean 
+     */
+    public $bIsMobile;
+    
     public function __construct() 
     {
         parent::__construct();
@@ -17,6 +23,8 @@ class Auth extends CI_Controller {
         
         $this->load->helper('wap4');
         load_settings();
+        
+        $this->bIsMobile = isMobile();
         
         $this->max_kb = $this->config->item('ffmpeg_max');
         
@@ -698,6 +706,11 @@ $this->data['user_id']                = array('name'    => 'user_id',
 	        }
 $this->data['year']               = $year;
 
+if(!$this->bIsMobile)
+    $sFieldType = 'password';
+else
+    $sFieldType = 'text';
+
 $this->data['email']              = array('name'    => 'email',
                                           'id'      => 'email',
                                           'type'    => 'text',
@@ -710,12 +723,12 @@ $this->data['gender']             = array('name'    => 'gender',
                                          );
 $this->data['password']           = array('name'    => 'password',
                                           'id'      => 'password',
-                                          'type'    => 'password',
+                                          'type'    => $sFieldType,
                                           'value'   => $this->form_validation->set_value('password'),
                                          );
 $this->data['password_confirm']   = array('name'    => 'password_confirm',
                                           'id'      => 'password_confirm',
-                                          'type'    => 'password',
+                                          'type'    => $sFieldType,
                                           'value'   => $this->form_validation->set_value('password_confirm'),
                                          );
 if(!isMobile())

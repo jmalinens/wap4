@@ -1,10 +1,11 @@
+<?php $bIsMobile = isMobile(); ?>
 <div id="converter2">
     
-	<div id="infoMessage">
+	<div id="infoMessage2">
             <?php echo $message;?>
         </div>
 	
-        <?php echo form_open_multipart("converter/convert/no_js", $attr);?>
+        <?php echo form_open_multipart("converter/convert/no_js", $attr);?><div>
         <!-- file upload-->
         <?=$this->lang->line('ffmpeg.1st')?><br/>
         <?=lang("upload.formats")?>: <em><?=str_replace("'"," ", $allowed)?></em><br/>
@@ -13,21 +14,25 @@
         
         <!-- youtube link-->
 	<?=$this->lang->line('ffmpeg.1st2')?>:<br/>
-        <input type="text" name="youtube" id="youtube_link"/><br/>
+        <input type="text" name="youtube"<?=(!$bIsMobile) ? ' id="youtube_link"' : ''?>/><br/>
         
         <!-- vimeo link-->
 	<?=$this->lang->line('ffmpeg.1st3')?>:<br/>
-        <input type="text" name="vimeo" id="vimeo_link"/><br/>
+        <input type="text" name="vimeo"<?=(!$bIsMobile) ? ' id="vimeo_link"' : ''?>/><br/>
+        
+        <!-- direct link-->
+	<?=$this->lang->line('ffmpeg.1st4')?>:<br/>
+        <input type="text" name="direct"<?=(!$bIsMobile) ? ' id="direct_link"' : ''?>/><br/>
 	
         <?=$this->lang->line('ffmpeg.2nd')?> <br/>
 	<?=$this->lang->line('ffmpeg.video')?>: <br/>
 	
 	
 	<?=$this->lang->line('ffmpeg.formats')?>:<br/>
-	<select name="format" id="format">
+	<select name="format"<?=(!$bIsMobile) ? ' id="format"' : ''?>>
             
 	<?php foreach($formats as $format => $key): ?>
-	<option value="<?=$format?>">
+	<option value="<?=$format?>"<?=($format == "mp3-128kbps") ? ' selected="selected"' : ''?>>
             <?=str_replace("-"," ",$format)?>
         </option>
 	<?php endforeach; ?>
@@ -40,6 +45,7 @@
         <input type="checkbox" id="cut" name="cut" value="yes"/><br/>
         
         <div id="cut_field">
+            <?php if(!$bIsMobile) {?>
             <?=$this->lang->line('ffmpeg.start')?><br/>
             <input type="text" name="s_hh" id="s_hh" maxlength="2" size="2" value="00"/>
               : <input type="text" name="s_mm" id="s_mm" maxlength="2" size="2" value="00"/>
@@ -49,6 +55,16 @@
             <input type="text" name="e_hh" id="e_hh" maxlength="2" size="2" value="00"/>
               : <input type="text" name="e_mm" id="e_mm" maxlength="2" size="2" value="00"/>
               : <input type="text" name="e_ss" id="e_ss" maxlength="2" size="2" value="00"/><br/>
+              <?php } else { ?>
+            <input type="text" name="s_hh" maxlength="2" size="2" value="00"/>
+              : <input type="text" name="s_mm" maxlength="2" size="2" value="00"/>
+              : <input type="text" name="s_ss" maxlength="2" size="2" value="00"/><br/>
+            <?=$this->lang->line('ffmpeg.end')?><br/>
+
+            <input type="text" name="e_hh" maxlength="2" size="2" value="00"/>
+              : <input type="text" name="e_mm" maxlength="2" size="2" value="00"/>
+              : <input type="text" name="e_ss" maxlength="2" size="2" value="00"/><br/>
+              <?php } ?>
         </div>  
         
         <?=$this->lang->line('ffmpeg.descr')?>:
@@ -57,10 +73,9 @@
         <br/> 
         <input type="hidden" name="key" value="<?=$uniqid?>"/>
         
-      <p><?php echo form_submit('submit', $this->lang->line('ffmpeg.saakt'));?></p>
+        <p><?php echo form_submit('submit', $this->lang->line('ffmpeg.saakt'));?></p>
 
-      
-    <?php echo form_close();?>
+        </div><?php echo form_close();?>
 
 
 </div>

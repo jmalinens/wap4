@@ -66,6 +66,7 @@ class News extends CI_Controller {
     if(!$this->uri->segment(4)) redirect("/"); 
     
     $data['results'] = $this->news_model->get_one_news($this->uri->segment(4));
+    $data['archive'] = true;
  
     if(!irAjax())
     $this->load->view('includes/header', $this->data);

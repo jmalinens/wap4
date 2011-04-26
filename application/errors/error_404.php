@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>404 Page Not Found</title>
+<title><?=$_SERVER["SERVER_NAME"]?> 404 Page Not Found</title>
 <style type="text/css">
 
 body {
@@ -27,8 +27,12 @@ margin:				0 0 4px 0;
 </head>
 <body>
 	<div id="content">
+            
 		<h1><?php echo $heading; ?></h1>
-		<?php echo $message; ?>
+		<?php echo $message; ?><br/>
+                Please contact abc@inbox.lt if You tried to find something important<br/>
+                Or visit main page:<br/>
+                <a href="/"><?=$_SERVER["SERVER_NAME"]?></a>
 	</div>
 </body>
 </html>
