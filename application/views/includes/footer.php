@@ -116,7 +116,7 @@ $this->load->view('auth/login', $this->data);
 		</div>
 		<div id="footer_bot">
                     <?php
-                    if($_SERVER["SERVER_NAME"] == "m.wap4.org") {
+                    if(isMobile()) {
                             echo lang('mobile.w_vers'), ": <a href=\"http://wap4.org\">http://wap4.org</a>";
                         } else {
                             echo lang('mobile.m_vers'), ": <a href=\"http://m.wap4.org\">http://m.wap4.org</a>";

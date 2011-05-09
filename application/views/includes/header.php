@@ -40,7 +40,7 @@ if($bIsMobile) {
 <?php
 include_once "/home/wap4/public_html/mobgold_m_wap4.php";
 include_once "/home/wap4/public_html/MkhojAd_m_wap4_simple.php";
-echo "<br/>";
+echo "<br/>Ad: <a href=\"http://topwapi.com/?id=mwap4org\">New Downloads</a><br/>";
 ?>
 &gt; <a href="/<?=$this->lang->switch_uri('en')?>" title="<?=lang('lang.english')?>"><?=lang('lang.english')?></a> 
 &gt; <a href="/<?=$this->lang->switch_uri('ru')?>" title="<?=lang('lang.russian')?>"><?=lang('lang.russian')?></a> 
