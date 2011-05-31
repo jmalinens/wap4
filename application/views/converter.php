@@ -83,8 +83,8 @@
         <div id="resize_field">
         //<?=$this->lang->line('ffmpeg.width')?><br/>
         <input type="text" name="width" id="width" maxlength="4" size="4" value=""/><br/>
-        //<?=$this->lang->line('ffmpeg.heigth')?><br/>
-        <input type="text" name="heigth" id="heigth" maxlength="4" size="4" value=""/>
+        //<?=$this->lang->line('ffmpeg.height')?><br/>
+        <input type="text" name="height" id="height" maxlength="4" size="4" value=""/>
         </div>
         */
         ?>

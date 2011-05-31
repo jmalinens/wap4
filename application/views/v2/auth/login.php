@@ -16,4 +16,4 @@
         ?></div><?
         ?></div><?php echo form_close();
 ?><div class="clear"></div><?=
-lang("site.or")?> <?=anchor("auth/create_user",lang("login_create"))?></a>
+lang("site.or")?> <?=anchor("auth/create_user",lang("login_create"))?></a> <?=lang("site.why")?>

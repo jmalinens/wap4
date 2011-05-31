@@ -58,6 +58,62 @@ if ( ! function_exists('load_settings'))
             else
             $ci->data['max'] = $ci->site_model->get_setting('file_size_registered')*1024;
             
+if (!$ci->ion_auth->logged_in()) {
+
+
+    $ci->data['title'] = "Login";
+
+    //validate form input
+    $ci->form_validation->set_rules('username', 'Username', 'required');
+    $ci->form_validation->set_rules('password', 'Password', 'required');
+        
+    $ci->data['username']   = array('name'    => 'username',
+                                      'id'    => 'username',
+                                      'type'  => 'text',
+                                      'value' => $ci->form_validation->set_value('username'),
+                                     );
+    $ci->data['password']   = array('name'    => 'password',
+                                      'id'    => 'password',
+                                      'type'  => 'password',
+                                     );
+    $ci->data['login_submit'] = array('type'  => 'submit',
+                                      'value' => 'Go',
+                                     );
+    $ci->data['attributes'] = array('id' => 'login_submit');
+
+if ($ci->form_validation->run() == true) { //check to see if the user is logging in
+    //check for "remember me"
+    if ($ci->input->post('remember') == 1)
+        $remember = true;
+    else
+        $remember = false;
+
+
+    if ($ci->ion_auth->login($ci->input->post('username'), $ci->input->post('password'), $remember)) { //if the login is successful
+            //redirect them back to the home page
+            $ci->session->set_flashdata('message', $ci->ion_auth->messages());
+            redirect($ci->config->item('base_url'), 'refresh');
+    } else { //if the login was un-successful
+            //redirect them back to the login page
+            $ci->session->set_flashdata('message', $ci->ion_auth->errors());
+            $ci->data['message'] = $ci->ion_auth->errors();
+    }
+}
+   
+
+} elseif (!$ci->ion_auth->is_admin()) { //admin
+
+    $user = $ci->ion_auth->get_user();
+    $ci->datb["username"] = $user->username;
+
+} else { //simple user
+    
+    $ci->data['status'] = $ci->site_model->get_site_status();
+    $ci->data['status'] = $ci->data['status'][0]['setting_value'];
+
+}
+            
+            
     }
 }
 

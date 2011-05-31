@@ -16,7 +16,7 @@
 *
 */
 // Login, Create user
-$lang['login_username']                  = "Имя пользователя";
+$lang['login_username']                  = "Логин";
 $lang['login_create']                    = 'Зарегистрироваться';
 $lang['login_enteracc']                  = 'Информация об учетной записи';
 $lang['login_gender']                    = "пол";

@@ -1,158 +1,124 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!doctype html>
 <head>
-<title>Layout 40</title>
+<title>wap4.org</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<style type="text/css">
-html,body{margin:0;padding:0}
-body{font: 76% arial,sans-serif;text-align:center}
-p{margin:0 10px 10px}
-#header h1 {
-font-size:4em;
-color: #363636;
-}
-#header h2 {
-font-size:1.4em;
-color: #b6b6b6;
-margin-top:-40px;
-margin-left:20px;
-}
+<link rel="stylesheet" href="css/new_style.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script src="http://wap4.org/js/fileuploader.js"></script>
+<script>
+if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ 
+	var ieversion=new Number(RegExp.$1);
+	if (ieversion<=8) {
+		document.write('<script src="/js/cornerz.js"><\/script>');
+		}
+	}
+function createUploader(){
+			var uploader = new qq.FileUploader({
+				element: document.getElementById('demo'),
+				listElement: document.getElementById('separate-list'),
+				action: '/ffmpeg/val/server/php.php',
+				multiple: false,
+				params: {
+					caur_ajax: 'true',
+					key: '4dbc22701d2cb',
+					lang: 'en'
+				},  
+				// ex. ['jpg', 'jpeg', 'png', 'gif'] or []
+				allowedExtensions: ['mp3','avi','flv','mov','mp4','3gp','ogg','flac','aac','wmv','mpg','ac3'],        
+				sizeLimit: 102400*1024, 
+				minSizeLimit: 1,
+				debug: true,
+				onSubmit: function(id, fileName){
+					$('.qq-upload-button').hide('fast');
+		},
+				onProgress: function(id, fileName, loaded, total){},
+				onComplete: function(id, fileName, responseJSON){
 
-a {
-display:block;
-padding:10px;
-}
+				document.getElementById('demo').style.display = 'none';
+				$('.step').hide('slow');
+				$('.media').hide('slow');
+				document.getElementById('converter2').style.visibility = 'visible';
+				document.getElementById('converter2').style.display = 'block';
+				faila_nosaukums = fileName;
 
-#login a {
-display: inline;
-text-decoration: underline;
-color: white;
-padding:0px;
-}
+				},
+				onCancel: function(id, fileName){},
 
+				messages: {
+					typeError: "{file} has invalid extension. Only {extensions} are allowed.",
+					sizeError: "{file} is too large, maximum file size is {sizeLimit}.",
+					minSizeError: "{file} is too small, minimum file size is {minSizeLimit}.",
+					emptyError: "{file} is empty, please select files again without it.",
+					onLeave: "The files are being uploaded, if you leave now the upload will be cancelled."            
+				},
+				showMessage: function(message){ alert(message); }
 
+			});           
+		}
+	jQuery(function(){
+		var uploader = new qq.FileUploader({
+			element: document.getElementById('demo'),
+			action: 'http://valums.com/files/2010/file-uploader/do-nothing.htm'
+		});           
+	});     
+</script>
+<!--
+<script src="http://wap4.org/en/js"></script>
+<script>
+if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ 
+	var ieversion=new Number(RegExp.$1);
+	if (ieversion<=8) {
+		document.write('<script src="/js/cornerz.js"><\/script>');
+		}
+	}
 
-#top_navigation {
-height: 45px;
-background-color: #e5e5e5;
-border-radius: 6px;
--moz-border-radius: 6px;
--webkit-border-radius: 6px;
-}
-
-#nav_list {
-list-style: none;
-margin-left:-40px;
-}
-
-#nav_list li {
-float: left;
-}
-
-#nav_list li a{
-margin-top:1px;
-font-size: 1.6em;
-text-decoration: none;
-color: #767676;
-}
-
-#nav_list li:hover{
-background-color: white;
-}
-
-#nav_list li a.nav_selected {
-color: #cb2121;
-}
-
-#top_line {
-height:5px;
-width: 100%;
-background-color: #cb2121;
-}
-
-#login {
-float: right;
-margin-top:-120px;
-background-color: #cb2121;
-padding: 4px;
-border-radius: 2px 2px 6px 6px;
--moz-border-radius: 2px 2px 6px 6px;
--webkit-border-radius: 2px 2px 6px 6px;
-color: #fff;
-}
-
-.clear {
-clear:both;
-}
-
-.top_bottom {
-float: left;
-clear: both;
-}
-
-.float_container {
-float: left;
-padding-right: 5px;
-}
-
-#header input[type=text], input[type=password] {
-width: 80px;
-border:2px solid #a41818;
-}
-
-#header input[type=submit] {
-margin-top: 1px;
-heigth: 60px;
-font-size:2em;
-}
-
-.go {
-background: #fff url('go.png');
-width: 34px;
-heigth: 34px;
-}
-
-#container{text-align:left}
-#content p{line-height:1.4}
-#navigation{background:#B9CAFF}
-#extra{background:#FF8539}
-#footer{background: #333;color: #FFF}
-#footer p{margin:0;padding:5px 10px}
-
-#container{width:960px;margin:0 auto}
-#navigation{float:right;width:350px}
-#extra{float:left;width:350px}
-#footer{clear:both;width:100%}
-</style>
+opt_uniqid = '';
+opt_lang = '';
+opt_allowed = '';
+opt_max = '';
+opt_done = '<?=lang('upload.done')?>';
+opt_download = '<?=lang('mobile.download')?>';
+opt_file = '<?=lang('upload.file')?>';
+function getFormat(format) {
+	<?php foreach($extensions as $name => $ext):?>
+	if(format == "<?=$name?>") {
+		format = "<?=$ext?>";
+	}      
+	<?php endforeach;?>
+	return format;
+};   
+</script>
+-->
 </head>
 <body>
 <div id="top_line"></div>
 <div id="container">
-<div id="header">
-	<h1>WAP4.org</h1>
-	<h2>convert videos online</h2>
+
 	<div id="login">
 		<div class="float_container">
 			<div class="top_bottom">Login</div>
 			<div class="top_bottom">
-				<input type="text" name="login" placeholder="username"/>
+				<input type="text" name="login"/>
 			</div>
 		</div>
 		<div class="float_container">
 			<div class="top_bottom">Password</div>
 			<div class="top_bottom">
-				<input type="text" name="password" placeholder="password"/>
+				<input type="text" name="password"/>
 			</div>
 		</div>
-		<div class="float_container">
-			<div class="go"></div>
-			 <!--<input type="submit" value="Login"/>-->
+		<div class="float_container lower">
+			<input type="submit" value="GO"/>
 		</div>
 	<div class="clear"></div>
 	or create a <a href="/en/auth/create_user">New account</a>
 	</div>
-	<div class="clear"></div>
+
+<div id="header">
+	<h1>WAP4.org</h1>
+	<h2>convert videos online</h2>
 </div>
+
 <div id="top_navigation">
     <ul id="nav_list">
         <li>
@@ -168,22 +134,104 @@ heigth: 34px;
 			<a href="/en/about">About</a>
 		</li>
     </ul>
+    <ul id="language_list">
+		<li class="language">
+			Languages:
+		</li>
+        <li class="selected">
+            <a href="/en" title="English"><div class="en"></div></a>
+        </li>
+        <li>
+            <a href="/ru" title="Russian"><div class="ru"></div></a>
+        </li>
+        <li>
+            <a href="/lv" title="Latvian"><div class="lv"></div></a>
+        </li>
+    </ul>
 </div>
-<div id="wrapper">
-<div id="content">
-<p><strong>1) Content here.</strong> column long long column very long fill fill fill long text text column text silly very make long very fill silly make make long make text fill very long text column silly silly very column long very column filler fill long make filler long silly very long silly silly silly long filler make column filler make silly long long fill very.</p>
-<p>very make make fill silly long long filler column long make silly silly column filler fill fill very filler text fill filler column make fill make text very make make very fill fill long make very filler column very long very filler silly very make filler silly make make column column </p>
-<p>fill long make long text very make long fill column make text very silly column filler silly text fill text filler filler filler make make make make text filler fill column filler make silly make text text fill make very filler column very </p>
-<p>column text long column make silly long text filler silly very very very long filler fill very fill silly very make make filler text filler text make silly text text long fill fill make text fill long text very silly long long filler filler fill silly long make column make silly long column long make very </p>
-</div>
-</div>
-<div id="navigation">
-<p><strong>2) Navigation here.</strong> long long fill filler very fill column column silly filler very filler fill fill filler text fill very silly fill text filler silly silly filler fill very make fill column text column very very column fill fill very silly column silly silly fill fill long filler </p>
-</div>
-<div id="extra">
-<p><strong>3) More stuff here.</strong> very text make long column make filler fill make column column silly filler text silly column fill silly fill column text filler make text silly filler make filler very silly make text very very text make long filler very make column make silly column fill silly column long make silly filler column filler silly long long column fill silly column very </p>
-</div>
-<div id="footer"><p>Here it goes the footer</p></div>
+	<div id="content">
+		<div id="content_left">
+        	<h3>Upload file</h3>
+			<div id="demo">
+            	<form action="#" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+					<input type="file" name="qqfile" value=""/>
+                    <input class="file_submit" type="submit" name="file" value="Choose local file..."/>
+                </form>
+			</div>
+            <p>
+            	Allowed file formats:
+                <br/>
+                <em>mp3 , avi , flv , mov , mp4 , 3gp , ogg , flac , aac , wmv , mpg , ac3</em>
+            </p>
+		</div>
+		<div id="content_right">
+                    <h3>Youtube or Vimeo videos to mp3</h3>
+                    <form action="#" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+						<div class="link">
+							<input type="text" name="link" value=""/>
+							<input class="file_submit" type="submit" name="file" value="Convert"/>
+						</div>
+                    </form>
+                    <span class="lighter">Youtube example:</span><br/>
+                    <span class="bigger">http://www.youtube.com/watch?v=oyXEeZ4h0W4</span>
+					<br/>
+                    <span class="lighter">Vimeo example:</span><br/>
+                    <span class="bigger">http://vimeo.com/21144035</span>
+		</div>
+	</div>
+	<div class="clear">
+	</div>
+	<div id="footer_navigation">
+		<hr/>
+		<div class="footer_navigation_col">
+			<h4>Features</h4>
+			<ul class="features">
+				<li><p>Support Youtube video conversion to mp3.</p></li>
+				<li><p>Allows converting any video file to mobile phone friendly media formats.</p></li>
+				<li><p>It's in three languages.</p></li>
+				<li><p>Is free to use. Forever.</p></li>
+			</ul>
+		</div>
+		<div class="footer_navigation_col">
+			<h4>Follow us</h4>
+			<ul class="follow">
+				<li class="twitter">
+					<p>
+						<a href="http://twitter.com/wap4org" target="_blank">Twitter</a>
+					</p>
+				</li>
+				<li class="facebook">
+					<p>
+						<a href="http://www.facebook.com/pages/wap4org/160222834034783" target="_blank">Facebook</a>
+					</p>
+				</li>
+				<li class="rss">
+					<p>
+						<a href="http://wap4.org/en/feed/rss">RSS</a>
+					</p>
+				</li>
+			</ul>
+		</div>
+		<div class="footer_navigation_col">
+			<h4>Download source</h4>
+			<ul>
+				<li>
+					<a href="https://github.com/jmalinens/wap4" target="_blank">@GitHub</a>
+				</li>
+				<li>
+					<a href="https://sourceforge.net/p/wap4/home/" target="_blank">@SourceForge</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="clear">
+	</div>
+	<hr/>
+	<div id="footer_copyrights">
+		<p>
+			Created by Juris Malinens. Design by <a href="http://www.dmsagency.com/">GuiltyGear</a>. Visit mobile version at <a href="http://m.wap4.org">m.wap4.org</a>
+		</p>
+	</div>
 </div>
 </body>
 </html>

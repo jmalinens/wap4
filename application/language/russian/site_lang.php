@@ -53,14 +53,21 @@ $lang['upload.file']        = "Загрузить файл...";
 $lang['upload.done']        = "Загрузка завершена";
 $lang['upload.fail']        = "Ошибка при загрузке";
 $lang['upload.example']     = "Примеры";
-$lang['upload.youtube']     = "видео с сайта";
+$lang['upload.youtube']     = "видео в mp3";
 $lang['upload.formats']     = "Список разрешенных форматов";
 $lang['upload.max_size']    = "Максимальный размер загружаемого файла";
+$lang['upload.wait']        = "Загрузка видео. Пожалуйста, подождите...";
+$lang['upload.sorry']       = "Извините, произошла ошибка";
 
 $lang['lang.languages']     = "Языки";
 $lang['lang.latvian']       = "Латышский";
 $lang['lang.russian']       = "Русский";
 $lang['lang.english']       = "Английский";
+
+$lang['quality']            = "Качество";
+$lang['quality.high']       = "Высокое";
+$lang['quality.normal']     = "Нормальное";
+$lang['quality.low']        = "Низкое";
 
 $lang['bookmark.us']        = "Добавь в закладки wap4.org!";
 
@@ -72,12 +79,15 @@ $lang['footer.free']        = "бесплатно и навсегда..";
 $lang['footer.follow']      = "Мы в социальных сетях";
 $lang['footer.download']    = "Скачать исходный код";
 $lang['footer.created']     = "Создал Juris Malinens";
+$lang['footer.design']      = "Дизайн:";
+
+$lang['link.incorrect']     = "Неправильная ссылка! Ссылка должна начинаться с";
 
 $lang['news.perma']         = "постоянная ссылка";
 $lang['news.archive']       = "Архив новостей";
 
 $lang['site.or']            = "или";
-$lang['site.why']           = "Зарегистрированные пользователи могут загружать и конвертировать файлы размером до <b>300MB</b> Мб и просматривать ранее преобразованные файлы";
+$lang['site.why']           = "для преобразования файлов размером до <b>300 Мб</b>";
 
 $lang['feed.admin']         = "Juris Malinens находится wap4 @ wap4 точка org";
 $lang['feed.name']          = "wap4 онлайн медиа конвертер";

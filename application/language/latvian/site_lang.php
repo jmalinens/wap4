@@ -12,7 +12,7 @@ $lang['title.mheader']      = "bezmaksas online mobilais konvertētājs!";
 $lang['title.meta']         = "Ērta online konvertēšanas programma, lai konvertētu videoklipus dažādos formātos, piemēram, Youtube video uz mp3";
 $lang['title.mmeta']        = "Ērta online video konvertēšanas programma priekš mobilajiem telefoniem";
 $lang['title.h3']           = "Tagad konvertē arī Youtube video uz mp3 bez maksas!";
-$lang['title.main']         = "Youtube-mp3 galvenā ";
+$lang['title.main']         = "Youtube uz mp3 galvenā ";
 $lang['title.mmain']        = "No Youtube uz mp3 galvenā ";
 $lang['title.login']        = "ieiet savā profilā";
 $lang['title.converter']    = "video augšupielāde un konvertēšana";
@@ -48,29 +48,39 @@ $lang['user.list']          = "Lietotāju saraksts";
 $lang['video.list']         = "Failu saraksts";
 $lang['settings.change']    = "Uzstādījumi";
 
-$lang['upload.file']        = "Izvēlies failu no datora...";
+$lang['upload.file']        = "Izvēlies failu...";
 $lang['upload.done']        = "Augšupielāde veiksmīga";
 $lang['upload.fail']        = "Kļūda augšupielādē";
 $lang['upload.example']     = "Piemēri";
-$lang['upload.youtube']     = "video no Youtube";
+$lang['upload.youtube']     = "Iegūt video";
 $lang['upload.formats']     = "Atļautie failu paplašinājumi";
 $lang['upload.max_size']    = "Maksimālais augšupielādējamā faila izmērs";
+$lang['upload.wait']        = "Notiek augšupielāde. Lūdzu, uzgaidi...";
+$lang['upload.sorry']       = "Piedod, bet notikusi kļūda";
 
 $lang['lang.languages']     = "Valodas";
 $lang['lang.latvian']       = "Latviešu";
 $lang['lang.russian']       = "Krievu";
 $lang['lang.english']       = "Angļu";
 
+$lang['quality']            = "Kvalitāte";
+$lang['quality.high']       = "Augsta";
+$lang['quality.normal']     = "Normāla";
+$lang['quality.low']        = "Zema";
+
 $lang['bookmark.us']        = "Saglabā mūs grāmatzīmēs!";
 
 $lang['footer.features']    = "wap4.org iespējas";
 $lang['footer.support']     = "Var konvertēt Youtube mūzikas klipus mp3 formātā.";
-$lang['footer.allows']      = "Jebkuru videoklipu var pārvērst formātā mobilajiem telefoniem.";
+$lang['footer.allows']      = "Jebkuru videoklipu var pārvērst mobilajiem telefoniem saprotamā formātā.";
 $lang['footer.three']       = "Konvertētājs ir pieejams 3 valodās.";
 $lang['footer.free']        = "Konvertēt VIENMĒR varēs par velti";
 $lang['footer.follow']      = "Seko mums";
 $lang['footer.download']    = "Lejupielādē aplikācijas izejas kodu";
 $lang['footer.created']     = "Izveidoja Juris Malinens";
+$lang['footer.design']      = "Dizainu veidoja";
+
+$lang['link.incorrect']     = "Nepareizs links! Linkam jāsākas ar";
 
 $lang['news.perma']         = "pastāvīgā saite";
 $lang['news.archive']       = "Jaunumu arhīvs";
@@ -102,16 +112,16 @@ $lang['video.nofiles']      = "Vēl neviens fails nav konvertēts";
 $lang['site.offline']       = "Portāls uz laiku slēgts.";
 
 $lang['howto.content']      = array("Spied saiti \"Konvertētājs\", lai atvērtu konvertētāja galveno izvēlni",
-                                "Pirmais solis ir izvēlēties datni, kuru Jūs vēlaties konvertēt vai arī iekopēt videoklipa adresi no Youtube portāla norādītajā formātā",
-                                "Otrais solis ir izvēlēties konvertēšanas opcijas- piemēram, izvēlēties jauno formātu vai uzstādīt audiovizuālā materāla sākuma un beigu laiku",
-                                "Pēc konvertēšanas Tev tiks piedāvāts lejupielādēt konvertēto datni");
+                                "Pirmais solis ir izvēlēties datni, kuru Jūs vēlaties konvertēt vai arī iekopēt videoklipa adresi no Youtube vai Vimeo portāla norādītajā formātā",
+                                "Nākošais solis ir izvēlēties konvertēšanas opcijas- piemēram, izvēlēties jauno formātu vai uzstādīt audiovizuālā materāla sākuma un beigu laiku",
+                                "Pēc konvertēšanas Tev tiks piedāvāts lejupielādēt konvertēto datni",
+                                "Konvertētie videoklipi un mūzika vismaz vienu nedēļu tiek uzglabāti uz servera vēlākai lejupielādei");
 $lang['howto.codecs']       = "Saraksts ar atbalstītajiem video, audio and subtitru kodekiem";
 $lang['howto.formats']      = "Saraksts ar atbalstītajiem audio un video klipu failu paplašinājumiem (formātiem)";
 
 $lang['about.content']      = array("Šo servisu izveidoja Datorikas fakultātes 2. kursa students <strong>Juris Malinens</strong> kā praktisko darbu \"Tīmekļa Tehnoloģijās\"",
                                 "Serviss ir bāzēts uz CodeIgniter 2.0 REACTOR tīmekļa ietvara, kas izmanto PHP valodu un MySQL datubāzi",
-                                "Konvertēšana notiek ar <a href=\"http://ffmpeg.org\">FFMPEG</a> programmas palīdzību,  
-                                    kra izmanto <a href=\"http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html\">LGPLv2.1</a> licenci",
+                                "Konvertēšana notiek ar <a href=\"http://ffmpeg.org\">FFMPEG</a> programmas palīdzību ( <a href=\"http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html\">LGPLv2.1</a>)",
                                 "Jebkurš var bez maksas lejupielādēt konvertētāju <a href=\"https://github.com/jmalinens/wap4\">manā Github lapā: github.com/jmalinens/wap4</a> (GNU LGPL licence)");
 
 $lang['fail.download']      = "Neizdevās lejupielāde";

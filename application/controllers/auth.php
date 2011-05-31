@@ -258,12 +258,12 @@ class Auth extends CI_Controller {
                     //redirect them back to the login page
                     $this->session->set_flashdata('message', $this->ion_auth->errors());
 
-                    $this->load->view('includes/header', $this->data);
+                    $this->load->view('v2/includes/header', $this->data);
                     //redirect('auth/index/error', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
                     $this->data['message'] = $this->ion_auth->errors();
 
                     $this->load->view('auth/login', $this->data);
-                    $this->load->view('includes/footer', $this->data);
+                    $this->load->view('v2/includes/footer', $this->data);
             }
 
 
@@ -358,9 +358,9 @@ class Auth extends CI_Controller {
 
             
             
-            $this->load->view('includes/header', $this->data);
-            $this->load->view('auth/edit_user', $this->data);
-            $this->load->view('includes/footer', $this->data);
+            $this->load->view('v2/includes/header', $this->data);
+            $this->load->view('v2/auth/edit_user', $this->data);
+            $this->load->view('v2/includes/footer', $this->data);
             
     	}
         
@@ -738,9 +738,9 @@ $this->data['navigation']         = $this->config->item('navigation');
 $this->data['uniqid']             = uniqid();
 $this->data['lang']               = $this->lang->lang();
 
-$this->load->view('includes/header', $this->data);
-$this->load->view('auth/create_user', $this->data);
-$this->load->view('includes/footer');
+$this->load->view('v2/includes/header', $this->data);
+$this->load->view('v2/auth/create_user', $this->data);
+$this->load->view('v2/includes/footer');
 		}
           
           

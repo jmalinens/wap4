@@ -15,4 +15,4 @@ $lang['ffmpeg.2nd'] 	= "2. step- choose converter settings";
 
 $lang['ffmpeg.resize'] 	= "Resize video resolution?";
 $lang['ffmpeg.width'] 	= "Width";
-$lang['ffmpeg.heigth'] 	= "Heigth";
+$lang['ffmpeg.height'] 	= "Height";

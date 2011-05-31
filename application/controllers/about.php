@@ -9,12 +9,12 @@ class About extends CI_Controller {
                 $this->data["meta"] = "about";
                 
                 if(!irAjax())
-                $this->load->view('includes/header', $this->data);
+                $this->load->view('v2/includes/header', $this->data);
                 
-		$this->load->view('about', $data);
+		$this->load->view('v2/about', $data);
                 
                 if(!irAjax())
-                $this->load->view('includes/footer', $this->data);
+                $this->load->view('v2/includes/footer', $this->data);
 	}
 }
  

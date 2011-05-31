@@ -7,5 +7,5 @@
 
 <?php endforeach; ?>
 </ul>
-    <p><?=anchor("auth/create_user",lang("login_create"))?></a> <em><?=lang("site.why")?></em></p>
+    <p><?=anchor("auth/create_user",lang("login_create"))?> <em><?=lang("site.why")?></em></p>
 </div>

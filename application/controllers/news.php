@@ -19,27 +19,27 @@ class News extends CI_Controller {
     $this->db->where('lang', $this->lang->lang());
     $this->db->from('news');
     $config['total_rows'] = $this->db->count_all_results();
-    $config['per_page'] = '3';
+    $config['per_page'] = '4';
     $config['uri_segment'] = 4;
     $config['full_tag_open'] = '<div id="pagination">';
     $config['full_tag_close'] = '</div>';
     
-    $config['prev_tag_open'] = '<div class="link">';
+    $config['prev_tag_open'] = '<div class="pagination_link">';
     $config['prev_tag_close'] = '</div>';
     
-    $config['first_tag_open'] = '<div class="link">';
+    $config['first_tag_open'] = '<div class="pagination_link">';
     $config['first_tag_close'] = '</div>';
     
-    $config['last_tag_open'] = '<div class="link">';
+    $config['last_tag_open'] = '<div class="pagination_link">';
     $config['last_tag_close'] = '</div>';
     
-    $config['next_tag_open'] = '<div class="link">';
+    $config['next_tag_open'] = '<div class="pagination_link">';
     $config['next_tag_close'] = '</div>';
     
-    $config['cur_tag_open'] = '<div class="link">';
+    $config['cur_tag_open'] = '<div class="pagination_link">';
     $config['cur_tag_close'] = '</div>';
     
-    $config['num_tag_open'] = '<div class="link">';
+    $config['num_tag_open'] = '<div class="pagination_link">';
     $config['num_tag_close'] = '</div>';
 
     $this->pagination->initialize($config);
@@ -54,10 +54,10 @@ class News extends CI_Controller {
     // load the view
     
     if(!irAjax())
-    $this->load->view('includes/header', $this->data);
-    $this->load->view('news', $data);
+    $this->load->view('v2/includes/header', $this->data);
+    $this->load->view('v2/news', $data);
     if(!irAjax())
-    $this->load->view('includes/footer', $this->data);
+    $this->load->view('v2/includes/footer', $this->data);
 
   }
   
@@ -69,12 +69,12 @@ class News extends CI_Controller {
     $data['archive'] = true;
  
     if(!irAjax())
-    $this->load->view('includes/header', $this->data);
+    $this->load->view('v2/includes/header', $this->data);
     
-    $this->load->view('news', $data);
+    $this->load->view('v2/news', $data);
     
     if(!irAjax())
-    $this->load->view('includes/footer', $this->data);    
+    $this->load->view('v2/includes/footer', $this->data);    
   }
   
     function delete_news($id = NULL) 

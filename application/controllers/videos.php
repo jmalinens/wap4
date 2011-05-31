@@ -6,6 +6,7 @@ class Videos extends CI_Controller {
                 $this->load->model('video_model');
                 if (!$this->ion_auth->logged_in()) die();
                 parse_str($_SERVER['QUERY_STRING'], $_GET);
+                load_settings();
 	}
  
     
@@ -14,8 +15,8 @@ class Videos extends CI_Controller {
         redirect("/");
     }
 
-     function video_list() 
-    {
+function video_list() 
+{
     $this->load->library('pagination');
     $config['base_url'] = base_url().'/'.$this->lang->lang().'/videos/video_list/';
     
@@ -62,14 +63,16 @@ class Videos extends CI_Controller {
                 //echo $this->db->last_query();
                 // load the HTML Table Class
                 $this->load->library('table');
+                $this->load->view('v2/includes/header', $this->data);
     		$this->load->view('video_list', $data);
+                $this->load->view('v2/includes/footer', $this->data);
     	}
     	else {
             
             die();
     	}
 
-    }
+}
     
     function delete_video($id = NULL) 
     {

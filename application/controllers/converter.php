@@ -99,14 +99,14 @@ class Converter extends CI_Controller {
         $this->data['presets']    = $arrXml;
         
         
-        $this->load->view('includes/header', $this->data);
+        $this->load->view('v2/includes/header', $this->data);
         
         if($_SERVER["SERVER_NAME"] == $this->config->item("mobile_host") || $_SERVER["SERVER_NAME"] == "testm.wap4.org")
-        $this->load->view('converter_no_js', $this->data);
+        $this->load->view('v2/converter_no_js', $this->data);
         else
-        $this->load->view('converter', $this->data);
+        $this->load->view('v2/converter', $this->data);
         
-        $this->load->view('includes/footer', $this->data);
+        $this->load->view('v2/includes/footer', $this->data);
     	
     }
    
@@ -462,22 +462,18 @@ class Converter extends CI_Controller {
                         die("fatal error, when trying to upload file");
                     }
 
-                    $this->ffmpeg->SetKey($_POST["key"]);
-                    //set format of  converted file
-                    $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
-                    
-                    $this->ffmpeg->SetInput_file($file_body.".".$file_end, "no_js");
+                    $this->ffmpeg->setKey($_POST["key"]);
+                    $this->ffmpeg->setQuality($_POST["quality"]);
+                    $this->ffmpeg->setFormat(rawurldecode($_POST["format"]));
+                    $this->ffmpeg->setInputFile($file_body.".".$file_end, "no_js");
 
                     if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes') 
-                    $this->ffmpeg->Cut( $_REQUEST['s_hh'],
+                    $this->ffmpeg->cut( $_REQUEST['s_hh'],
                                         $_REQUEST['s_mm'],
                                         $_REQUEST['s_ss'],
                                         $_REQUEST['e_hh'],
                                         $_REQUEST['e_mm'],
                                         $_REQUEST['e_ss']);
-
-                    //if(isset($_REQUEST['resize']) && $_REQUEST['resize'] == 'yes') 
-                    //$this->ffmpeg->Resize($_REQUEST['width'],$_REQUEST['heigth']);
 
                     $veids="no_js";
                 } else {
@@ -494,14 +490,14 @@ class Converter extends CI_Controller {
             if(isset($_POST["youtube"]) && !empty($_POST["youtube"])) {
                 $this->upload_youtube();
                 global $title;
-                $this->ffmpeg->SetKey($_POST["key"]);
-                //set format of  converted file
-                $this->ffmpeg->SetFormat(rawurldecode($_POST["format"]));
-                //set name of file which will be converted
-                $this->ffmpeg->SetInput_file($title.".flv", "no_js");
+                
+                $this->ffmpeg->setKey($_POST["key"]);
+                $this->ffmpeg->setQuality($_POST["quality"]);
+                $this->ffmpeg->setFormat(rawurldecode($_POST["format"]));
+                $this->ffmpeg->setInputFile($title.".flv", "no_js");
 
                 if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes')
-                $this->ffmpeg->Cut( $_REQUEST['s_hh'],
+                $this->ffmpeg->cut( $_REQUEST['s_hh'],
                                     $_REQUEST['s_mm'],
                                     $_REQUEST['s_ss'],
                                     $_REQUEST['e_hh'],
@@ -523,14 +519,13 @@ class Converter extends CI_Controller {
                 
                 $bIsVimeoDOwnloaded = $this->get_vimeo_video($id);
                 
-                $this->ffmpeg->SetKey($_REQUEST["key"]);
-                //set format of  converted file
-                $this->ffmpeg->SetFormat(rawurldecode($_REQUEST["format"]));
-                //set name of file which will be converted
-                $this->ffmpeg->SetInput_file($this->title.".flv", "no_js");
+                $this->ffmpeg->setKey($_REQUEST["key"]);
+                $this->ffmpeg->setQuality($_POST["quality"]);
+                $this->ffmpeg->setFormat(rawurldecode($_REQUEST["format"]));
+                $this->ffmpeg->setInputFile($this->title.".flv", "no_js");
 
                 if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes')
-                $this->ffmpeg->Cut( $_REQUEST['s_hh'],
+                $this->ffmpeg->cut( $_REQUEST['s_hh'],
                                     $_REQUEST['s_mm'],
                                     $_REQUEST['s_ss'],
                                     $_REQUEST['e_hh'],
@@ -554,14 +549,13 @@ class Converter extends CI_Controller {
                 
                 $bIsDirectDownloaded = $this->direct_download($better_url, $_REQUEST["key"]);
                 
-                $this->ffmpeg->SetKey($_REQUEST["key"]);
-                //set format of  converted file
-                $this->ffmpeg->SetFormat(rawurldecode($_REQUEST["format"]));
-                //set name of file which will be converted
-                $this->ffmpeg->SetInput_file($this->title.".".$this->extension, "no_js");
+                $this->ffmpeg->setKey($_REQUEST["key"]);
+                $this->ffmpeg->setQuality($_POST["quality"]);
+                $this->ffmpeg->setFormat(rawurldecode($_REQUEST["format"]));
+                $this->ffmpeg->setInputFile($this->title.".".$this->extension, "no_js");
 
                 if(isset($_REQUEST['cut']) && $_REQUEST['cut'] == 'yes')
-                $this->ffmpeg->Cut( $_REQUEST['s_hh'],
+                $this->ffmpeg->cut( $_REQUEST['s_hh'],
                                     $_REQUEST['s_mm'],
                                     $_REQUEST['s_ss'],
                                     $_REQUEST['e_hh'],
@@ -572,52 +566,28 @@ class Converter extends CI_Controller {
             }
             
         } else {
-        //set unique key
-        $this->ffmpeg->SetKey($this->uri->segment(4));
-        //set format of  converted file
-        $this->ffmpeg->SetFormat(rawurldecode($this->uri->segment(5)));
-        //set name of file which will be converted
-        $this->ffmpeg->SetInput_file($this->uri->segment(6));
+
+        $this->ffmpeg->setKey($this->uri->segment(4));
+        $this->ffmpeg->setQuality($this->uri->segment(15));
+        $this->ffmpeg->setFormat($this->uri->segment(5));
+        $this->ffmpeg->setInputFile($this->uri->segment(6));
 
 	if($this->uri->segment(7) == 'yes') 
-        $this->ffmpeg->Cut( $this->uri->segment(8),
+        $this->ffmpeg->cut( $this->uri->segment(8),
                             $this->uri->segment(9),
                             $this->uri->segment(10),
                             $this->uri->segment(11),
                             $this->uri->segment(12),
                             $this->uri->segment(13));
         
-        //if($this->uri->segment(15) == 'yes') 
-        //$this->ffmpeg->Resize($this->uri->segment(16),$this->uri->segment(17));
-        
         $veids="js";
         
         }
         
-        //start converting
-        $this->ffmpeg->StartConvert($veids);
+        $this->ffmpeg->startConvert($veids);
         
         //add info in DB
-        if ($this->ion_auth->logged_in()) {
-            $this->load->model('ffmpeg_model');
-            $user = $this->ion_auth->get_user();
-
-            if($this->uri->segment(4) != "no_js")
-            {
-            $extension = $this->data['formats'][$this->uri->segment(5)][1];
-            //$this->uri->segment(5) == "iphone"? $extension = "mp4": $extension = $this->uri->segment(5);
-            $file_name = substr(current(explode(".", strtolower($this->uri->segment(6)))), 0, -4)."-".$this->uri->segment(4).".".$extension;
-            $apraksts  = $this->uri->segment(14);
-            }
-             else {
-            $extension = $this->data['formats'][$_POST["format"]][1];
-            //$_POST["format"] == "iphone"? $extension = "mp4": $extension = $_POST["format"];
-            $file_name = "file-".$_POST["key"].".".$extension;
-            $apraksts  = $_POST["apraksts"];
-            }
-            
-            $this->ffmpeg_model->add_video_to_db($user->id, $file_name, $apraksts);
-        }
+        $this->_save_to_db();
         
         echo current(explode(".", strtolower($this->uri->segment(6))));
     }
@@ -629,17 +599,20 @@ class Converter extends CI_Controller {
      * @return type 
      */
     function statuss($unikaalais, $return = false) {
-        $this->ffmpeg->SetKey($unikaalais);
         
-        $converter_completed_percents = $this->ffmpeg->GetPercentsComplete();
+        $this->ffmpeg->setKey($unikaalais);
+        
+        $converter_completed_percents = $this->ffmpeg->getPercentsComplete();
         
         if($converter_completed_percents > 100) {
             $converter_completed_percents = 100;
         }
         
-        if(!$return)
+        if(!$return) {
+            header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+            header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
             echo $converter_completed_percents;
-        else
+        } else
             return $converter_completed_percents;
     }
 
@@ -1106,6 +1079,39 @@ class Converter extends CI_Controller {
         }
         return $aFailArray;
     }
-    
+
+    function _save_to_db() {
+            $this->load->model('ffmpeg_model');
+
+            if($this->uri->segment(4) != "no_js")
+                $apraksts  = $this->uri->segment(14);
+            else
+                $apraksts  = $_POST["apraksts"];
+        
+            if(isset($this->uniqid) && !empty($this->uniqid))
+                $key   = $this->uniqid;
+            else
+                $key   = $this->ffmpeg->key;
+
+            $title = file_get_contents($this->config->item("ffmpeg_key_dir")."$key.title");
+
+            $extension = "mp3";
+            $file = file($this->config->item("ffmpeg_key_dir")."$key.ffmpeg");
+            foreach($file as $f) {
+                if(substr($f, 0, 6) == "Output") {
+                    $extension = substr(end(explode(".", $f)), 0, -3);
+                    break;
+                }
+            }
+            
+            if ($this->ion_auth->logged_in()) {
+                $user = $this->ion_auth->get_user();
+                $user = $user->id;
+            } else {
+                $user = 0;
+            }
+
+            $this->ffmpeg_model->add_video_to_db($user,  $title."-".$key.".".$extension, $apraksts);
+    }
 
 }

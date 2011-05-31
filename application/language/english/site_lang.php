@@ -55,11 +55,18 @@ $lang['upload.example']     = "Examples";
 $lang['upload.youtube']     = "get video";
 $lang['upload.formats']     = "Allowed file formats";
 $lang['upload.max_size']    = "Maximum upload size";
+$lang['upload.wait']        = "Uploading video. Please wait...";
+$lang['upload.sorry']       = "Sorry but there was an error";
 
 $lang['lang.languages']     = "Languages";
 $lang['lang.latvian']       = "Latvian";
 $lang['lang.russian']       = "Russian";
 $lang['lang.english']       = "English";
+
+$lang['quality']            = "Quality settings";
+$lang['quality.high']       = "High";
+$lang['quality.normal']     = "Normal";
+$lang['quality.low']        = "Low";
 
 $lang['bookmark.us']        = "Bookmark us!";
 
@@ -71,6 +78,9 @@ $lang['footer.free']        = "Is free to use. Forever.";
 $lang['footer.follow']      = "Follow Us";
 $lang['footer.download']    = "Download Source Code";
 $lang['footer.created']     = "Created by Juris Malinens";
+$lang['footer.design']      = "Designed by";
+
+$lang['link.incorrect']     = "Incorrect link! Link must start with";
 
 $lang['news.perma']         = "permalink";
 $lang['news.archive']       = "News archive";
@@ -107,6 +117,7 @@ $lang['howto.content']      = array("Click \"Converter\" to start converting",
                                 "After convertion is complete, You will get download link and if You are logged in, You can view and download Your converted files");
 $lang['howto.codecs']       = "Full list of all supported video, audio and subtitle codecs";
 $lang['howto.formats']      = "Full list of all supported video, audio formats (extensions)";
+//$lang['howto.title']        = "How to use";
 
 $lang['about.content']      = array("This service is brought to You by 2nd course student <strong>Juris Malinens</strong> from Faculty of Computing in University of Latvia",
                                 "Service is based on CodeIgniter 2.0 REACTOR web framework, which uses PHP scripting language and MySQL database",
@@ -125,3 +136,6 @@ $lang['fail.upload']        = "Failed to upload file";
 $lang['fail.size']          = "File size too big";
 $lang['fail.vimeo']         = "Failed to get Vimeo video";
 $lang['fail.direct']        = "Failed to get direct link";
+
+
+$lang['about.more']         = "High quality audio (mp3, amr, acc) and video";

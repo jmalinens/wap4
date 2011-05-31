@@ -1,5 +1,8 @@
 <?php
-
+ini_set("cgi.fix_pathinfo","0");
+ini_set("display_errors","Off");
+ignore_user_abort(true);
+set_time_limit(0);
 /**
  * Handle file uploads via XMLHttpRequest
  */
@@ -61,10 +64,10 @@ class qqUploadedFileForm {
 
 class qqFileUploader {
     private $allowedExtensions = array();
-    private $sizeLimit = 10485760;
+    private $sizeLimit = 300485760;
     private $file;
 
-    function __construct(array $allowedExtensions = array(), $sizeLimit = 10485760){        
+    function __construct(array $allowedExtensions = array(), $sizeLimit = 300485760){        
         $allowedExtensions = array_map("strtolower", $allowedExtensions);
             
         $this->allowedExtensions = $allowedExtensions;        
@@ -110,7 +113,7 @@ class qqFileUploader {
             return array('error' => "Server error. Upload directory isn't writable.");
         }
         
-        if (!$this->file){
+        if (!$this->file) {
             return array('error' => 'No files were uploaded.');
         }
         
