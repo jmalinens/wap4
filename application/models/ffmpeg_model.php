@@ -2,9 +2,13 @@
 class ffmpeg_model extends CI_Model
 {
     
+    var $sVideoTable;
+    
+    
 function __construct()
 {
     parent::__construct();
+    $this->sVideoTable = 'video_details';
 }
 
 /**
@@ -23,6 +27,36 @@ function add_video_to_db($user, $video, $apraksts)
                     NOW());";
     $this->db->query($sql);
 }
+
+function get_video($sUniqueId) {
+    $query = $this->db->get_where('video_details', array('uniqid' => $sUniqueId));
+    //echo $this->db->last_query();
+    if ($query->num_rows() > 0)
+        return $query->row();
+    else
+        return FALSE;
+}
+
+function set_video($aParams) {
+    
+    
+    if(isset($aParams['uniqid'])) {
+        
+        if($this->get_video($aParams['uniqid'])) {
+            //update
+            $this->db->where('uniqid', $aParams['uniqid']);
+            $this->db->update($this->sVideoTable, $aParams); 
+        } else {
+            //insert
+            $this->db->insert($this->sVideoTable, $aParams); 
+        }
+          //echo $this->db->last_query();  
+        log_message('debug', 'query: '.$this->db->last_query());
+        
+    }
+    
+}
+
 
 /**
  * Add video to DB (not used, created as example)
@@ -125,18 +159,40 @@ function setInfo($aInfo)
 
 function cleanAfterConverter($uniqid)
 {
-    $cfg_dir = $this->config->item("ffmpeg_key_dir").$uniqid;
+    $key_dir = $this->config->item("ffmpeg_key_dir").$uniqid;
+    $upl_dir = $this->config->item("ffmpeg_before_dir");
     
-    if(is_file($cfg_dir.".lala"))
-        unlink($cfg_dir.".lala");
-    if(is_file($cfg_dir.".wget"))
-        unlink($cfg_dir.".wget");
-    if(is_file($cfg_dir.".fail"))
-        unlink($cfg_dir.".fail");
-    if(is_file($cfg_dir.".title"))
-        unlink($cfg_dir.".title");
-    if(is_file($cfg_dir.".lenght"))
-        unlink($cfg_dir.".lenght");
+    if(is_file($key_dir.".lala"))
+        unlink($key_dir.".lala");
+    if(is_file($key_dir.".wget"))
+        unlink($key_dir.".wget");
+    if(is_file($key_dir.".fail"))
+        unlink($key_dir.".fail");
+    if(is_file($key_dir.".title"))
+        unlink($key_dir.".title");
+    if(is_file($key_dir.".lenght"))
+        unlink($key_dir.".lenght");
+    if(is_file($key_dir.".extension"))
+        unlink($key_dir.".extension");
+    if(is_file($key_dir.".youtube_dl"))
+        unlink($key_dir.".youtube_dl");
+    
+    $aVideo = $this->get_video($uniqid);
+    
+    if(isset($aVideoData->uploaded_video_body) && isset($aVideoData->uploaded_video_extension)) {
+        
+        $sFile1 = $upl_dir.$aVideoData->uploaded_video_body.'.'.$aVideoData->uploaded_video_extension;
+        if(is_file($sFile1))
+            unlink($sFile1);
+        
+        $sFile2 = $upl_dir.$aVideoData->uploaded_video_body.'-'.$uniqid.'.'.$aVideoData->uploaded_video_extension;
+        if(is_file($sFile2))
+            unlink($sFile2);
+        
+    }
+    
+    
+    
 }
 
 

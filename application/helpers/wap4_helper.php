@@ -110,6 +110,7 @@ if ($ci->form_validation->run() == true) { //check to see if the user is logging
     
     $ci->data['status'] = $ci->site_model->get_site_status();
     $ci->data['status'] = $ci->data['status'][0]['setting_value'];
+    if($ci->data['status'] == "offline") die(lang('site.offline'));
 
 }
             
@@ -117,6 +118,23 @@ if ($ci->form_validation->run() == true) { //check to see if the user is logging
     }
 }
 
+if ( ! function_exists('write_direct_download_percents'))
+{
+    function write_direct_download_percents($download_size, $downloaded, $upload_size, $uploaded) {
+        
+         $ci=& get_instance();
+         
+         $sPercFile = $ci->config->item("ffmpeg_key_dir")."".$ci->uniqid.".percents";
+         
+         if($download_size > 0)
+            $nPercent = round($downloaded/$download_size);
+         else
+            $nPercent = 0;
+         
+         file_put_contents($sPercFile,$nPercent);
+         
+    }
+}
 
 if ( ! function_exists('irAjax'))
 {
@@ -348,7 +366,11 @@ if(!function_exists('translit')) {
         $text = utf8_encode($text);
         $text = iconv("UTF-8", "ASCII//IGNORE", $text);
         $text = strtolower($text);
-
+        $text = trim($text, "-");
+        
+        if(!$text)
+            $text = uniqid();
+        
         return $text;
     }
     

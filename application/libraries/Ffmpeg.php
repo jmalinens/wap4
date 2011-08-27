@@ -110,22 +110,33 @@ public function setQuality($quality = "normal") {
     if($quality == "high" || $quality == "low") {
         
         $aReplaces = $this->ci->config->item('ffmpeg_'.$quality);
-        
+        //print_r($this->ffmpeg_formats);
         if(is_array($aReplaces) && !empty($aReplaces))
-            foreach($aReplaces as $from => $to)
-                $this->ffmpeg_formats = str_replace($from, $to, $this->ffmpeg_formats);
+            if(isset($aReplaces[$this->format]))
+                foreach($aReplaces[$this->format] as $from => $to)
+                    $this->ffmpeg_formats[$this->format] = str_replace($from, $to, $this->ffmpeg_formats[$this->format]);
     }
     
 }
 
 //get so far encoded time
 public function getEncodedTime(){
-    $FFMPEGLog = file_get_contents($this->ffmpeg_key_dir.$this->key.'.ffmpeg');
-    $times     = explode('time=', $FFMPEGLog);
-    $ctime     = count($times)-1;
-    $timed     = explode(' bitrate=', $times[$ctime]);
-    $tt        = $timed[0];
-    return $tt;
+    $sFile = $this->ffmpeg_key_dir.$this->key.'.ffmpeg';
+    if(is_file($sFile)) {
+        $FFMPEGLog = file_get_contents($sFile);
+        $times     = explode('time=', $FFMPEGLog);
+        $ctime     = count($times)-1;
+        $timed     = explode(' bitrate=', $times[$ctime]);
+        $nEncTime  = $timed[0];
+        list($h, $m, $s) = explode(":", $nEncTime);
+        $nEncTime = $this->hms2sec($h, $m, $s);
+        
+    } else {
+        log_message('error', 'ffmpeg file '.$sFile.' not found for finding encoded time');
+        $nEncTime = 0;
+    }
+    
+    return $nEncTime;
 }
 
 
@@ -202,28 +213,38 @@ function resize ($width, $height) {
     return "mp4";
     }
     */
-    log_message('error', "extension: ".$this->ffmpeg_extensions[$this->format]);
+    if(!$this->format) {
+        log_message('error', "failed to this->ffmpeg->getExtension because \$this->format is empty");
+    }
+    log_message('debug', "extension: ".$this->ffmpeg_extensions[$this->format]);
     return $this->ffmpeg_extensions[$this->format];
 }
 
 //get total length of file
 public function getTotalTime()
 {
-    $lines = file($this->ffmpeg_key_dir.$this->key.'.ffmpeg');
-    foreach ($lines as $line_num => $line) {
-            //echo "Line #<b>{$line_num}</b> : " . htmlspecialchars($line) . "<br />\n";
-            if(strpos($line, 'Duration') !== false) {
-                    $line = explode("Duration: ", $line);
-                    $line = explode(",", $line[1]);
-                    $line = explode(":", $line[0]);
+    $play_time_sec = 0;
+    $sFile = $this->ffmpeg_key_dir.$this->key.'.ffmpeg';
+    if(is_file($sFile)) {
+        $lines = file($sFile);
+        foreach ($lines as $line_num => $line) {
+                //echo "Line #<b>{$line_num}</b> : " . htmlspecialchars($line) . "<br />\n";
+                if(strpos($line, 'Duration') !== false) {
+                        $line = explode("Duration: ", $line);
+                        $line = explode(",", $line[1]);
+                        $line = explode(":", $line[0]);
 
-                    $play_time_sec = 0;
-                    $play_time_sec += intval((string)$line[0]) * 60 * 60; // hour
-                    $play_time_sec += intval((string)$line[1]) * 60; // minute
-                    $play_time_sec += intval((string)round($line[2])); // second
-                    break;
-            }
+                        $play_time_sec = 0;
+                        $play_time_sec += intval((string)$line[0]) * 60 * 60; // hour
+                        $play_time_sec += intval((string)$line[1]) * 60; // minute
+                        $play_time_sec += intval((string)round($line[2])); // second
+                        break;
+                }
+        }
+    } else {
+        log_message('error', 'ffmpeg file '.$sFile.' not found for finding total time');
     }
+    //echo "DDD $play_time_sec  DDD";
     return $play_time_sec;
 }
 
@@ -231,7 +252,19 @@ public function getTotalTime()
 //get percents completed:
 public function getPercentsComplete()
 {
-    return round($this->getEncodedTime()/$this->getTotalTime()*100);
+    $nTotalTime = $this->getTotalTime();
+    $nEncodedTime = $this->getEncodedTime();
+    
+    if($nEncodedTime <= 0)
+        return 0;
+    
+    if($nEncodedTime >= $nTotalTime)
+        return 100;
+    
+    $nPercentsComplete = round(($nEncodedTime/$nTotalTime)*100);
+    log_message('debug', 'ffmpeg converter total time: '.$nTotalTime.', encoded time: '.$nEncodedTime.', complete percents round(($nEncodedTime/$nTotalTime)*100): '.$nPercentsComplete);
+    return $nPercentsComplete;
+
 }
 
 //convert seconds into hours:minutes:seconds format
@@ -266,19 +299,18 @@ public function sec2hms($sekunden)
 public function startConvert($mode="js")
 {
 
-    $ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i ".$this->ffmpeg_before_dir."".$this->input_file." ".$this->getFfmpegOptions()." ".$this->ffmpeg_after_dir."".$this->file_body."-$this->key.".$this->getExtension()." 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg";
+    $ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i \"".urldecode($this->ffmpeg_before_dir."".$this->input_file)."\" ".$this->getFfmpegOptions()." \"".urldecode($this->ffmpeg_after_dir."".$this->file_body."-$this->key.".$this->getExtension())."\" 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg";
 
-    $gif_optimize = "gifsicle --batch --optimize $this->ffmpeg_after_dir.
-            $this->file_body-".$this->key.".".$this->getExtension();
+    $gif_optimize = "gifsicle --batch --optimize ".urldecode($this->ffmpeg_after_dir).urldecode($this->file_body)."-".$this->key.".".$this->getExtension();
 
 
     $proc = popen($ffmpeg_command, "r");
     pclose($proc);
 
-    if($this->getExtension() == "gif") {
-        $proc = popen($gif_optimize, "r");
-        pclose($proc);
-    }
+    //if($this->getExtension() == "gif") {
+    //    $proc = popen($gif_optimize, "r");
+    //    pclose($proc);
+    //}
     /**
      * Log last ffmpeg command
      */
@@ -297,7 +329,7 @@ public function startConvert($mode="js")
         echo lang('mobile.download').": <br/>\n<a href=\"http://".
         $_SERVER["SERVER_NAME"]."/files/converted/".$this->file_body."-".
         $this->key.".".$this->getExtension()."\">".
-        $this->file_body."-".$this->key.".".
+        urldecode($this->file_body)."-".$this->key.".".
         $this->getExtension()."</a><br/>";
 
         echo"<a href=\"http://".$_SERVER["SERVER_NAME"]."\">&lt;&lt; ".

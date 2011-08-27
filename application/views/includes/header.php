@@ -27,6 +27,7 @@ if($bIsMobile) {
 <script src="<?php echo base_url();?>js/fileuploader.js"></script>
 <script src="<?php echo base_url();?>js/jquery.min.js"></script>
 <script src="<?php echo base_url();?>js/jquery-ui-1.8.9.custom.min.js"></script>
+
 <?=$this->load->view('js/wap4', $this->data)?>
 <?php } else { ?>
 <link rel="stylesheet" href="<?php echo base_url();?>css/mobile-optimized.css"/>

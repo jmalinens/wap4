@@ -7,6 +7,13 @@ if($_SERVER["REQUEST_URI"] == "/redirect/fromJavaApplicationWap4M0-0") {
     header("Location: http://m.wap4.org");
     exit;
 }
+
+$ip = $_SERVER["REMOTE_ADDR"];
+
+//if($ip != "77.93.13.41" && $ip != "127.0.0.1" && $ip != "85.31.99.173") {
+//    echo"<html>wap4.org will be back in 30 minutes</html>";
+//    exit;
+//}
 /*
  *---------------------------------------------------------------
  * PHP ERROR REPORTING LEVEL
