@@ -41,7 +41,7 @@ if ( ! function_exists('load_settings'))
 
             $ci->load->library('ffmpeg');
             $ci->config->load('ffmpeg');
-            $uniqid                   = uniqid();
+            $uniqid                 = uniqid();
             $ci->data['allowed']    = "'".implode("','", $ci->config->item('ffmpeg_allowed'))."'";
             $ci->data['uniqid']     = $uniqid;
             $ci->data['message']    = '';

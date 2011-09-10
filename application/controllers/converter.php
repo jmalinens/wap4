@@ -214,7 +214,7 @@ class Converter extends CI_Controller
                     return FALSE;
                 } else {
                     $this->output->set_status_header('400');
-                    echo lang('upload.fail')." Video is bigger than max allowed size of {$this->data['max']}MB";
+                    echo lang('upload.fail')." Video is bigger than max allowed size of {$this->data['max']}MB or video size could not be determined";
                     exit;
                 }
             }
@@ -268,7 +268,7 @@ class Converter extends CI_Controller
     private function _is_filesize_allowed($nAllowedSize, $nVideoSize) {
         
         $nAllowedSize = intval($this->data['max']*1024);
-        $nVideoSize = intval($sFileSize);
+        $nVideoSize = intval($nVideoSize);
         
         if($nAllowedSize < intval($nVideoSize)) {
             //file size too big
@@ -276,8 +276,28 @@ class Converter extends CI_Controller
             $this->aError[] = $sErrMsg;
             log_message("error", $sErrMsg);
             
+            $aParams = array('uniqid' => $this->uniqid,
+                'is_failed' => 1,
+                'fail_log' => $sErrMsg);
+            $this->db->reconnect();
+            $this->ffmpeg_model->set_video($aParams);
+            
             return FALSE;
 
+        } elseif(intval($nVideoSize) == 0){
+            
+            $sErrMsg = "Video from $this->link has empty size";
+            $this->aError[] = $sErrMsg;
+            log_message("error", $sErrMsg);
+            
+            $aParams = array('uniqid' => $this->uniqid,
+                'is_failed' => 1,
+                'fail_log' => $sErrMsg);
+            $this->db->reconnect();
+            $this->ffmpeg_model->set_video($aParams);
+            
+            return FALSE;
+            
         } else {
             //file size ok
             log_message('debug', 'file in link is OK size. link size: '.intval($sFileSize).' and max allowed is: '.intval($this->data['max']*1024).'!');
@@ -304,10 +324,17 @@ class Converter extends CI_Controller
         if (preg_match('/Content-Length: (\d+)/', $data, $matches)) {
           return (int)$matches[1];
         } else {
-            
-            $sErrMsg = "Unknown content length for url: $link";
+            $sWebServer = str_replace('http://', '', $link);
+            $sWebServer = current(explode("/", $sWebServer));
+            $sErrMsg = "Unknown content length for url: $link because web server $sWebServer doesn't show content-length before downloading";
             $this->aError[] = $sErrMsg;
             log_message('error', $sErrMsg);
+            
+            $aParams = array('uniqid' => $this->uniqid,
+                'is_failed' => 1,
+                'fail_log' => $sErrMsg);
+            $this->db->reconnect();
+            $this->ffmpeg_model->set_video($aParams);
             
             return FALSE;
         }
@@ -315,7 +342,7 @@ class Converter extends CI_Controller
     }
     
     /**
-     *
+     * Checks and sets file extension
      * @param type $sExt
      * @param string $sExtType
      * @param type $sUniqueId
@@ -324,13 +351,34 @@ class Converter extends CI_Controller
      */
     private function _set_extension($sExt, $sExtType = 'uploaded_video_extension', $sUniqueId = FALSE)
     {
-        log_message('debug', 'extension: '.$sExt.', ext type: '.$sExtType.',  uniqid: '.$sUniqueId);
+        $sMsg = 'extension: '.$sExt.', ext type: '.$sExtType.',  uniqid: '.$sUniqueId;
+        log_message('debug', $sMsg);
 
-        if(!$sExt)
+        if(!$sExt) {
+            
+            $sErrMsg = 'Empty extension for video file ';
+            $aParams = array('uniqid' => $this->uniqid,
+                'is_failed' => 1,
+                'fail_log' => $sErrMsg);
+            $this->db->reconnect();
+            $this->ffmpeg_model->set_video($aParams);
+            
             return FALSE;
+            
+        }
+            
         
-        if(!in_array($sExt, $this->config->item("ffmpeg_allowed")))
+        if(!in_array($sExt, $this->config->item("ffmpeg_allowed"))) {
+            
+            $sErrMsg = 'Extension "'.$sExt.'" not supported ';
+            $aParams = array('uniqid' => $this->uniqid,
+                'is_failed' => 1,
+                'fail_log' => $sErrMsg);
+            $this->db->reconnect();
+            $this->ffmpeg_model->set_video($aParams);
+            
             return FALSE;
+        }
         
         if($sExtType != 'uploaded_video_extension')
             $sExtType = 'converted_video_extension';
@@ -645,6 +693,67 @@ class Converter extends CI_Controller
         
         $data["Upload_percents_complete"]  = $this->upload_status($key, $sUploadBody, TRUE);
         $data["Convert_percents_complete"] = $this->statuss($key, TRUE);
+        
+        /**
+         * if file is uploaded and converter hasn't started, start conversion
+         * @todo check if ffmpeg process with this file name exists
+         * @todo insert converted video extension and converter options as soon as possible in DB
+         */
+        if($data["Upload_percents_complete"] == 100 &&
+                (!isset($aVideoData->is_uploaded) || $aVideoData->is_uploaded == 0)) {
+            
+            //check if already converts
+            $sCmd = "ps -ef | grep -c 'ffmpeg -i'";
+            exec($sCmd, $aOutput, $nReturn);
+            if($aOutput[0] > 2) { //not only grep process but also converter
+                //file already converts skip
+            } else {
+                //file doesn't convert- start converting
+                $this->link = $aVideoData->requested_link;
+                
+                $this->load->library('downloader');
+                $this->downloader->sLink = $this->link;
+                $this->downloader->sUniqueId = $this->uniqid;
+                
+                $this->title = $this->get_title($this->link, TRUE, TRUE);
+                $sExtension = $this->downloader->get_extension();
+                
+                $aExtensions = $this->config->item('ffmpeg_extensions');
+                $aExtKeys = array_keys($aExtensions);
+                if(in_array($aVideoData->converter_option, $aExtKeys)) {
+                    log_message('debug', 'mobile_status: format: '.$aVideoData->converter_option.' is in array of '. implode(',', $aExtKeys));
+                    $this->_set_extension($aExtensions[$aVideoData->converter_option], 'converted_video_extension');
+                } else {
+                    log_message('error', 'mobile_status: format: '.$aVideoData->converter_option.' is NOT in array of'. implode(',', $aExtKeys));
+                }
+                
+                $this->db->reconnect();
+                $aParams = array('uniqid' => $this->uniqid,
+                                'uploaded_video_body' => $this->title,
+                                'converted_video_body' => $this->title,
+                                'uploaded_video_extension' => $sExtension,
+                                'requested_link' => $this->link,
+                                'source_type' => 'known');
+                $this->ffmpeg_model->set_video($aParams);
+                
+                /*$this->ffmpeg->setInputFile($this->title.".".$sExtension);
+                //convert options
+                $this->ffmpeg->setKey($this->uniqid);
+                $this->ffmpeg->setFormat($aVideoData->converter_option);
+                $this->ffmpeg->setQuality($aVideoData->converter_quality);
+                //set cut options, if needed
+                $this->ffmpeg->startConvert("no_js");*/
+                $sLink = "http://m.wap4.org/en/converter/start_converter/$this->uniqid/$this->title/$sExtension/$aVideoData->converter_option/$aVideoData->converter_quality";
+                $command = "wget $sLink -b -O /dev/null -o ".$this->config->item("ffmpeg_key_dir")."".$key.".wget_alt >/dev/null 2>&1";
+                log_message('debug', $command);
+                exec($command, $arrr);
+                $data['warning'] = " Warning: started alternative conversion which might not work. Please wait and reload after a while";
+                
+            }
+            
+            
+        }
+        
         $data["fail_array"] = $this->read_fail_report_into_array($key);
         
         if($data["Convert_percents_complete"] >= 98) {
@@ -661,7 +770,24 @@ class Converter extends CI_Controller
             //$this->load->library('ffmpeg');
             //$this->ffmpeg->cleanAfterConverter($this->uniqid);
         }
+        
+        if(!empty($aVideoData->is_failed) && !empty($aVideoData->fail_log))
+        $data["fail_array"][] = $aVideoData->fail_log;
+        
         $this->load->view("mobile_status", $data);
+    }
+    
+    
+    public function start_converter($sUniqId, $sTitle, $sExtension, $sFormat, $sQuality) {
+                
+                $this->load->library('ffmpeg');
+                $this->ffmpeg->setInputFile($sTitle.".".$sExtension);
+                //convert options
+                $this->ffmpeg->setKey($sUniqId);
+                $this->ffmpeg->setFormat($sFormat);
+                $this->ffmpeg->setQuality($sQuality);
+                //set cut options, if needed
+                $this->ffmpeg->startConvert("no_js");
     }
     
     /**
@@ -673,12 +799,19 @@ class Converter extends CI_Controller
         $sCmd = "ps -ef | grep -c 'ffmpeg'";
         exec($sCmd, $aOutput, $nReturn);
         
-        if($aOutput[0] > 2) {
+        if($aOutput[0] > $this->config->item('ffmpeg_max_processes')) {
             $sErrMsg = "Too many ffmpeg processes (with grep process together it is: ".$aOutput[0].") now";
             log_message('error', $sErrMsg);
             $this->output->set_status_header('400');
+            
+            $aParams = array('uniqid' => $this->uniqid,
+                'is_failed' => 1,
+                'fail_log' => $sErrMsg);
+            $this->ffmpeg_model->set_video($aParams);
+            
             echo $sErrMsg;
             exit;
+            
         } else {
             log_message('debug', 'process count (with grep process) is OK: '.$aOutput[0]);
         }
@@ -693,6 +826,12 @@ class Converter extends CI_Controller
                 !empty($_REQUEST["link"])
             )
            ) {
+            
+            $aParams = array('uniqid' => $this->uniqid,
+                'requested_link' => $this->input->post('link'),
+                'converter_option' => $this->input->post('format'),
+                'convert_quality' => $this->input->post('quality'));
+            $this->ffmpeg_model->set_video($aParams);
             
             if(!is_file($this->config->item("ffmpeg_key_dir")."".$_REQUEST["key"].".wget"))
             $this->ping_link("http://".$_SERVER["SERVER_NAME"]."/".$this->lang->lang()."/converter/convert/no_js", $_REQUEST["key"]);

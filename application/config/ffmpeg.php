@@ -14,11 +14,13 @@
 $config['ffmpeg_allowed']    = array('mp3','avi','flv','mov','mp4','3gp','amr','ogg','flac','aac','wmv','mpg', 'ac3', 'mkv', 'webm');
 $config['ffmpeg_max']        = 300*1024; //in kilobytes
 
+$config['ffmpeg_max_processes'] = 2; //in kilobytes
+
 $config['ffmpeg_extensions'] = array(
 'mp3' => 'mp3',
 'amr' => 'amr',
 '3gp-176x144-amr' => '3gp',
-'3gp-352x288-aac' => '3gp',
+'3gp-352x288-amr' => '3gp',
 'mp4-176x144-aac' => 'mp4',
 'mp4-320x240-aac' => 'mp4',
 'mp4-400x240-aac' => 'mp4',
@@ -40,7 +42,7 @@ $config['ffmpeg_formats']    = array(
 'amr'               => ' -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 7.95k -y -threads 1 ',
 '3gp-176x144-amr'   => ' -f 3gp -s 176x144 -vcodec h263 -b 118k -r 15 -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k -y -threads 1 ',
 //'3gp-320x240-aac'   => ' -f 3gp -s qvga -vcodec libx264 -vpre medium -b 300k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 64k -y -threads 1 ',
-'3gp-352x288-aac'   => ' -f 3gp -s 352x288 -vcodec h263 -b 350k -r 15 -acodec libfaac -ac 2 -ar 22050 -ab 64k -y -threads 1 ',
+'3gp-352x288-amr'   => ' -f 3gp -s 352x288 -vcodec h263 -b 350k -r 15 -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 7.95k -y -threads 1 ',
 'mp4-176x144-aac'   => ' -f mp4 -s 176x144 -vcodec mpeg4 -b 128k -r 15 -acodec libfaac -ac 1 -ar 22050 -ab 32k -y -threads 1 ',
 'mp4-320x240-aac'   => ' -f mp4 -s qvga -vcodec mpeg4 -b 256k -r 15 -acodec libfaac -ac 2 -ar 22050 -ab 64k -y -threads 1 ',
 'mp4-400x240-aac'   => ' -s 400x240 -vcodec mpeg4 -b 450k -acodec libfaac -r 14 -ac 1 -ar 16000 -ab 32k -aspect 16:9 -y -threads 1 ',
@@ -60,7 +62,7 @@ $config['ffmpeg_low'] = array(
 'mp3'               => array("128" => "64"),
 'amr'               => array("7.95" => "5.9"),
 '3gp-176x144-amr'   => array("118" => "78", "15" => "12", "12.2" => "7.95"),
-'3gp-352x288-aac'   => array("350" => "280", "64" => "48"),
+'3gp-352x288-amr'   => array("350" => "280", "7.95" => "6.70"),
 'mp4-176x144-aac'   => array("64" => "48", "256" => "128"),
 'mp4-320x240-aac'   => array("32" => "24", "128" => "100"),
 'mp4-400x240-aac'   => array("450" => "350", "32" => "24"),
@@ -79,7 +81,7 @@ $config['ffmpeg_high'] = array(
 'mp3'               => array("128" => "192"),
 'amr'               => array("7.95" => "12.2"),
 '3gp-176x144-amr'   => array("15" => "25", "118" => "138"),
-'3gp-352x288-aac'   => array("15" => "25", "64" => "128"),
+'3gp-352x288-amr'   => array("15" => "25", "7.95" => "12.2"),
 'mp4-176x144-aac'   => array("15" => "25", "48" => "64", "128" => "150"),
 'mp4-320x240-aac'   => array("15" => "25", "64" => "128", "256" => "320"),
 'mp4-400x240-aac'   => array("450" => "580", "32" => "64"),
