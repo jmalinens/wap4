@@ -123,7 +123,7 @@ $lang['about.content']      = array("This service is brought to You by 2nd cours
                                 "Service is based on CodeIgniter 2.0 REACTOR web framework, which uses PHP scripting language and MySQL database",
                                 "Videos are converted with <a href=\"http://ffmpeg.org\">FFMPEG</a>
                                     licensed under the <a href=\"http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html\">LGPLv2.1</a>",
-                                "You can download source code of this website on Github <a href=\"https://github.com/jmalinens/wap4\">my Github page- github.com/jmalinens/wap4</a> (GNU LGPL license)");
+                                "You can download source code of this website on Github <a href=\"https://github.com/jmalinens/wap4\">my Github page- github.com/jmalinens/wap4</a> (<a href=\"http://sam.zoy.org/wtfpl/\">WTFPL</a>)");
 
 $lang['fail.download']      = "Failed to download";
 $lang['fail.save']          = "Failed to save file";

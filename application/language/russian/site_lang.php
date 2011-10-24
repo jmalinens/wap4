@@ -122,7 +122,7 @@ $lang['howto.formats']      = "Полный список всех поддерж
 $lang['about.content']      = array("Автор: студент 2-го курса <b>Juris Malinens</b> (в Латвийском университете)",
                                  "Сервис основан на CodeIgniter 2,0 веб-фреймворк, который использует PHP язык и базу данных MySQL",
                                  "Видео преобразуется с <a href=\"http://ffmpeg.org\">FFMPEG</a>",
-                                 "Вы можете загрузить исходный код данного веб-сайта <a href=\"https://github.com/jmalinens/wap4\">здесь: github.com/jmalinens/wap4</a> (лицензия GNU LGPL)");
+                                 "Вы можете загрузить исходный код данного веб-сайта <a href=\"https://github.com/jmalinens/wap4\">здесь: github.com/jmalinens/wap4</a> (лицензия <a href=\"http://sam.zoy.org/wtfpl/\">WTFPL</a>)");
 
 $lang['fail.download']      = "Не удалось загрузить";
 $lang['fail.save']          = "Не удалось сохранить файл";

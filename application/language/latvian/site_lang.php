@@ -122,7 +122,7 @@ $lang['howto.formats']      = "Saraksts ar atbalstītajiem audio un video klipu 
 $lang['about.content']      = array("Šo servisu izveidoja Datorikas fakultātes 2. kursa students <strong>Juris Malinens</strong> kā praktisko darbu \"Tīmekļa Tehnoloģijās\"",
                                 "Serviss ir bāzēts uz CodeIgniter 2.0 REACTOR tīmekļa ietvara, kas izmanto PHP valodu un MySQL datubāzi",
                                 "Konvertēšana notiek ar <a href=\"http://ffmpeg.org\">FFMPEG</a> programmas palīdzību ( <a href=\"http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html\">LGPLv2.1</a>)",
-                                "Jebkurš var bez maksas lejupielādēt konvertētāju <a href=\"https://github.com/jmalinens/wap4\">manā Github lapā: github.com/jmalinens/wap4</a> (GNU LGPL licence)");
+                                "Jebkurš var bez maksas lejupielādēt konvertētāju <a href=\"https://github.com/jmalinens/wap4\">manā Github lapā: github.com/jmalinens/wap4</a> (<a href=\"http://sam.zoy.org/wtfpl/\">WTFPL</a>)");
 
 $lang['fail.download']      = "Neizdevās lejupielāde";
 $lang['fail.save']          = "Neizdevās saglabāšana";

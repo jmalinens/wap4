@@ -2,9 +2,9 @@
 Read INSTALL.md to read instalaltion instructions
 
 License:
+WTFPL:
 
-
-[www.gnu.org/licenses/lgpl.html](http://www.gnu.org/licenses/lgpl.html "GNU LGPL")
+[sam.zoy.org/wtfpl/](http://sam.zoy.org/wtfpl/ "WTFPL")
 
 Demo:
 

@@ -5,6 +5,7 @@ class site_model extends CI_Model {
   }
   
    function get_site_status() {
+    $this->db->reconnect();
     $this->db->select('setting_value');
     $this->db->where('setting_name', 'status');
     $query = $this->db->get("site");
@@ -35,6 +36,7 @@ class site_model extends CI_Model {
       $data = array(
                'setting_value' => $new_status
             );
+    $this->db->reconnect();
     $this->db->where('setting_name', 'status');
     $this->db->where('setting_value', $status);
     $this->db->update('site', $data); 
