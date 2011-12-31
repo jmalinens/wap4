@@ -12,4 +12,10 @@ Demo:
 * Russian version [wap4.org video converter Русский](http://wap4.org/ru "Youtube to mp3, videos to mobile")
 * Latvian version [wap4.org video converter latviešu](http://wap4.org/lv "Youtube to mp3, videoklipi mobilajā")
 
+
+Database schema:
+
+[Database schema (MySQL)](http://pastebin.com/B1Mtqp5w "Database schema (MySQL)")
+
+
 Created by Juris Malinens
