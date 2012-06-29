@@ -53,10 +53,10 @@ if ( ! function_exists('load_settings'))
 
             $ci->load->model('site_model');
 
-            if (!$ci->ion_auth->logged_in())
-            $ci->data['max'] = $ci->site_model->get_setting('file_size_unregistered')*1024;
+            if ($ci->ion_auth->logged_in() || $ci->input->post('is_logged_in') == 'yes')
+                $ci->data['max'] = $ci->site_model->get_setting('file_size_registered')*1024;
             else
-            $ci->data['max'] = $ci->site_model->get_setting('file_size_registered')*1024;
+                $ci->data['max'] = $ci->site_model->get_setting('file_size_unregistered')*1024;
             
 if (!$ci->ion_auth->logged_in()) {
 

@@ -1,0 +1,8 @@
+.twitter{width:26px;height:31px;background-position:-2px -0px;background-repeat:no-repeat;}
+.facebook{width:26px;height:32px;background-position:-33px -1px;background-repeat:no-repeat;}
+.rss{width:26px;height:32px;background-position:-64px -0px;background-repeat:no-repeat;}
+.en{width:16px;height:11px;background-position:-0px -32px;background-repeat:no-repeat;}
+.lv{width:16px;height:11px;background-position:-18px -32px;background-repeat:no-repeat;}
+.ru{width:16px;height:11px;background-position:-36px -32px;background-repeat:no-repeat;}
+.twitter, .facebook, .rss, .lv, .ru, .en {background-image:url('/img/wap4-sprite-3.png');}
+.lv, .ru, .en {margin-top: 8px;}

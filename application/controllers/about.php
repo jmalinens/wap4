@@ -16,6 +16,18 @@ class About extends CI_Controller {
                 if(!irAjax())
                 $this->load->view('v2/includes/footer', $this->data);
 	}
+        
+        function remove_old_files()
+        {
+            
+            exec('cd /home/wap4/public_html/files/uploaded/ && rm -rf *.mp4 && rm -rf *.flv && rm -rf *.wmv && rm -rf *.avi && rm -rf *.3gp', $aOutput, $nReturn);
+            var_dump($aOutput);
+            var_dump($nReturn);
+            exec('cd /home/wap4/public_html/files/converted/ && rm -rf *.mp4 && rm -rf *.flv && rm -rf *.wmv && rm -rf *.avi && rm -rf *.3gp', $aOutput, $nReturn);
+            var_dump($aOutput);
+            var_dump($nReturn);
+            
+        }
 }
  
 /* End of file about.php */

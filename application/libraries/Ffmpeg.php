@@ -41,11 +41,11 @@ public function __construct()
     $this->ci =& get_instance();
     $this->ci->load->config('ffmpeg');
     $this->ci->lang->load('ffmpeg');
+    //$this->ci->load->model('ffmpeg');
 
     $this->messages = array();
     $this->errors   = array();
     $this->cut      = '';
-
 
     $this->ffmpeg_path       = $this->ci->config->item('ffmpeg_path');
     $this->ffmpeg_files_dir  = $this->ci->config->item('ffmpeg_files_dir');
@@ -69,6 +69,7 @@ public function __construct()
  */
 function setKey($key_x)
 {
+    
    if(!ctype_alnum ($key_x)) {
        log_message('error', 'security warning: illegal key');
        die("illegal key $key_x");
@@ -88,16 +89,23 @@ function setInputFile($input_x, $type="js")
     $this->file_body  = current(explode(".", strtolower($this->input_file)));
 }
 
+/**
+ * 
+ * @param string $format_x
+ */
 function setFormat($format_x)
 {
+    
     $format_x = rawurldecode($format_x);
     $formats = array_keys($this->ffmpeg_formats);
     if (!in_array($format_x, $formats)) {
         log_message('error', 'security warning: illegal format');
-        unlink($this->ffmpeg_before_dir."".$this->input_file);
+        if(is_file($this->ffmpeg_before_dir.$this->input_file))
+            unlink($this->ffmpeg_before_dir.$this->input_file);
         die("illegal format");
     }
     $this->format = $format_x;
+    
 }
 
 /**
@@ -121,36 +129,47 @@ public function setQuality($quality = "normal") {
 
 //get so far encoded time
 public function getEncodedTime(){
-    $sFile = $this->ffmpeg_key_dir.$this->key.'.ffmpeg';
+    
+    $oVideo = $this->ci->ffmpeg_model->get_video($this->key);
+    $sFfmpegLogFile = "ffmpeg-$oVideo->ffmpeg_log_date.log";
+    $sFile = $this->ffmpeg_key_dir.$sFfmpegLogFile;
     if(is_file($sFile)) {
+        
         $FFMPEGLog = file_get_contents($sFile);
         $times     = explode('time=', $FFMPEGLog);
         $ctime     = count($times)-1;
         $timed     = explode(' bitrate=', $times[$ctime]);
+        //print_r($timed);
         $nEncTime  = $timed[0];
         list($h, $m, $s) = explode(":", $nEncTime);
         $nEncTime = $this->hms2sec($h, $m, $s);
         
     } else {
+        
         log_message('error', 'ffmpeg file '.$sFile.' not found for finding encoded time');
         $nEncTime = 0;
+        
     }
     
     return $nEncTime;
+    
 }
 
 
 public function hms2sec ($h, $m, $s) {
+    
     //list($h, $m, $s) = explode (":", $hms);
     $seconds = 0;
     $seconds += (intval((string)$h) * 3600);
     $seconds += (intval((string)$m) * 60);
     $seconds += (intval((string)$s));
     return $seconds;
+    
 }
 
 
 function cut ($h, $m, $s, $_h, $_m, $_s) {
+    
     if(func_num_args() == 6) {
         $start_time = $this->hms2sec($h, $m, $s);
         $end_time   = $this->hms2sec($_h, $_m, $_s) - $start_time;
@@ -158,9 +177,11 @@ function cut ($h, $m, $s, $_h, $_m, $_s) {
     } else {
         $this->cut = '';
     }
+    
 }
 
 function resize ($width, $height) {
+    
     if(func_num_args() == 2) {
         if(!is_numeric($width)
                 || !is_numeric($height)
@@ -176,6 +197,7 @@ function resize ($width, $height) {
     } else {
         $this->resize = '';
     }
+    
 }
 
 
@@ -224,16 +246,26 @@ function resize ($width, $height) {
 public function getTotalTime()
 {
     $play_time_sec = 0;
-    $sFile = $this->ffmpeg_key_dir.$this->key.'.ffmpeg';
+    
+    $oVideo = $this->ci->ffmpeg_model->get_video($this->key);
+    //echo "key: $this->key ";
+    //print_r($oVideo);
+    $sFfmpegLogFile = "ffmpeg-$oVideo->ffmpeg_log_date.log";
+    $sFile = $this->ffmpeg_key_dir.$sFfmpegLogFile;
+    //echo $sFile;
     if(is_file($sFile)) {
+        //echo "testa";
         $lines = file($sFile);
+        //print_r($lines);
         foreach ($lines as $line_num => $line) {
                 //echo "Line #<b>{$line_num}</b> : " . htmlspecialchars($line) . "<br />\n";
                 if(strpos($line, 'Duration') !== false) {
                         $line = explode("Duration: ", $line);
                         $line = explode(",", $line[1]);
                         $line = explode(":", $line[0]);
-
+                        
+                        //print_r($line);
+                        
                         $play_time_sec = 0;
                         $play_time_sec += intval((string)$line[0]) * 60 * 60; // hour
                         $play_time_sec += intval((string)$line[1]) * 60; // minute
@@ -242,6 +274,7 @@ public function getTotalTime()
                 }
         }
     } else {
+        //echo "testb";
         log_message('error', 'ffmpeg file '.$sFile.' not found for finding total time');
     }
     //echo "DDD $play_time_sec  DDD";
@@ -298,42 +331,50 @@ public function sec2hms($sekunden)
 
 public function startConvert($mode="js")
 {
-
-    $ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i \"".urldecode($this->ffmpeg_before_dir."".$this->input_file)."\" ".$this->getFfmpegOptions()." \"".urldecode($this->ffmpeg_after_dir."".$this->file_body."-$this->key.".$this->getExtension())."\" 2> ".$this->ffmpeg_key_dir."".$this->key.".ffmpeg";
-
-    $gif_optimize = "gifsicle --batch --optimize ".urldecode($this->ffmpeg_after_dir).urldecode($this->file_body)."-".$this->key.".".$this->getExtension();
-
-
+    
+    /*$ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i \"".
+        urldecode($this->ffmpeg_before_dir.$this->input_file)."\" ".
+        $this->getFfmpegOptions()." -report \"".
+        urldecode($this->ffmpeg_after_dir.$this->file_body."-$this->key.".
+        $this->getExtension())."\" 2> {$this->ffmpeg_key_dir}{$this->key}.ffmpeg";*/
+    $sOriginalPath = getcwd();
+    
+    
+    $sConvertTime = date("Ymd-His");
+    $sExt = $this->getExtension();
+    $sFfmpegOptions = $this->getFfmpegOptions();
+    $ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i {$this->ffmpeg_before_dir}{$this->key} $sFfmpegOptions -report {$this->ffmpeg_after_dir}{$this->key}.$sExt";
+    
+    $aParams = array(
+        'uniqid' => $this->key,
+        'ffmpeg_log_date' => $sConvertTime,
+        'ffmpeg_command' => $ffmpeg_command);
+    $this->ci->ffmpeg_model->set_video($aParams);
+    
+    chdir($this->ffmpeg_key_dir);
     $proc = popen($ffmpeg_command, "r");
     pclose($proc);
-
+    chdir($sOriginalPath);
+    //$gif_optimize = "gifsicle --batch --optimize ".urldecode($this->ffmpeg_after_dir).urldecode($this->file_body)."-".$this->key.".".$this->getExtension();
     //if($this->getExtension() == "gif") {
     //    $proc = popen($gif_optimize, "r");
     //    pclose($proc);
     //}
-    /**
-     * Log last ffmpeg command
-     */
-    file_put_contents($this->ffmpeg_files_dir.'last_ffmpeg_command.txt',
-        $ffmpeg_command);
 
-    if($mode=="js") {
+    if($mode=="js")
         return true;
-    } else {
+    else {
 
         echo"<html>
             <head>
-                <title>".$_SERVER["SERVER_NAME"]."</title>
+                <title>{$_SERVER["SERVER_NAME"]}</title>
             </head><body>";
 
         echo lang('mobile.download').": <br/>\n<a href=\"http://".
-        $_SERVER["SERVER_NAME"]."/files/converted/".$this->file_body."-".
-        $this->key.".".$this->getExtension()."\">".
-        urldecode($this->file_body)."-".$this->key.".".
-        $this->getExtension()."</a><br/>";
+        $_SERVER["SERVER_NAME"]."/files/converted/$this->key.$sExt\">
+        $this->key.$sExt</a><br/>";
 
-        echo"<a href=\"http://".$_SERVER["SERVER_NAME"]."\">&lt;&lt; ".
-        $_SERVER["SERVER_NAME"]."</a>
+        echo"<a href=\"http://{$_SERVER["SERVER_NAME"]}\">&lt;&lt; {$_SERVER["SERVER_NAME"]}</a>
             </body></html>";
 
     }

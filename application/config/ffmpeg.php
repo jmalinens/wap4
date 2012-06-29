@@ -1,6 +1,6 @@
 <?php
 /**
- * Juris Malinens, 2010-2011
+ * Juris Malinens, 2010-2012
  */
 
 
@@ -23,6 +23,7 @@ $config['ffmpeg_extensions'] = array(
 '3gp-352x288-amr' => '3gp',
 'mp4-176x144-aac' => 'mp4',
 'mp4-320x240-aac' => 'mp4',
+//'mp4-320x240-aac-96k' => 'mp4',
 'mp4-400x240-aac' => 'mp4',
 'mp4-640x360-aac' => 'mp4',
 'avi-320x240'     => 'avi',
@@ -41,19 +42,19 @@ $config['ffmpeg_formats']    = array(
 'mp3'               => ' -ab 128k -ar 44100 -y -threads 1 ',
 'amr'               => ' -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 7.95k -y -threads 1 ',
 '3gp-176x144-amr'   => ' -f 3gp -s 176x144 -vcodec h263 -b 118k -r 15 -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k -y -threads 1 ',
-//'3gp-320x240-aac'   => ' -f 3gp -s qvga -vcodec libx264 -vpre medium -b 300k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 64k -y -threads 1 ',
+//'3gp-320x240-aac'   => ' -f 3gp -s qvga -vcodec libx264 -preset veryfast -b 300k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 64k -y -threads 1 ',
 '3gp-352x288-amr'   => ' -f 3gp -s 352x288 -vcodec h263 -b 350k -r 15 -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 7.95k -y -threads 1 ',
-'mp4-176x144-aac'   => ' -f mp4 -s 176x144 -vcodec mpeg4 -b 128k -r 15 -acodec libfaac -ac 1 -ar 22050 -ab 32k -y -threads 1 ',
-'mp4-320x240-aac'   => ' -f mp4 -s qvga -vcodec mpeg4 -b 256k -r 15 -acodec libfaac -ac 2 -ar 22050 -ab 64k -y -threads 1 ',
-'mp4-400x240-aac'   => ' -s 400x240 -vcodec mpeg4 -b 450k -acodec libfaac -r 14 -ac 1 -ar 16000 -ab 32k -aspect 16:9 -y -threads 1 ',
-'mp4-640x360-aac'   => ' -f mp4 -s 640x360 -vcodec libx264 -vpre medium -b 750k -r 15 -acodec libfaac -ac 2 -ar 22050 -ab 64k -y -threads 1 ',
+'mp4-176x144-aac'   => ' -f mp4 -s 176x144 -vcodec mpeg4 -b 128k -r 15 -acodec aac -strict experimental -ac 1 -ar 22050 -ab 32k -y -threads 1 ',
+'mp4-320x240-aac'   => ' -f mp4 -s qvga -vcodec mpeg4 -b 256k -r 15 -acodec aac -strict experimental -ac 2 -ar 22050 -ab 64k -y -threads 1 ',
+'mp4-400x240-aac'   => ' -s 400x240 -vcodec mpeg4 -b 450k -acodec aac -strict experimental -r 14 -ac 1 -ar 16000 -ab 32k -aspect 16:9 -y -threads 1 ',
+'mp4-640x360-aac'   => ' -f mp4 -s 640x360 -vcodec libx264 -preset veryfast -b 750k -r 15 -acodec aac -strict experimental -ac 2 -ar 22050 -ab 64k -y -threads 1 ',
 'avi-320x240'       => ' -f avi -s 320x240 -vcodec mpeg4 -b 500k -r 15 -acodec libmp3lame -ac 2 -ar 44100 -ab 64k -y -threads 1 ',
 'ipod-320x240-4-3'  => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 320x240 -b 400kb -strict -1 -y -threads 1 ',
 'ipod-320x240-16-9' => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 320x176 -b 400kb -strict -1 -y -threads 1 ',
 'ipod-nano-176x128' => ' -acodec libmp3lame -ab 128kb -ar 44100 -vcodec mpeg2video -s 176x128 -b 200kb -strict -1 -y -threads 1 ',
-'psp'               => ' -b 300 -s 320x240 -vcodec mpeg4 -ab 64kb -ar 44100 -acodec libfaac -y -threads 1 ',
+'psp'               => ' -b 300 -s 320x240 -vcodec mpeg4 -ab 64kb -ar 44100 -acodec aac -strict experimental -y -threads 1 ',
 //'gif'               => ' -pix_fmt rgb24 -y -threads 1 ',
-'aac'               => ' -acodec libfaac -ab 64k -ar 44100 -y -threads 1 ',
+'aac'               => ' -acodec aac -strict experimental -ab 64k -ar 44100 -y -threads 1 ',
 'ogg-audio-video'   => ' -acodec libvorbis -ac 2 -ab 64k -ar 44100 -y -threads 1 ',
     
 );
@@ -106,14 +107,26 @@ $config['ffmpeg_formats']      = array(
 'iphone' => ' -f mp4 -vcodec mpeg4 -b 256k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 48k -y ');
 */
 
-//for linux
 
-$config['ffmpeg_path']          = "ffmpeg"; //ffmpeg linux path
-$config['ffmpeg_prefix']        = "";
-$config['ffmpeg_suffix']        = " &"; //to run process in background
-$config['ffmpeg_files_dir']     = "/home/wap4/public_html/files/";
-$config['ffmpeg_before_dir']    = "/home/wap4/public_html/files/uploaded/";
-$config['ffmpeg_after_dir']     = "/home/wap4/public_html/files/converted/";
-$config['ffmpeg_key_dir']       = "/home/wap4/public_html/files/keys/"; //directory for key files
+if(strtolower(substr(PHP_OS, 0, 3)) == "win") {
+    //for windows
+    $config['public_html'] = "F:/xampp/htdocs/wap4.org/";
+    $config['ffmpeg_path'] = "C:/ffmpeg.exe"; //ffmpeg linux path
+    $config['ffmpeg_prefix'] = "START \"converting in background...\" /B "; //to run process in background
+    $config['ffmpeg_suffix'] = "";
+    $config['ffmpeg_prefix']     = "";
+    
+} else {
+    //for linux
+    $config['public_html'] = "/home/wap4/public_html/";
+    $config['ffmpeg_path'] = "nice -n 12 ffmpeg";
+    $config['ffmpeg_suffix'] = " &"; //to run process in background
+    
+}
+
+$config['ffmpeg_files_dir']  = $config['public_html']."files/";
+$config['ffmpeg_before_dir'] = $config['public_html']."files/uploaded/";
+$config['ffmpeg_after_dir']  = $config['public_html']."files/converted/";
+$config['ffmpeg_key_dir']    = $config['public_html']."files/keys/"; //directory for key files
 		
 	

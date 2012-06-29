@@ -28,7 +28,7 @@ class Welcome extends CI_Controller {
                     $uniqid             = uniqid();
                 }
 
-                $xmlUrl = "/home/wap4/public_html/files/presets.xml"; // XML feed file/URL
+                $xmlUrl = $this->config->item("ffmpeg_files_dir")."presets.xml"; // XML feed file/URL
                 $xmlStr = file_get_contents($xmlUrl);
 
                 $xmlObj = simplexml_load_string($xmlStr);

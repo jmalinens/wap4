@@ -29,7 +29,16 @@ function add_video_to_db($user, $video, $apraksts)
 }
 
 function get_video($sUniqueId) {
-    $query = $this->db->get_where('video_details', array('uniqid' => $sUniqueId));
+    
+    //$query = $this->db->get_where('video_details', array('uniqid' => $sUniqueId));
+    
+    $sSql = "
+    SELECT SQL_NO_CACHE *
+    FROM (`video_details`)
+    WHERE `uniqid` = '$sUniqueId'
+    ";
+    
+    $query = $this->db->query($sSql);
     //echo $this->db->last_query();
     if ($query->num_rows() > 0)
         return $query->row();

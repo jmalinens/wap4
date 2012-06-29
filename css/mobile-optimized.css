@@ -1,0 +1,40 @@
+html,body{margin:0;padding:0;}
+body{text-align:center;}
+a{color:green;}
+a:hover{color:#79B30B;}
+ul{list-style:none;}
+.header h1{text-align:center;color:#79B30B;font-size:1.4em;}
+.right a{display:block;padding-left:8px;width:128px;background:white;}
+.right a:hover{display:block;width:128px;background:orange;color:white;}
+#nav, .languages{list-style:none;}
+.languages li{font-size:0.8em;}
+#nav li{font-size:0.6em;width:128px;text-decoration:underline;}
+#nav li, #id_create_user{background-color:orange;margin-bottom:1px;margin-right:1px;padding-right:1px;text-align:center;border-radius:4px 4px 4px 4px;-moz-border-radius:4px 4px 4px 4px;-webkit-border-radius:4px 4px 4px 4px;}
+#nav li:hover, #id_create_user:hover{background-color:#ff4500;}
+#nav a{text-decoration:none;display:block;height:18px;}
+#nav a:hover{text-decoration:underline;color:white;}
+h1,h2,h3{margin-top:0;font-family:"arial black", arial;text-align:center;font-size:1.2em;}
+input{background:orange;}
+input:hover{background:orangered;}
+.error{color:#393939;font-size:1.2em;}
+fieldset{margin:auto;margin-bottom:2em;display:block;}
+#pagination{padding-top:50px;}
+#pagination a, #pagination strong{background:#e3e3e3;padding:4px 7px;text-decoration:none;border:1px solid #cac9c9;color:#292929;font-size:1.2em;}
+#pagination strong, #pagination a:hover{font-weight:normal;background:#cac9c9;}
+.link{display:inline;}
+ul.list{list-style:circle;padding:0;margin:2px;}
+ul.news{list-style:none;padding:0;margin:0;min-height:30px;}
+ul.news li{background-color:white;width:99%;}
+ul.news a{display:inline;}
+.news_top{position:relative;width:99%;height:15px;}
+.news_username{width:50%;float:left;font-size:1.1em;font-family:Helvetica;}
+.news_date{width:50%;float:left;text-align:right;font-size:1em;}
+.news_content{background-color:#ffffe0;font-size:1em;text-align:left;text-indent:12px;padding-bottom:5px;clear:both;}
+.perma{padding-bottom:5px;}
+.media{margin-top:20px;margin-left:1px;}
+#footer2{color:black;border-radius:0px 0px 6px 6px;-moz-border-radius:0px 0px 6px 6px;-webkit-border-radius:0px 0px 6px 6px;}
+#footer2 li{text-align:left;}
+#footer2 a{color:green;font-weight:bold}
+#footer2 a:hover{color:#fff;}
+#footer_follow li{background-repeat:no-repeat;background-color:transparent;display:block;}
+.clear{clear:both;}

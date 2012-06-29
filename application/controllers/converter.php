@@ -69,18 +69,24 @@ class Converter extends CI_Controller
     
    private function _set_uniqid_and_link() {
        
-        if($this->input->get_post('key') && ctype_alnum($this->input->get_post('key')) && strlen($this->input->get_post('key')) == 13) {
+        if($this->input->get_post('key')
+                && ctype_alnum($this->input->get_post('key'))
+                && strlen($this->input->get_post('key')) == 13) {
+            
             $this->uniqid = $this->input->get_post('key');
-            //echo"aaa";
-        } else if($this->uri->segment(4) && ctype_alnum($this->uri->segment(4)) && strlen($this->uri->segment(4)) == 13) {
+            
+        } else if($this->uri->segment(4)
+                && ctype_alnum($this->uri->segment(4))
+                && strlen($this->uri->segment(4)) == 13) {
+            
             $this->uniqid = $this->uri->segment(4);
-            //echo"bbb";
-        } else {
-            //echo"ccc";
+
+        } else
             $this->uniqid = uniqid();
-        }
+        
         if($this->input->get_post('link'))
-            $this->link = $this->input->get_post('link', FALSE);
+            $this->link = trim($this->input->get_post('link', FALSE));
+        
    }
    
    
@@ -88,7 +94,7 @@ class Converter extends CI_Controller
        
         $this->db->reconnect();
         $aVideoData = $this->ffmpeg_model->get_video($sUniqueId);
-        if($aVideoData->video_size > $this->data['max']*1024) {
+        if(isset($aVideoData->video_size) && $aVideoData->video_size > $this->data['max']*1024) {
             
             $sErr = "Video $sUniqueId  has bigger data size (".ceil(($aVideoData->video_size/1024)/1024)."MB) than MAX allowed (".($this->data['max']/1024)."MB)";
             
@@ -159,6 +165,7 @@ class Converter extends CI_Controller
         $this->db->reconnect();
         //check if recognized as one of video sites
         if($this->downloader->is_link_recognized($this->link)) {
+            
             //link is recognized
             log_message('debug', 'link: '.$this->link.' is recognized as video sharing website :)');
             
@@ -192,6 +199,7 @@ class Converter extends CI_Controller
             $sFileSize = $this->downloader->get_info('filesize');
             //echo $sFileSize;
             //check if file size is OK compared to max allowed filesize
+            //echo "$\this->data['max']: {$this->data['max']} \$sFileSize: $sFileSize";
             $bIsFileSizeAllowed = $this->_is_filesize_allowed($this->data['max'], $sFileSize);
             if($bIsFileSizeAllowed === FALSE) {
                 if($sReturn === TRUE) {
@@ -211,9 +219,9 @@ class Converter extends CI_Controller
                             'source_type' => 'known');
             $this->ffmpeg_model->set_video($aParams);
             
-            if($sExtension)
-                $this->_set_extension($sExtension, 'uploaded_video_extension');
-            else {
+            if($sExtension) {
+                //$this->_set_extension($sExtension, 'uploaded_video_extension');
+            } else {
                 $sErrMsg = 'upload extension is empty for '.$this->uniqid.'!';
                 log_message('error', $sErrMsg);
             }
@@ -240,7 +248,9 @@ class Converter extends CI_Controller
                     return FALSE;
                 } else {
                     $this->output->set_status_header('400');
-                    $sErr =  lang('upload.fail')." Video is bigger (".ceil((($sFileSize/1024)/1024))."MB) than max allowed size of ".($this->data['max']/1024)."MB or video size could not be determined";
+                    $sErr = lang('upload.fail')." Video is bigger (".
+                            ceil((($sFileSize/1024)/1024))."MB or $sFileSize) than max allowed size of ".
+                            ($this->data['max']/1024)."MB or video size could not be determined";
                     echo $sErr;
                     
                     $this->db->reconnect();
@@ -308,10 +318,11 @@ class Converter extends CI_Controller
      */
     private function _is_filesize_allowed($nAllowedSize, $nVideoSize) {
         
-        $nAllowedSize = intval($this->data['max']*1024);
-        $nVideoSize = intval($nVideoSize);
-        
-        if($nAllowedSize < intval($nVideoSize)) {
+        $nAllowedSize = (int)$this->data['max']*1024;
+        $nVideoSize = (int)$nVideoSize;
+        //echo "\n\$nAllowedSize: $nAllowedSize \$nVideoSize: $nVideoSize";
+        if($nAllowedSize < $nVideoSize) {
+            //echo "test1";
             //file size too big
             $sErrMsg = "Video from $this->link is bigger (".ceil((($nVideoSize/1024)/1024))."MB) than max allowed size of ".($this->data['max']/1024)."MB ";
             $this->aError[] = $sErrMsg;
@@ -326,7 +337,7 @@ class Converter extends CI_Controller
             return FALSE;
 
         } elseif(intval($nVideoSize) == 0){
-            
+            //echo "test2";
             $sErrMsg = "Video from $this->link has empty size";
             $this->aError[] = $sErrMsg;
             log_message("error", $sErrMsg);
@@ -340,8 +351,9 @@ class Converter extends CI_Controller
             return FALSE;
             
         } else {
+            //echo "test3";
             //file size ok
-            log_message('debug', 'file in link is OK size. link size: '.intval($sFileSize).' and max allowed is: '.intval($this->data['max']*1024).'!');
+            log_message('debug', 'file in link is OK size. link size: '.$nVideoSize.' and max allowed is: '.intval($this->data['max']*1024).'!');
 
             return TRUE;
         }
@@ -550,11 +562,15 @@ class Converter extends CI_Controller
     
     
     /**
-     * Get Title from link and save to file
+     * Get Title from link and save to file- NOT NEEDED NOW
      * @param string $link
      * @return string $this->title
      */
     function get_direct_title($link, $uniqid) {
+        
+        return $uniqid;
+        
+        
         if(!$link) {
             $this->aError[] = "Direct link not found";
         }
@@ -584,45 +600,59 @@ class Converter extends CI_Controller
     
     /**
      * How much percents uploaded already for Youtube/Vimeo/other videos
+     * @todo use downloader to check percents
      * @uses ajax
      */
-    function upload_status($key, $title, $return = FALSE)
+    function upload_status($key, $title = "", $return = FALSE)
     {
-        sleep(3);
+        sleep(2);
         $this->db->reconnect();
         $aVideoData = $this->ffmpeg_model->get_video($key);
         //print_r($aVideoData);
+        
         if($aVideoData) {
-            $sUploadBody = $aVideoData->uploaded_video_body;
-            $sUploadExtension = $aVideoData->uploaded_video_extension;
+            
+            //$sUploadBody = $aVideoData->uploaded_video_body;
+            //$sUploadExtension = $aVideoData->uploaded_video_extension;
             $sUploadTotalSize = $aVideoData->video_size;
+            
         } else {
+            
             log_message('error', 'video data for upload status not found for key '.$key);
             if(!$return) {
                 echo 0;
                 exit;
+                
         } else
                 return 0;
             
         }
-        $sDownloadingFile = $this->config->item("ffmpeg_before_dir")."".$sUploadBody.".".$sUploadExtension;
-
-        if(is_file($sDownloadingFile.".part")) {
-            log_message('debug', 'using '.$sDownloadingFile.'.part to check upload progress');
-            $size_local  = filesize($sDownloadingFile.".part");
-        } else if(is_file($sDownloadingFile)) {
-            log_message('debug', 'using '.$sDownloadingFile.' to check upload progress');
-            $size_local  = filesize($sDownloadingFile);
-        } else {
-            log_message('error', 'there are no .part and without .part file '.$sDownloadingFile);
-            $size_local = 0;
-        }
+        //$sDownloadingFile = $this->config->item("ffmpeg_before_dir").$sUploadBody.".".$sUploadExtension;
+        $sDownloadingFile = $this->config->item("ffmpeg_before_dir").$key;
         
-        if($sUploadTotalSize > 0)
-            $status = round(($size_local/$sUploadTotalSize)*100);
-        else
-            $status = 0;
-
+        $this->load->library('downloader');
+        $this->downloader->sUniqueId = $key;
+        $status = $this->downloader->get_info('percents');
+        
+        if(!$status) {
+            
+            if(is_file($sDownloadingFile.".part")) {
+                log_message('debug', 'using '.$sDownloadingFile.'.part to check upload progress');
+                $size_local  = filesize($sDownloadingFile.".part");
+            } else if(is_file($sDownloadingFile)) {
+                log_message('debug', 'using '.$sDownloadingFile.' to check upload progress');
+                $size_local  = filesize($sDownloadingFile);
+            } else {
+                log_message('error', 'there are no .part and without .part file '.$sDownloadingFile);
+                $size_local = 0;
+            }
+            
+            if($sUploadTotalSize > 0)
+                $status = round(($size_local/$sUploadTotalSize)*100);
+            else
+                $status = 0;
+            
+        }
         
         if($status > 100) {
             $status = 100;
@@ -724,16 +754,16 @@ class Converter extends CI_Controller
                                 'uploaded_video_extension' => $sExtension);
                 $this->ffmpeg_model->set_video($aParams);
 
-                if($sExtension)
-                    $this->_set_extension($sExtension, 'uploaded_video_extension');
-                else
+                if($sExtension) {
+                    //$this->_set_extension($sExtension, 'uploaded_video_extension');
+                } else
                     log_message('error', 'upload extension is empty for '.$this->uniqid.'!');
             
             }
         }
         
         $data["Upload_percents_complete"]  = $this->upload_status($key, $sUploadBody, TRUE);
-        $data["Convert_percents_complete"] = $this->statuss($key, TRUE);
+        $data["Convert_percents_complete"] = $this->convert_status($key, TRUE);
         
         /**
          * if file is uploaded and converter hasn't started, start conversion
@@ -747,10 +777,10 @@ class Converter extends CI_Controller
             if($bIsUploadLimitOK === TRUE) {
                 
                 //check if already converts
-                $sCmd = "ps -ef | grep -c 'ffmpeg -i'";
+                $sCmd = "ps -ef | grep -c 'ffmpeg -i /home/wap4/public_html/files/uploaded/$key'";
                 exec($sCmd, $aOutput, $nReturn);
-                if($aOutput[0] > 3) { //not only grep process but also converter
-                    //file already converts skip
+                if($aOutput[0] == 2) { //not only grep process but also converter
+                    //file already converts so skip
                 } else {
                     //file doesn't convert- start converting
                     $this->link = $aVideoData->requested_link;
@@ -758,6 +788,11 @@ class Converter extends CI_Controller
                     $this->load->library('downloader');
                     $this->downloader->sLink = $this->link;
                     $this->downloader->sUniqueId = $this->uniqid;
+                    
+                    if($this->downloader->is_link_recognized() === TRUE)
+                        $sType = 'known';
+                    else
+                        $sType = 'direct';
 
                     $this->title = $this->get_title($this->link, TRUE, TRUE);
                     $sExtension = $this->downloader->get_extension();
@@ -777,7 +812,7 @@ class Converter extends CI_Controller
                                     'converted_video_body' => $this->title,
                                     'uploaded_video_extension' => $sExtension,
                                     'requested_link' => $this->link,
-                                    'source_type' => 'known');
+                                    'source_type' => $sType);
                     $this->ffmpeg_model->set_video($aParams);
 
                     /*$this->ffmpeg->setInputFile($this->title.".".$sExtension);
@@ -787,8 +822,10 @@ class Converter extends CI_Controller
                     $this->ffmpeg->setQuality($aVideoData->converter_quality);
                     //set cut options, if needed
                     $this->ffmpeg->startConvert("no_js");*/
+                    
+                    $sIsLoggedIn = $this->ion_auth->logged_in() ? 'yes' : 'no';
                     $sLink = "http://m.wap4.org/en/converter/start_converter/$this->uniqid/$this->title/$sExtension/$aVideoData->converter_option/$aVideoData->converter_quality";
-                    $command = "wget $sLink -b -O /dev/null -o ".$this->config->item("ffmpeg_key_dir")."".$key.".wget_alt >/dev/null 2>&1";
+                    $command = "wget --post-data 'is_logged_in=$sIsLoggedIn' $sLink -b -O /dev/null -o ".$this->config->item("ffmpeg_key_dir").$key.".wget_alt >/dev/null 2>&1";
                     log_message('debug', $command);
                     exec($command, $arrr);
                     $data['warning'] = " Warning: started alternative conversion which might not work. Please wait and reload after a while";
@@ -804,7 +841,11 @@ class Converter extends CI_Controller
         
         if($data["Convert_percents_complete"] >= 98) {
             $extension = "mp3";
-            $file = file($this->config->item("ffmpeg_key_dir")."$key.ffmpeg");
+            
+            $oVideo = $this->ffmpeg_model->get_video($key);
+            
+            $file = file($this->config->item("ffmpeg_key_dir")."ffmpeg-$oVideo->ffmpeg_log_date.log");
+            
             foreach($file as $f) {
                 if(substr($f, 0, 6) == "Output") {
                     $extension = substr(end(explode(".", $f)), 0, -3);
@@ -812,7 +853,7 @@ class Converter extends CI_Controller
                 }
             }
             $data["download_url"] = $_SERVER["SERVER_NAME"].
-            "/files/converted/".$sUploadBody."-".$key.".".$extension;
+            "/files/converted/$key.$extension";
             //$this->load->library('ffmpeg');
             //$this->ffmpeg->cleanAfterConverter($this->uniqid);
         }
@@ -872,11 +913,8 @@ class Converter extends CI_Controller
          */
         if(isMobile() &&
             !isset($_REQUEST["from"]) &&
-                $_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"] &&
-            (
-                isset($_REQUEST["link"]) &&
-                !empty($_REQUEST["link"])
-            )
+            $_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"] &&
+            !empty($_REQUEST["link"])
            ) {
             
             $aParams = array('uniqid' => $this->uniqid,
@@ -885,7 +923,7 @@ class Converter extends CI_Controller
                 'convert_quality' => $this->input->post('quality'));
             $this->ffmpeg_model->set_video($aParams);
             
-            if(!is_file($this->config->item("ffmpeg_key_dir")."".$_REQUEST["key"].".wget"))
+            if(!is_file($this->config->item("ffmpeg_key_dir").$_REQUEST["key"].".wget"))
             $this->ping_link("http://".$_SERVER["SERVER_NAME"]."/".$this->lang->lang()."/converter/convert/no_js", $_REQUEST["key"]);
             
             redirect('converter/mobile_status/'.$_REQUEST["key"], 'location');
@@ -944,7 +982,7 @@ class Converter extends CI_Controller
                 }
             }
             //link upload + conversion for mobile version
-            if(isset($_POST["link"]) && !empty($_POST["link"])) {
+            if(!empty($_POST["link"])) {
                 
                 //upload
                 log_message('debug', 'link upload started!');
@@ -1019,8 +1057,8 @@ class Converter extends CI_Controller
             $this->ffmpeg->setQuality($this->uri->segment(15));
             $this->ffmpeg->setInputFile($this->uri->segment(6));
 
-            if($this->uri->segment(7) == 'yes') 
-            $this->ffmpeg->cut( $this->uri->segment(8),
+            if($this->uri->segment(7) == 'yes')
+                $this->ffmpeg->cut( $this->uri->segment(8),
                                 $this->uri->segment(9),
                                 $this->uri->segment(10),
                                 $this->uri->segment(11),
@@ -1042,22 +1080,24 @@ class Converter extends CI_Controller
      * @param boolean $return - true- returns result, false- outputs result
      * @return type 
      */
-    function statuss($unikaalais, $return = false) {
+    function convert_status($unikaalais, $return = false) {
         
+        $this->load->library('ffmpeg');
         $this->ffmpeg->setKey($unikaalais);
         
         $converter_completed_percents = $this->ffmpeg->getPercentsComplete();
         
-        if($converter_completed_percents > 100) {
+        if($converter_completed_percents > 98)
             $converter_completed_percents = 100;
-        }
         
         log_message('debug', 'converted so far: '.$converter_completed_percents.' percents');
         
         if(!$return) {
+            
             header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
             header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
             echo $converter_completed_percents;
+            
         } else
             return $converter_completed_percents;
     }
@@ -1094,13 +1134,13 @@ class Converter extends CI_Controller
             return FALSE;
         }*/
         
-        $this->_set_extension($file_end, 'uploaded_video_extension');
+        //$this->_set_extension($file_end, 'uploaded_video_extension');
         
         $this->extension = $file_end;
         //file_put_contents($this->config->item("ffmpeg_key_dir")."".$this->uniqid.".extension", $this->extension);
-        $location = $location.".".$file_end;
+        //$location = $location.".".$file_end;
 
-        $loc  = $this->config->item("ffmpeg_before_dir")."".$location;
+        $loc  = $this->config->item("ffmpeg_before_dir").$location;
         $file = fopen($loc, 'w');
         if($file === FALSE) {
             $sErrMsg = "Can not open file: $location for writing";
@@ -1145,16 +1185,18 @@ class Converter extends CI_Controller
     /**
      * To run web pages in background with long loading time
      * @param string $link
+     * @param string $key
      */
     function ping_link($link, $key) {
             
-            $_GETPOST = array_merge($_GET, $_POST); 
-            $encoded  = http_build_query($_GETPOST);
-            
-            $command = "wget --post-data '$encoded&from=wget&uniq_id=$key' $link -b -O /dev/null -o ".$this->config->item("ffmpeg_key_dir")."".$key.".wget >/dev/null 2>&1";
-            log_message('debug', $command);
-            $this->aError[] = $command;
-            exec($command, $arrr);
+        $_GETPOST = array_merge($_GET, $_POST); 
+        $encoded  = http_build_query($_GETPOST);
+        $sIsLoggedIn = $this->ion_auth->logged_in() ? 'yes' : 'no';
+        $command = "wget --post-data '$encoded&from=wget&uniq_id=$key&is_logged_in=$sIsLoggedIn' $link -b -O /dev/null -o ".
+        $this->config->item("ffmpeg_key_dir").$key.".wget >/dev/null 2>&1";
+        log_message('debug', $command);
+        $this->aError[] = $command;
+        exec($command, $arrr);
 
     }
     

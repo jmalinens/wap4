@@ -108,7 +108,11 @@ class qqFileUploader {
     /**
      * Returns array('success'=>true) or array('error'=>'error message')
      */
-    function handleUpload($uploadDirectory, $replaceOldFile = FALSE){
+    function handleUpload($uploadDirectory, $replaceOldFile = FALSE, $key = ''){
+        
+        if(!ctype_alnum($key))
+            exit;
+        
         if (!is_writable($uploadDirectory)){
             return array('error' => "Server error. Upload directory isn't writable.");
         }
@@ -139,12 +143,14 @@ class qqFileUploader {
         
         if(!$replaceOldFile){
             /// don't overwrite previous files that were uploaded
-            while (file_exists($uploadDirectory . $filename . '.' . $ext)) {
-                $filename .= rand(10, 99);
+            //while (file_exists($uploadDirectory . $filename . '.' . $ext)) {
+            while (file_exists($uploadDirectory . $key)) {
+                $key .= rand(10, 99);
             }
         }
         
-        if ($this->file->save($uploadDirectory . $filename . '.' . $ext)){
+        //if ($this->file->save($uploadDirectory . $filename . '.' . $ext)){
+        if ($this->file->save($uploadDirectory . $key)){
             return array('success'=>true);
         } else {
             return array('error'=> 'Could not save uploaded file.' .
@@ -164,7 +170,7 @@ include "../../../application/config/ffmpeg.php";
 $uploader = new qqFileUploader($config['ffmpeg_allowed'], $config['ffmpeg_max']*1024);
 //$result = $uploader->handleUpload('uploads/');
 //$result = $uploader->handleUpload('/home/juris/Dropbox/xampp/htdocs/files/uploaded');
-$result = $uploader->handleUpload($config['ffmpeg_before_dir']);
+$result = $uploader->handleUpload($config['ffmpeg_before_dir'], TRUE, $_REQUEST['key']);
 //file_put_contents('/home/juris/Dropbox/xampp/htdocs/files/test.txt', $result);
 // to pass data through iframe you will need to encode all html tags
 if(isset($_REQUEST['caur_ajax']) && $_REQUEST['caur_ajax'] == "true")
@@ -172,4 +178,5 @@ if(isset($_REQUEST['caur_ajax']) && $_REQUEST['caur_ajax'] == "true")
 echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 } else {
     header("location: http://wap4.org/{$_REQUEST["lang"]}/converter/index/{$_REQUEST["key"]}/no_js");
+    exit;
 }
