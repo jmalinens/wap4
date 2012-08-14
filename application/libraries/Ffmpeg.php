@@ -142,6 +142,7 @@ public function getEncodedTime(){
         //print_r($timed);
         $nEncTime  = $timed[0];
         list($h, $m, $s) = explode(":", $nEncTime);
+        $s = ceil($s); // 21.40 seconds => 22 seconds
         $nEncTime = $this->hms2sec($h, $m, $s);
         
     } else {
@@ -285,6 +286,20 @@ public function getTotalTime()
 //get percents completed:
 public function getPercentsComplete()
 {
+    
+    $oVideo = $this->ci->ffmpeg_model->get_video($this->key);
+    $sFfmpegLogFile = "ffmpeg-$oVideo->ffmpeg_log_date.log";
+    $sFile = $this->ffmpeg_key_dir.$sFfmpegLogFile;
+    
+    if(is_file($sFile)) {
+        
+        $sFileContents = file_get_contents($sFile);
+        if(stripos($sFileContents, 'No more inputs to read from, finishing') !== FALSE)
+            return 100;
+        
+    }
+    
+    
     $nTotalTime = $this->getTotalTime();
     $nEncodedTime = $this->getEncodedTime();
     

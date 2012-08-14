@@ -80,6 +80,45 @@ class Downloader
      */
     public $sFileBody;
 
+    public $aYoutubeFormats = array(
+        37 => array(
+                'container' => 'mp4',
+                'resolution' => '1080x1920'
+            ),
+        22 => array(
+                'container' => 'mp4',
+                'resolution' => '720x1280'
+            ),
+        45 => array(
+                'container' => 'webm',
+                'resolution' => '720x1280'
+            ),
+        35 => array(
+                'container' => 'flv',
+                'resolution' => '480x854'
+            ),
+        44 => array(
+                'container' => 'webm',
+                'resolution' => '480x854'
+            ),
+        34 => array(
+                'container' => 'flv',
+                'resolution' => '360x640'
+            ),
+        18 => array(
+                'container' => 'mp4',
+                'resolution' => '360x640'
+            ),
+        43 => array(
+                'container' => 'webm',
+                'resolution' => '360x640'
+            ),
+        5 => array(
+                'container' => 'flv',
+                'resolution' => '240x400'
+            )
+        );
+
     public function __construct()
     {
         
@@ -113,12 +152,15 @@ class Downloader
     /**
      * Downloads media file
      * @param bool $bInBackground run is background or run till uploaded for mobile
+     * @param int $nYoutubeFormat = 5 (240x400)
      * @return bool true if successful, otherwise- false
      */
-    function download_file($bRunInBackground = TRUE)
+    function download_file($bRunInBackground = TRUE, $nYoutubeFormat = 5)
     {
         
         $this->_set_cmd_vars();
+        
+        $nYoutubeFormat = (int)$nYoutubeFormat;
         
         //set uniqid for file body if file body not set
         
@@ -127,10 +169,15 @@ class Downloader
         if($bRunInBackground === FALSE)
             $sCmdEnd = "";
         
+        if(stripos($this->sLink, 'youtube') !== FALSE)
+            $sFormatCmd = " --format $nYoutubeFormat ";
+        else
+            $sFormatCmd = "";
+        
         //$sCmd = $this->sCmdStart.' '.' --console-title -o "'.$this->sUploadPath.$this->sFileBody.
         //        '.%(ext)s" "'.$this->sLink.'" > '.$this->sDownloadOutputFile.$sCmdEnd;
-        $sCmd = $this->sCmdStart.' '.' --console-title -o "'.$this->sUploadPath.$this->sUniqueId.
-                '" "'.$this->sLink.'" > '.$this->sDownloadOutputFile.$sCmdEnd;
+        $sCmd = $this->sCmdStart.' '.' '.$sFormatCmd.' --console-title -o "'.$this->sUploadPath.
+                $this->sUniqueId.'" "'.$this->sLink.'" > '.$this->sDownloadOutputFile.$sCmdEnd;
         //echo $sCmd;
         log_message('debug', $sCmd);
         exec($sCmd, $aOutput, $nReturnCode);
@@ -232,6 +279,45 @@ class Downloader
 
     }
     
+    
+    function get_available_formats()
+    {
+        $this->_set_cmd_vars();
+        
+        $sCmd = $this->sCmdStart.' '.' --list-formats "'.$this->sLink.'"';
+        exec($sCmd, $aOutput, $nReturnCode);
+        
+        $bProcess = FALSE;
+        
+        $aFormats = array();
+        
+        foreach($aOutput as $nId => $sLine) {
+            
+            if($bProcess) {
+                
+                preg_match('/(?P<video_id>\d+)\s*:\s*(?P<container>\w+)\s*\[(?P<resolution>\w+)\]/',
+                        $sLine,
+                        $matches);
+                
+                
+                $aFormats[$matches['video_id']] = array(
+                    'container' => $matches['container'],
+                    'resolution' => $matches['resolution']
+                    );
+                
+                
+            }
+            
+            
+            if(stripos($sLine, 'Available formats') !== FALSE)
+                    $bProcess = TRUE;
+            
+        }
+        
+        print_r($aFormats);
+        return $aFormats;
+        
+    }
     
     /**
      * Returns multimedia file title (not SEO friendly!)

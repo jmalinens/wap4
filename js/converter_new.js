@@ -236,7 +236,11 @@ function video_sharing_sites_upload() {
        type: "POST",
        url: "/en/converter/link_upload/"+opt_uniqid+"/",
        //async: false,
-       data: ({link : $('#youtube_link').val(), key: opt_uniqid}),
+       data: ({
+           link : $('#youtube_link').val(),
+           key: opt_uniqid,
+           convert_format: $('input[name=format]:checked').val()
+       }),
        success: function(msg){
 
        console.log('link_upload: '+msg);

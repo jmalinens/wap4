@@ -184,7 +184,14 @@ class Converter extends CI_Controller
             $this->downloader->sUploadPath = $this->config->item("ffmpeg_before_dir");
             $this->downloader->sFileBody = $this->title;
             
-            $bIsFileDownloadStarted = $this->downloader->download_file($bRunInBackground);
+            $sFormat = $this->input->post('convert_format');
+            
+            if(in_array($sFormat, array('3gp-352x288-amr','mp4-640x360-aac')))
+                $nYoutubeFormat = 18;
+            else
+                $nYoutubeFormat = 5;
+            
+            $bIsFileDownloadStarted = $this->downloader->download_file($bRunInBackground,$nYoutubeFormat);
             log_message('debug', 'download_file() function complete for recognized link :)');
             //log_message('debug', 'test3');
             //wait some time till python script's outputs Destination of file to get extension
@@ -777,9 +784,9 @@ class Converter extends CI_Controller
             if($bIsUploadLimitOK === TRUE) {
                 
                 //check if already converts
-                $sCmd = "ps -ef | grep -c 'ffmpeg -i /home/wap4/public_html/files/uploaded/$key'";
+                $sCmd = "ps -ef | grep -c 'files/uploaded/$key'";
                 exec($sCmd, $aOutput, $nReturn);
-                if($aOutput[0] == 2) { //not only grep process but also converter
+                if($aOutput[0] > 1) { //not only grep process but also converter
                     //file already converts so skip
                 } else {
                     //file doesn't convert- start converting
@@ -814,14 +821,6 @@ class Converter extends CI_Controller
                                     'requested_link' => $this->link,
                                     'source_type' => $sType);
                     $this->ffmpeg_model->set_video($aParams);
-
-                    /*$this->ffmpeg->setInputFile($this->title.".".$sExtension);
-                    //convert options
-                    $this->ffmpeg->setKey($this->uniqid);
-                    $this->ffmpeg->setFormat($aVideoData->converter_option);
-                    $this->ffmpeg->setQuality($aVideoData->converter_quality);
-                    //set cut options, if needed
-                    $this->ffmpeg->startConvert("no_js");*/
                     
                     $sIsLoggedIn = $this->ion_auth->logged_in() ? 'yes' : 'no';
                     $sLink = "http://m.wap4.org/en/converter/start_converter/$this->uniqid/$this->title/$sExtension/$aVideoData->converter_option/$aVideoData->converter_quality";
@@ -840,6 +839,7 @@ class Converter extends CI_Controller
         $data["fail_array"] = $this->read_fail_report_into_array($key);
         
         if($data["Convert_percents_complete"] >= 98) {
+            
             $extension = "mp3";
             
             $oVideo = $this->ffmpeg_model->get_video($key);
