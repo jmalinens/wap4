@@ -354,6 +354,7 @@ public function startConvert($mode="js")
         $this->getExtension())."\" 2> {$this->ffmpeg_key_dir}{$this->key}.ffmpeg";*/
     $sOriginalPath = getcwd();
     
+    $this->mode = $mode;
     
     $sConvertTime = date("Ymd-His");
     $sExt = $this->getExtension();

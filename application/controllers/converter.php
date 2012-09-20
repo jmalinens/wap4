@@ -950,8 +950,14 @@ class Converter extends CI_Controller
                         die('security warning: security warning: upload file extension: '.$file_end.' not allowed');
                     }
                     
-                    if(!move_uploaded_file($_FILES['qqfile']['tmp_name'],
-                    $this->config->item('ffmpeg_before_dir')."".$file_body.".".$file_end)) {
+                    if(
+                            
+                    //        !move_uploaded_file($_FILES['qqfile']['tmp_name'],
+                    //$this->config->item('ffmpeg_before_dir').$file_body.".".$file_end)
+                            !move_uploaded_file($_FILES['qqfile']['tmp_name'],
+                    $this->config->item('ffmpeg_before_dir').$this->uniqid)
+                            
+                            ) {
                         $this->aError[] = "move_uploaded_file error, when trying
                             to upload file in no_js";
                         $this->write_fail_report("fail.upload", $_POST["key"]);

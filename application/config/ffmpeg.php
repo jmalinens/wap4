@@ -11,7 +11,7 @@
 //$config['ffmpeg_after_dir']    = "C:/"; //directory for converted videos
 //$config['ffmpeg_key_dir']      = "C:/"; //directory for key files
 
-$config['ffmpeg_allowed']    = array('mp3','avi','flv','mov','mp4','3gp','amr','ogg','flac','aac','wmv','mpg', 'ac3', 'mkv', 'webm');
+$config['ffmpeg_allowed']    = array('mp3','avi','flv','mov','mp4','3gp','amr','ogg','flac','aac','wmv','mpg','mpeg', 'ac3', 'mkv', 'webm');
 $config['ffmpeg_max']        = 300*1024; //in kilobytes
 
 $config['ffmpeg_max_processes'] = 2;
