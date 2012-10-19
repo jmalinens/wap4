@@ -48,12 +48,16 @@ class Welcome extends CI_Controller {
                 $this->data['extensions'] = $this->config->item('ffmpeg_extensions');
                 $this->data['lang']       = $this->lang->lang();
                 
-                $this->load->view('v2/includes/header', $this->data);
+                $aData['data'] = $this->data;
+                
+                $this->load->view('v2/includes/header', $aData);
+                
                 if(!isMobile())
                     $this->load->view('v2/converter', $this->data);
                 else
-                    $this->load->view('v2/converter_no_js', $this->data);   
-                $this->load->view('v2/includes/footer', $this->data);
+                    $this->load->view('v2/converter_no_js', $this->data);  
+                
+                $this->load->view('v2/includes/footer', $aData);
                 
 	}
 }

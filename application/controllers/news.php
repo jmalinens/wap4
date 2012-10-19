@@ -52,12 +52,13 @@ class News extends CI_Controller {
     $this->load->library('table');
 		
     // load the view
+    $aData['data'] = $this->data;
     
     if(!irAjax())
-    $this->load->view('v2/includes/header', $this->data);
+    $this->load->view('v2/includes/header', $aData);
     $this->load->view('v2/news', $data);
     if(!irAjax())
-    $this->load->view('v2/includes/footer', $this->data);
+    $this->load->view('v2/includes/footer', $aData);
 
   }
   
@@ -68,13 +69,15 @@ class News extends CI_Controller {
     $data['results'] = $this->news_model->get_one_news($this->uri->segment(4));
     $data['archive'] = true;
  
+    $aData['data'] = $this->data;
+    
     if(!irAjax())
-    $this->load->view('v2/includes/header', $this->data);
+    $this->load->view('v2/includes/header', $aData);
     
     $this->load->view('v2/news', $data);
     
     if(!irAjax())
-    $this->load->view('v2/includes/footer', $this->data);    
+    $this->load->view('v2/includes/footer', $aData);    
   }
   
     function delete_news($id = NULL) 

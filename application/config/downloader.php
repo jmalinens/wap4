@@ -10,7 +10,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) == "win") {
     $config['downloader_script'] = "C:/youtube-dl.py";
 } else {
     //for linux
-    $config['downloader_python'] = "/usr/local/bin/python2.5";
+    $config['downloader_python'] = "/usr/local/bin/python2.7";
     $config['downloader_script'] = "/home/wap4/youtube-dl.py";
 }
 

@@ -1,8 +1,8 @@
 <?php
 if(isMobile()):
-    $this->load->view('v2/includes/footer_mobile', $this->data);
+    $this->load->view('v2/includes/footer_mobile', $data);
 else:
-    $this->load->view('v2/includes/footer_web', $this->data);
+    $this->load->view('v2/includes/footer_web', $data);
 endif;
 ?>
 </div>

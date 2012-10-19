@@ -142,15 +142,15 @@ class Converter extends CI_Controller
 
         $this->data['presets']    = $arrXml;
         
-        
-        $this->load->view('v2/includes/header', $this->data);
+        $aData['data'] = $this->data;
+        $this->load->view('v2/includes/header', $aData);
         
         if($_SERVER["SERVER_NAME"] == $this->config->item("mobile_host") || $_SERVER["SERVER_NAME"] == "testm.wap4.org")
             $this->load->view('v2/converter_no_js', $this->data);
         else
             $this->load->view('v2/converter', $this->data);
         
-        $this->load->view('v2/includes/footer', $this->data);
+        $this->load->view('v2/includes/footer', $aData);
     	
     }
 
@@ -195,8 +195,8 @@ class Converter extends CI_Controller
             log_message('debug', 'download_file() function complete for recognized link :)');
             //log_message('debug', 'test3');
             //wait some time till python script's outputs Destination of file to get extension
-            if($bRunInBackground !== FALSE)
-                sleep(2); 
+            //if($bRunInBackground !== FALSE)
+                sleep(4); 
             //log_message('debug', 'test4');
             //save file extension to DB
             $sExtension = $this->downloader->get_extension();
@@ -213,7 +213,7 @@ class Converter extends CI_Controller
                     return FALSE;
                 } else {
                     $this->output->set_status_header('400');
-                    echo lang('upload.fail')." Video is bigger (".ceil((($sFileSize/1024)/1024))."MB) than max allowed size of ".($this->data['max']/1024)."MB";
+                    echo lang('upload.fail')." 1 Video is bigger (".ceil((($sFileSize/1024)/1024))."MB) than max allowed size of ".($this->data['max']/1024)."MB";
                     exit;
                 }
             }
@@ -255,7 +255,7 @@ class Converter extends CI_Controller
                     return FALSE;
                 } else {
                     $this->output->set_status_header('400');
-                    $sErr = lang('upload.fail')." Video is bigger (".
+                    $sErr = lang('upload.fail')." 2 Video is bigger (".
                             ceil((($sFileSize/1024)/1024))."MB or $sFileSize) than max allowed size of ".
                             ($this->data['max']/1024)."MB or video size could not be determined";
                     echo $sErr;
@@ -331,7 +331,7 @@ class Converter extends CI_Controller
         if($nAllowedSize < $nVideoSize) {
             //echo "test1";
             //file size too big
-            $sErrMsg = "Video from $this->link is bigger (".ceil((($nVideoSize/1024)/1024))."MB) than max allowed size of ".($this->data['max']/1024)."MB ";
+            $sErrMsg = "Video 3 from $this->link is bigger (".ceil((($nVideoSize/1024)/1024))."MB) than max allowed size of ".($this->data['max']/1024)."MB ";
             $this->aError[] = $sErrMsg;
             log_message("error", $sErrMsg);
             
@@ -612,6 +612,15 @@ class Converter extends CI_Controller
      */
     function upload_status($key, $title = "", $return = FALSE)
     {
+        
+        if(!$return) {
+            
+            header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+            header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+            
+        }
+
+        
         sleep(2);
         $this->db->reconnect();
         $aVideoData = $this->ffmpeg_model->get_video($key);

@@ -20,32 +20,32 @@ class error extends CI_Controller {
 
     function index() {
 
-
+        $aData['data'] = $this->data;
+        
         if (!irAjax()) {
-            $this->load->view('includes/header', $this->data);
+            $this->load->view('includes/header', $aData);
         }
 
         $this->load->view('error', $data);
 
         if (!irAjax()) {
-            $this->load->view('includes/footer', $this->data);
+            $this->load->view('includes/footer', $aData);
         }
     }
     
     function file_not_found_404() {
 
-
+        $aData['data'] = $this->data;
+        
         if (!irAjax()) {
-            $this->load->view('includes/header', $this->data);
+            $this->load->view('includes/header', $aData);
         }
         
         $this->load->view('error_404');
 
         if (!irAjax()) {
-            $this->load->view('includes/footer', $this->data);
+            $this->load->view('includes/footer', $aData);
         }
     }
 
 }
-
-?>

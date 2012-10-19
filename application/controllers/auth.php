@@ -208,10 +208,10 @@ class Auth extends CI_Controller {
                                     )
                             )
                     );
-
-            $this->load->view('includes/header', $this->data);
+            $aData['data'] = $this->data;
+            $this->load->view('includes/header', $aData);
             $this->load->view('ckeditor', $this->data);
-            $this->load->view('includes/footer', $this->data);
+            $this->load->view('includes/footer', $aData);
             }
         }
     }
@@ -257,13 +257,13 @@ class Auth extends CI_Controller {
             else { //if the login was un-successful
                     //redirect them back to the login page
                     $this->session->set_flashdata('message', $this->ion_auth->errors());
-
-                    $this->load->view('v2/includes/header', $this->data);
+                    $aData['data'] = $this->data;
+                    $this->load->view('v2/includes/header', $aData);
                     //redirect('auth/index/error', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
                     $this->data['message'] = $this->ion_auth->errors();
 
                     $this->load->view('auth/login', $this->data);
-                    $this->load->view('v2/includes/footer', $this->data);
+                    $this->load->view('v2/includes/footer', $aData);
             }
 
 
@@ -357,10 +357,10 @@ class Auth extends CI_Controller {
                                                      );
 
             
-            
-            $this->load->view('v2/includes/header', $this->data);
+            $aData['data'] = $this->data;
+            $this->load->view('v2/includes/header', $aData);
             $this->load->view('v2/auth/edit_user', $this->data);
-            $this->load->view('v2/includes/footer', $this->data);
+            $this->load->view('v2/includes/footer', $aData);
             
     	}
         
@@ -424,16 +424,16 @@ class Auth extends CI_Controller {
 	        //set the flash data error message if there is one
 	        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 		    
-
+                $aData['data'] = $this->data;
 	        if(!irAjax())
-                $this->load->view('includes/header', $this->data);
+                $this->load->view('includes/header', $aData);
                 
 
                 //if($this->uri->segment(4) != "facebook")
     		$this->load->view('auth/login', $this->data);
                 
                 if(!irAjax())
-                $this->load->view('includes/footer', $this->data);
+                $this->load->view('includes/footer', $aData);
                 
 		}
                
@@ -737,10 +737,10 @@ $this->data['navigation']         = $this->config->item('navigation');
 
 $this->data['uniqid']             = uniqid();
 $this->data['lang']               = $this->lang->lang();
-
-$this->load->view('v2/includes/header', $this->data);
+$aData['data'] = $this->data;
+$this->load->view('v2/includes/header', $aData);
 $this->load->view('v2/auth/create_user', $this->data);
-$this->load->view('v2/includes/footer');
+$this->load->view('v2/includes/footer', $aData);
 		}
           
           

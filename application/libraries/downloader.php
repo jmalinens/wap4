@@ -179,7 +179,7 @@ class Downloader
         $sCmd = $this->sCmdStart.' '.' '.$sFormatCmd.' --console-title -o "'.$this->sUploadPath.
                 $this->sUniqueId.'" "'.$this->sLink.'" > '.$this->sDownloadOutputFile.$sCmdEnd;
         //echo $sCmd;
-        log_message('debug', $sCmd);
+        log_message('error', $sCmd);
         exec($sCmd, $aOutput, $nReturnCode);
         
         if($nReturnCode == 0)
@@ -430,7 +430,7 @@ class Downloader
                 $aParts = explode(" ", $sLine);
                 
                 file_put_contents($this->ci->config->item('public_html').'files/uploaded/filesizes.txt', implode(" | ", $aParts)."\r\n", FILE_APPEND);
-                
+                //error_log(serialize($aParts));
                 return $aParts;
 
             }

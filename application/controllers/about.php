@@ -8,13 +8,15 @@ class About extends CI_Controller {
                 $data['content']    = lang("about.content");
                 $this->data["meta"] = "about";
                 
+                $aData['data'] = $this->data;
+                
                 if(!irAjax())
-                $this->load->view('v2/includes/header', $this->data);
+                $this->load->view('v2/includes/header', $aData);
                 
 		$this->load->view('v2/about', $data);
                 
                 if(!irAjax())
-                $this->load->view('v2/includes/footer', $this->data);
+                $this->load->view('v2/includes/footer', $aData);
 	}
         
         function remove_old_files()

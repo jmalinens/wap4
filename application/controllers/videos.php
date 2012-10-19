@@ -63,9 +63,12 @@ function video_list()
                 //echo $this->db->last_query();
                 // load the HTML Table Class
                 $this->load->library('table');
-                $this->load->view('v2/includes/header', $this->data);
+                
+                $aData['data'] = $this->data;
+                
+                $this->load->view('v2/includes/header', $aData);
     		$this->load->view('video_list', $data);
-                $this->load->view('v2/includes/footer', $this->data);
+                $this->load->view('v2/includes/footer', $aData);
     	}
     	else {
             

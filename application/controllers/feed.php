@@ -31,4 +31,3 @@ class Feed extends CI_Controller
         $this->load->view('feed/rss', $data);        
     }
 }
-?>

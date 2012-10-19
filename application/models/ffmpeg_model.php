@@ -33,8 +33,8 @@ function get_video($sUniqueId) {
     //$query = $this->db->get_where('video_details', array('uniqid' => $sUniqueId));
     
     $sSql = "
-    SELECT SQL_NO_CACHE *
-    FROM (`video_details`)
+    SELECT  *
+    FROM `video_details`
     WHERE `uniqid` = '$sUniqueId'
     ";
     
