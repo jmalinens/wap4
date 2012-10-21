@@ -2,10 +2,10 @@
 
 <project name="name-of-project" default="build" basedir=".">
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,phpcb"/>
+   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,phpunit,phpcb"/>
 
  <target name="build-parallel"
-   depends="prepare,lint,tools-parallel,phpcb"/>
+   depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
 
  <target name="tools-parallel" description="Run tools in parallel">
   <parallel threadCount="1">
@@ -102,6 +102,12 @@
    <arg path="${basedir}/application" />
    <arg value="-t"/>
    <arg path="${basedir}/build/api"/>
+  </exec>
+ </target>
+ 
+ <target name="phpunit" description="Run unit tests with PHPUnit">
+  <exec executable="phpunit" failonerror="true">
+    <arg line="--log-junit ${basedir}/build/logs/junit.xml --coverage-clover ${basedir}/build/logs/clover.xml --configuration ${basedir}/tests/phpunit.xml ${basedir}/tests/controllers/ConverterTest" />
   </exec>
  </target>
 
