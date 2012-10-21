@@ -37,6 +37,13 @@ class Converter extends CI_Controller
      */
     public $link;
 
+    
+    static function test() {
+        
+        return true;
+        
+    }
+    
     public function __construct() 
     {
         parent::__construct();

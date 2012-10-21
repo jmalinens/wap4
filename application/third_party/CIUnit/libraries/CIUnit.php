@@ -155,7 +155,7 @@ class CIUnit {
 //		var_dump(self::$controllers); die();
 		
 		
-//		var_dump(self::$controller); die();
+		//print_r(self::$controller); die();
 		
 		//CI_Base::$instance = &self::$controller; //so get_instance() provides the correct controller
 		return self::$controller;
