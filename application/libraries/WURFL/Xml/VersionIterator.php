@@ -1,63 +1,70 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- *
- *
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL_Xml
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Xml
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  *
+ */
+/**
+ * Extracts version information from XML file
+ * @package	WURFL_Xml
  */
 class WURFL_Xml_VersionIterator extends WURFL_Xml_AbstractIterator {
 	
-	function __construct($inputFile) {
-		parent::__construct ( $inputFile );
-	}
+	private $found_version_info = false;
 	
 	public function readNextElement() {
 		$version = "";
 		$lastUpdated = "";
 		$officialURL = "";
-		while ( $this->xmlReader->read () ) {
-			
+		while ($this->xmlReader->read()) {
 			$nodeName = $this->xmlReader->name;
 			switch ($this->xmlReader->nodeType) {
-				case XMLReader::TEXT :
-					$currentText = $this->xmlReader->value;
-					break;
-				case XMLReader::END_ELEMENT :
+				case XMLReader::ELEMENT:
 					switch ($nodeName) {
-						case 'version' :
-							$this->currentElement = new WURFL_Xml_Info ( $version, $lastUpdated, $officialURL );
-							break 2;
-						
-						case 'ver' :
-							$version = $currentText;
-						break;						
-						
-						case 'last_updated' :
-							$lastUpdated = $currentText;
+						case 'ver':
+							$version = $this->getTextValue();
 							break;
-						
-						case "official_url" :
-							$officialURL = $currentText;
+						case 'last_updated':
+							$lastUpdated = $this->getTextValue();
+							break;
+						case 'official_url':
+							$officialURL = $this->getTextValue();
 							break;
 					}
+					break;
+				case XMLReader::END_ELEMENT:
+					switch ($nodeName) {
+						case 'version':
+							$this->found_version_info = true;
+							$this->currentElement = new WURFL_Xml_Info($version, $lastUpdated, $officialURL);
+							return;
+					}
+					break;
 			}
 		} // end of while
-	
-
 	}
-
+	
+	
+	public function valid() {
+		// We're finished with the version node, nothing else to do
+		if ($this->found_version_info === true) {
+			return false;
+		}
+		if($this->currentElement === null) {
+			$this->readNextElement();
+		}
+		return $this->currentElement != null;
+	}
 }
-?>

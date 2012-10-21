@@ -318,7 +318,9 @@ class Converter extends CI_Controller
     }
     
     /**
-     * Check if video is
+     * Check if video file size is allowed
+     * @assert (100, 99) === true
+     * @assert (99, 100) === false
      * @param type $nAllowedSize
      * @param type $nVideoSize
      * @return bool 
@@ -403,6 +405,8 @@ class Converter extends CI_Controller
     
     /**
      * Checks and sets file extension
+     * @assert('unknown_extension') === false
+     * @assert('mp4') === true
      * @param type $sExt
      * @param string $sExtType
      * @param type $sUniqueId
@@ -1218,6 +1222,8 @@ class Converter extends CI_Controller
     /**
      * Parses url and makes standard url which can  be sent later to extract
      * location of video file
+     * @assert ('direct', 'wap4.org') == 'http://wap4.org'
+     * @assert ('youtube', 'https://www.youtube.com/watch?v=-xN8Gd9TY5o&feature=g-all-u') == 'http://www.youtube.com/watch?v=-xN8Gd9TY5o'
      * @param string $type - vimeo, youtube etc.
      * @param string $link - URL
      * @return string on success, boolean false on failure 

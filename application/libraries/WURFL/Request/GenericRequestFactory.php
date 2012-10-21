@@ -1,74 +1,51 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- *  
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL_Request
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Request
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @author	 Fantayeneh Asres Gizaw
+ * @version	$id$
+ */
+/**
+ * Creates a Generic WURFL Request from the raw HTTP Request
+ * @package	WURFL_Request
  */
 class WURFL_Request_GenericRequestFactory {
 
-	private $_userAgentNormalizer;
-	
-	function __construct(WURFL_Request_UserAgentNormalizer $userAgentNormalizer ) {
-		$this->_userAgentNormalizer = $userAgentNormalizer;
-		$this->_init();
-	}
 
 	/**
-	 * Creates GenericRequest Object from
-	 * a $_SERVER object
-	 *
-	 * @param $_SERVER $request
-	 * @return GenericRequest
+	 * Creates Generic Request from the given HTTP Request (normally $_SERVER)
+	 * @param array $request HTTP Request
+	 * @return WURFL_Request_GenericRequest
 	 */
 	public function createRequest($request) {
 		$userAgent = WURFL_WURFLUtils::getUserAgent($request);
-		$this->checkUserAgent($userAgent);
-		
-		$userAgent = $this->_userAgentNormalizer->normalize($userAgent);
 		$userAgentProfile = WURFL_WURFLUtils::getUserAgentProfile($request);
 		$isXhtmlDevice = WURFL_WURFLUtils::isXhtmlRequester($request);
 
 		return new WURFL_Request_GenericRequest($userAgent, $userAgentProfile, $isXhtmlDevice);
-
 	}
-
+	
+	/**
+	 * Create a Generic Request from the given $userAgent
+	 * @param string $userAgent
+	 * @return WURFL_Request_GenericRequest
+	 */
 	public function createRequestForUserAgent($userAgent) {
-		$this->checkUserAgent($userAgent);
-		$userAgent = $this->_userAgentNormalizer->normalize($userAgent);
 		return new WURFL_Request_GenericRequest($userAgent, null, false);
-	}
-
-
-	private function checkUserAgent($userAgent) {
-		if (!isset($userAgent) || is_null($userAgent) || empty($userAgent)) {
-			throw new WURFL_WURFLException("can't find user agent string in the request");
-		}
-	}
-
-	private function _init() {
-		$this->_userAgentNormalizer->addUserAgentNormalizer(new WURFL_Request_UserAgentNormalizer_Vodafone());
-		$this->_userAgentNormalizer->addUserAgentNormalizer(new WURFL_Request_UserAgentNormalizer_UPLink());
-		$this->_userAgentNormalizer->addUserAgentNormalizer(new WURFL_Request_UserAgentNormalizer_BlackBerry());
-		$this->_userAgentNormalizer->addUserAgentNormalizer(new WURFL_Request_UserAgentNormalizer_YesWAP());
-		$this->_userAgentNormalizer->addUserAgentNormalizer(new WURFL_Request_UserAgentNormalizer_BabelFish());
-		
 	}
 
 	
 }
 
 
-?>

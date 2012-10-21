@@ -9,23 +9,57 @@ if($_SERVER["REQUEST_URI"] == "/redirect/fromJavaApplicationWap4M0-0") {
 }
 
 $ip = $_SERVER["REMOTE_ADDR"];
-
-//if($ip != "77.93.13.41" && $ip != "127.0.0.1" && $ip != "85.31.99.173") {
-//    echo"<html>wap4.org will be back in 30 minutes</html>";
-//    exit;
-//}
 /*
  *---------------------------------------------------------------
- * PHP ERROR REPORTING LEVEL
+ * APPLICATION ENVIRONMENT
  *---------------------------------------------------------------
  *
- * By default CI runs with error reporting set to ALL.  For security
- * reasons you are encouraged to change this to 0 when your site goes live.
- * For more info visit:  http://www.php.net/error_reporting
+ * You can load different configurations depending on your
+ * current environment. Setting the environment also influences
+ * things like logging and error reporting.
+ *
+ * This can be set to anything, but default usage is:
+ *
+ *     development
+ *     testing
+ *     production
+ *
+ * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	error_reporting(E_ALL);
+
+if(strtolower(substr(PHP_OS, 0, 3)) == 'win')
+    define('ENVIRONMENT', 'development');
+else
+    define('ENVIRONMENT', 'production');
         
+/*
+ *---------------------------------------------------------------
+ * ERROR REPORTING
+ *---------------------------------------------------------------
+ *
+ * Different environments will require different levels of error reporting.
+ * By default development will show errors but testing and live will hide them.
+ */
+
+if (defined('ENVIRONMENT'))
+{
+	switch (ENVIRONMENT)
+	{
+		case 'development':
+			error_reporting(E_ALL);
+		break;
+	
+		case 'testing':
+		case 'production':
+			error_reporting(0);
+		break;
+
+		default:
+			exit('The application environment is not set correctly.');
+	}
+}
+
 /*
  *---------------------------------------------------------------
  * SYSTEM FOLDER NAME
@@ -36,7 +70,7 @@ $ip = $_SERVER["REMOTE_ADDR"];
  * as this file.
  *
  */
-	$system_path = "system";
+	$system_path = 'system';
 
 /*
  *---------------------------------------------------------------
@@ -52,7 +86,7 @@ $ip = $_SERVER["REMOTE_ADDR"];
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = "application";
+	$application_folder = 'application';
 
 /*
  * --------------------------------------------------------------------
@@ -78,7 +112,7 @@ $ip = $_SERVER["REMOTE_ADDR"];
 	// if your controller is not in a sub-folder within the "controllers" folder
 	// $routing['directory'] = '';
 
-	// The controller class file name.  Example:  Mycontroller.php
+	// The controller class file name.  Example:  Mycontroller
 	// $routing['controller'] = '';
 
 	// The controller function you wish to be called.
@@ -108,14 +142,18 @@ $ip = $_SERVER["REMOTE_ADDR"];
 // END OF USER CONFIGURABLE SETTINGS.  DO NOT EDIT BELOW THIS LINE
 // --------------------------------------------------------------------
 
-
-
-
 /*
  * ---------------------------------------------------------------
  *  Resolve the system path for increased reliability
  * ---------------------------------------------------------------
  */
+
+	// Set the current directory correctly for CLI requests
+	if (defined('STDIN'))
+	{
+		chdir(dirname(__FILE__));
+	}
+
 	if (realpath($system_path) !== FALSE)
 	{
 		$system_path = realpath($system_path).'/';
@@ -139,6 +177,7 @@ $ip = $_SERVER["REMOTE_ADDR"];
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
 	// The PHP file extension
+	// this global constant is deprecated.
 	define('EXT', '.php');
 
 	// Path to the system folder
@@ -174,7 +213,7 @@ $ip = $_SERVER["REMOTE_ADDR"];
  * And away we go...
  *
  */
-require_once BASEPATH.'core/CodeIgniter'.EXT;
+require_once BASEPATH.'core/CodeIgniter.php';
 
 /* End of file index.php */
 /* Location: ./index.php */

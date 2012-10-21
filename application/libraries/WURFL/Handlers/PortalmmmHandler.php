@@ -1,21 +1,20 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
+ * Refer to the COPYING.txt file distributed with this package.
  *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- * 
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 
 /**
@@ -23,41 +22,21 @@
  * 
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 class WURFL_Handlers_PortalmmmHandler extends WURFL_Handlers_Handler {
 	
-	function __construct($wurflContext, $userAgentNormalizer = null) {
-		parent::__construct ( $wurflContext, $userAgentNormalizer );
-	}
-	
-	/**
-	 * Intercept all UAs starting with "portalmmm"
-	 *
-	 * @param string $userAgent
-	 * @return boolean
-	 */
-	public function canHandle($userAgent) {
-		return WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "portalmmm" );
-	}
-	
-	/**
-	 * Exact Match or return "generic"
-	 *
-	 * @param string $userAgent
-	 * @return string
-	 */
-	public function lookForMatchingUserAgent($userAgent) {
-		if (array_key_exists ( $userAgent, $this->userAgentsWithDeviceID )) {
-			return $this->userAgentsWithDeviceID [$userAgent];
-		}
-		
-		return NULL;
-	}
-	
 	protected $prefix = "PORTALMMM";
+	
+	public function canHandle($userAgent) {
+		if (WURFL_Handlers_Utils::isDesktopBrowser($userAgent)) return false;
+		return WURFL_Handlers_Utils::checkIfStartsWith($userAgent, "portalmmm");
+	}
+	
+	public function applyConclusiveMatch($userAgent) {
+		return WURFL_Constants::NO_MATCH;
+	}
 }
-?>

@@ -1,24 +1,25 @@
 <?php
-
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
+ * Refer to the COPYING.txt file distributed with this package.
  *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- *  
  *
  * @category   WURFL
- * @package    WURFL_Xml
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Xml
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
-
+/**
+ * WURFL XML Parsing interface
+ * @package	WURFL_Xml
+ */
 interface WURFL_Xml_Interface {
 	
 	/**
@@ -34,6 +35,7 @@ interface WURFL_Xml_Interface {
 	const USER_AGENT = "user_agent";
 	const FALL_BACK = "fall_back";
 	const ACTUAL_DEVICE_ROOT = "actual_device_root";
+	const SPECIFIC = "specific";
 	
 	const DEVICE = "device";
 	
@@ -47,4 +49,3 @@ interface WURFL_Xml_Interface {
 	
 }
 
-?>

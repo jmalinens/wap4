@@ -1,21 +1,20 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
+ * Refer to the COPYING.txt file distributed with this package.
  *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- * 
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 
 /**
@@ -23,44 +22,27 @@
  *
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 class WURFL_Handlers_PantechHandler extends WURFL_Handlers_Handler {
 	
-	function __construct($wurflContext, $userAgentNormalizer = null) {
-		parent::__construct ( $wurflContext, $userAgentNormalizer );
-	}
-	
-	/**
-	 * Intercept all UAs starting with "Pantech","PANTECH","PT-" or "PG-"
-	 *
-	 * @param string $userAgent
-	 * @return boolean
-	 */
-	public function canHandle($userAgent) {
-		return WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "Pantech" ) || WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "PANTECH" ) || WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "PT-" ) || WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "PG-" );
-	}
-	
-	/**
-	 * If starts with "PT-", "PG-" or "PANTECH", use RIS with FS
-	 * Otherwise LD with threshold 4
-	 *
-	 * @param string $userAgent
-	 * @return string
-	 */
-	function lookForMatchingUserAgent($userAgent) {
-		if (WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "Pantech" )) {
-			return WURFL_Handlers_Utils::ldMatch ( array_keys ( $this->userAgentsWithDeviceID ), $userAgent, self::PANTECH_TOLLERANCE );
-		}
-		$tollerance = WURFL_Handlers_Utils::firstSlash ( $userAgent );
-		return WURFL_Handlers_Utils::risMatch ( array_keys ( $this->userAgentsWithDeviceID ), $userAgent, $tollerance );
-	
-	}
-	
-	const PANTECH_TOLLERANCE = 4;
+	const PANTECH_TOLERANCE = 5;
 	protected $prefix = "PANTECH";
+	
+	public function canHandle($userAgent) {
+		if (WURFL_Handlers_Utils::isDesktopBrowser($userAgent)) return false;
+		return WURFL_Handlers_Utils::checkIfStartsWithAnyOf($userAgent, array('Pantech', 'PT-', 'PANTECH', 'PG-'));
+	}
+	
+	public function applyConclusiveMatch($userAgent) {
+		if (WURFL_Handlers_Utils::checkIfStartsWith($userAgent, "Pantech")) {
+			$tolerance = self::PANTECH_TOLERANCE;
+		} else {
+			$tolerance = WURFL_Handlers_Utils::firstSlash($userAgent);
+		}
+		return $this->getDeviceIDFromRIS($userAgent, $tolerance);
+	}
 }
-?>

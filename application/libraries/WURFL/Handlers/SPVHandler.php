@@ -1,74 +1,43 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- *
- *
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 
 /**
- * SPVUserAgentHanlder
+ * SPVUserAgentHandler
  *
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 class WURFL_Handlers_SPVHandler extends WURFL_Handlers_Handler {
 	
 	protected $prefix = "SPV";
 	
-	function __construct($wurflContext, $userAgentNormalizer = null) {
-		parent::__construct ( $wurflContext, $userAgentNormalizer );
-	}
-	
-	/**
-	 * Intercept all UAs starting containing SPV"
-	 *
-	 * @param string $userAgent
-	 * @return boolean
-	 */
 	public function canHandle($userAgent) {
-		return WURFL_Handlers_Utils::checkIfContains ( $userAgent, "SPV" );
+		if (WURFL_Handlers_Utils::isDesktopBrowser($userAgent)) return false;
+		return WURFL_Handlers_Utils::checkIfContains($userAgent, 'SPV');
 	}
 	
-	function lookForMatchingUserAgent($userAgent) {
-		$tollerance = WURFL_Handlers_Utils::indexOfOrLength ( $userAgent, ";", strpos ( $userAgent, "SPV" ) );
-		return parent::applyRisWithTollerance ( array_keys ( $this->userAgentsWithDeviceID ), $userAgent, $tollerance );
+	public function applyConclusiveMatch($userAgent) {
+		$tolerance = WURFL_Handlers_Utils::indexOfOrLength($userAgent, ';', strpos($userAgent, 'SPV'));
+		return $this->getDeviceIDFromRIS($userAgent, $tolerance);
 	}
 	
-	/**
-	 * If "OpVer x.x.x.x is present, then apply TokensMatcher wit thresold 7,
-	 * otherwise apply LD with thresold 5.
-	 *
-	 * @param string $userAgent
-	 * @return string
-	 */
-	function lookForMatchingUserAgentx($userAgent) {
-		$userAgents = array_keys ( $this->userAgentsWithDeviceID );
-		$spvTokensProvider = new WURFL_Handlers_Matcher_SPVProvider ();
-		
-		if ($spvTokensProvider->canApply ( $userAgent )) {
-			$tokenMatcher = new WURFL_Handlers_Matcher_TokenMatcher ( $spvTokensProvider );
-			return $tokenMatcher->match ( $userAgents, $userAgent, 7 );
-		}
-		return WURFL_Handlers_Utils::ldMatch ( $userAgents, $userAgent, 5 );
-	
-	}
-
 }
-?>

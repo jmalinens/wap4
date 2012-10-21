@@ -1,194 +1,176 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- *  
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL_Configuration
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Configuration
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
+ */
+/**
+ * XML Configuration
+ * @package	WURFL_Configuration
  */
 class WURFL_Configuration_XmlConfig extends WURFL_Configuration_Config {
 
-	
-	
-	private $logDir = ".";
-	
-
-	private $stack = array();
-	private $persistenceOrCache = array();
-	
-	
-	
 	/**
-	 * Constructor
-	 *
-	 * @param string $confLocation
+	 * Initialize XML Configuration
 	 */
-	function __construct($configFilePath) {
-		parent::__construct($configFilePath);
+	protected function initialize() {
+		$xmlConfig = simplexml_load_file($this->configFilePath);
+		$this->wurflFile = $this->wurflFile($xmlConfig->xpath('/wurfl-config/wurfl/main-file'));
+		$this->wurflPatches = $this->wurflPatches($xmlConfig->xpath('/wurfl-config/wurfl/patches/patch'));
+		$this->allowReload = $this->allowReload($xmlConfig->xpath('/wurfl-config/allow-reload'));
+		$this->persistence = $this->persistence($xmlConfig->xpath('/wurfl-config/persistence'));
+		$this->cache = $this->persistence($xmlConfig->xpath('/wurfl-config/cache'));
+		$this->logDir = $this->logDir($xmlConfig->xpath('/wurfl-config/logDir'));
+		$this->matchMode = $this->matchMode($xmlConfig->xpath('/wurfl-config/match-mode'));
+	}
+
+	/**
+	 * Returns the full path to the WURFL file
+	 * @param array $mainFileElement array of SimpleXMLElement objects 
+	 * @return string full path
+	 */
+	private function wurflFile($mainFileElement) {
+		return parent::getFullPath((string)$mainFileElement[0]);
 	}
 	
-	
-	
 	/**
-	 * Reads the configuration file and creates the class attributes
-	 *
+	 * Returns an array of full path WURFL patches
+	 * @param array $patchElements array of SimpleXMLElement objects
+	 * @return array WURFL Patches
 	 */
-	protected  function initialize(){
-		
-		$reader = new XMLReader();
-		$reader->open(parent::getConfigFilePath());
-
-		$reader->setRelaxNGSchemaSource(self::WURFL_CONF_SCHEMA);
-		
-	
-		libxml_use_internal_errors(TRUE);
-
-		
-		while ($reader->read()) {
-			if(!$reader->isValid()) {
-				throw new Exception(libxml_get_last_error()->message);
-			}
-			$name = $reader->name;
-			switch ($reader->nodeType) {
-				case XMLReader::ELEMENT:
-					$this->_handleStartElement($name);
-					break;
-				case XMLReader::TEXT:
-					$this->_handleTextElement($reader->value);
-					break;
-				case XMLReader::END_ELEMENT:
-					$this->_handleEndElement($name);
-					break;
+	private function wurflPatches($patchElements) {
+		$patches = array();
+		if ($patchElements) {
+			foreach ($patchElements as $patchElement) {
+				$patches[] = parent::getFullPath((string)$patchElement);
 			}
 		}
-		
-		$reader->close();
-		
-		if (isset($this->cache["dir"])) {
-			$this->logDir = $this->cache["dir"];
-		}
-		
-		
-		
-		
+		return $patches;
 	}
 
 	/**
-	 * Handles the start of an element
-	 *
-	 * @param string $name
+	 * Returns true if reload is allowed, according to $allowReloadElement
+	 * @param array $allowReloadElement array of SimpleXMLElement objects
+	 * @return boolean
 	 */
-	private function _handleStartElement($name) {
-		array_push($this->stack, $name);
-	}
-
-	/**
-	 * Handles Text Element
-	 *
-	 * @param array $stack
-	 * @param string $name
-	 * @param string $value
-	 */
-	private function _handleTextElement($value) {
-		$currentElement = $this->array_peek($this->stack);
-		switch ($currentElement) {
-			case WURFL_Configuration_Config::MAIN_FILE:				
-				$this->wurflFile = parent::getFullPath($value);
-				break;
-			case WURFL_Configuration_Config::PATCH:
-				$this->wurflPatches[] = parent::getFullPath($value);
-				break;
-			case WURFL_Configuration_Config::PROVIDER:
-				$this->persistenceOrCache["provider"] = $value;
-				break;
-			case WURFL_Configuration_Config::PARAMS:
-				$this->persistenceOrCache = array_merge($this->persistenceOrCache, $this->_toArray($value));
-				break;
+	private function allowReload($allowReloadElement) {
+		if (!empty($allowReloadElement)) {
+			return (bool)$allowReloadElement[0];
 		}
-
+		return false;
 	}
-
-	/**
-	 * Handles the end of the element
-	 *
-	 * @param string $name
-	 */
-	private function _handleEndElement($name) {
-		switch ($name) {
-			case WURFL_Configuration_Config::PERSISTENCE:
-				$this->persistence = $this->persistenceOrCache;
-			case WURFL_Configuration_Config::CACHE:
-				$this->cache = $this->persistenceOrCache;
-				break;
-		}
-		
-		array_pop($this->stack);
-		
-	}
-
-
-	//************************* Utility Functions ********************************//
 	
+	/**
+	 * Returns the mode of operation if set, otherwise null
+	 * @param array $modeElement array of SimpleXMLElement objects
+	 * @return boolean
+	 */
+	private function matchMode($modeElement) {
+		if (!empty($modeElement)) {
+			$mode = $modeElement[0];
+			if (!$mode) {
+				return $this->matchMode;
+			}
+			if (!self::validMatchMode($mode)) {
+				throw new WURFL_WURFLException('Invalid Match Mode: '.$mode);
+			}
+			$this->matchMode = $mode;
+		}
+		return $this->matchMode;
+	}
+	
+	/**
+	 * Returns log directory from XML config
+	 * @param array $logDirElement array of SimpleXMLElement objects
+	 * @return string Log directory
+	 */
+	private function logDir($logDirElement) {
+		if (!empty($logDirElement)) {
+			return parent::getFullPath((string)$logDirElement[0]);
+		}
+		return null;
+	}
+
+	/**
+	 * Returns persistence provider info from XML config
+	 * @param array $persistenceElement array of SimpleXMLElement objects
+	 * @return array Persistence info
+	 */
+	private function persistence($persistenceElement) {
+		$persistence = array();
+		if ($persistenceElement) {
+			$persistence['provider'] = (string)$persistenceElement[0]->provider;
+			$persistence['params'] = $this->_toArray((string)$persistenceElement[0]->params);
+		}
+		return $persistence;
+	}
+
+	/**
+	 * Converts given CSV $params to array of parameters
+	 * @param string $params Comma-seperated list of parameters
+	 * @return array Parameters
+	 */
 	private function _toArray($params) {
 		$paramsArray = array();
-		
-		foreach (explode(",", $params) as $param) {
-			$paramNameValue = explode("=", $param);
-			
-			if(strcmp(WURFL_Configuration_Config::DIR, $paramNameValue[0]) == 0) {
-				$paramNameValue[1] = parent::getFullPath($paramNameValue[1]);
-			}
-			
-			$paramsArray[$paramNameValue[0]] = $paramNameValue[1];
-		}
 
-		
+		foreach (explode(',', $params) as $param) {
+			$paramNameValue = explode('=', $param);
+			if(count($paramNameValue) > 1) {
+				if (strcmp(WURFL_Configuration_Config::DIR, $paramNameValue[0]) == 0) {
+					$paramNameValue[1] = parent::getFullPath($paramNameValue[1]);
+				}
+				$paramsArray[trim($paramNameValue[0])] = trim($paramNameValue[1]);								
+			}
+		}
 		return $paramsArray;
 	}
 
-	private function array_peek(array &$array) {
-		$var = array_pop($array);
-		array_push($array, $var);
-		return $var;
-	}
-	
-	
-	
-
-
-	const  WURFL_CONF_SCHEMA = '<?xml version="1.0" encoding="utf-8" ?>
+ 
+	/**
+	 * WURFL XML Schema
+	 * @var string
+	 */
+	const WURFL_CONF_SCHEMA = '<?xml version="1.0" encoding="utf-8" ?>
 	<element name="wurfl-config" xmlns="http://relaxng.org/ns/structure/1.0">
-    	<element name="wurfl">
-    		<element name="main-file"><text/></element>
-    		<element name="patches">
-    			<zeroOrMore>
-      				<element name="patch"><text/></element>
-    			</zeroOrMore>
+		<element name="wurfl">
+			<element name="main-file"><text/></element>
+			<element name="patches">
+				<zeroOrMore>
+	  				<element name="patch"><text/></element>
+				</zeroOrMore>
   			</element>
   		</element>
+		<optional>
+  			<element name="allow-reload"><text/></element>
+		</optional>
+		<optional>
+  			<element name="match-mode"><text/></element>
+		</optional>
+		<optional>
+  			<element name="logDir"><text/></element>
+		</optional>
   		<element name="persistence">
-      		<element name="provider"><text/></element>
-      		<optional>
-      			<element name="params"><text/></element>
-      		</optional>
+	  		<element name="provider"><text/></element>
+	  		<optional>
+	  			<element name="params"><text/></element>
+	  		</optional>
   		</element>
   		<element name="cache">
-      		<element name="provider"><text/></element>
-      		<optional>
-      			<element name="params"><text/></element>
-      		</optional>
+	  		<element name="provider"><text/></element>
+	  		<optional>
+	  			<element name="params"><text/></element>
+	  		</optional>
   		</element>
 	</element>';
 }
-?>

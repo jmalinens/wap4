@@ -7,17 +7,31 @@ var $device;
 var $id;
 var $fallBack;
 
-public function Wurfl(){
+public function __construct(){
 
 
 require_once APPPATH.'/libraries/WURFL/Application.php';
 
-$wurflConfigFile     = APPPATH.'/config/wurfl-config.xml';
-$wurflConfig         = new WURFL_Configuration_XmlConfig($wurflConfigFile);
+/**
+ * for local WIN development use file caching
+ */
+if(strtolower(substr(PHP_OS, 0, 3)) == 'win') {
+    
+    $wurflConfig = new WURFL_Configuration_InMemoryConfig();
+    $wurflConfig->wurflFile(APPPATH.'config/wurfl.xml');
+    $wurflConfig->matchMode('performance');
+    $wurflConfig->persistence('file', array('dir' => APPPATH.'/config/cache/persistence')); // Setup Caching
+    $wurflConfig->cache('file', array('dir' => APPPATH.'/config/cache', 'expiration' => 36000));
+
+} else {
+    
+    $wurflConfigFile     = APPPATH.'config/wurfl-config.xml';
+    $wurflConfig         = new WURFL_Configuration_XmlConfig($wurflConfigFile);
+
+}
 
 $wurflManagerFactory = new WURFL_WURFLManagerFactory($wurflConfig);
 $wurflManager        = $wurflManagerFactory->create();	
-$wurflInfo           = $wurflManager->getWURFLInfo();	
 
 $this->device = $wurflManager->getDeviceForHttpRequest($_SERVER);	
 

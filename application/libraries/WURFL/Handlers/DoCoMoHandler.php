@@ -1,21 +1,20 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
+ * Refer to the COPYING.txt file distributed with this package.
  *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- * 
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 
 /**
@@ -23,47 +22,37 @@
  *
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 class WURFL_Handlers_DoCoMoHandler extends WURFL_Handlers_Handler {
 	
 	protected $prefix = "DOCOMO";
 	
-	function __construct($wurflContext, $userAgentNormalizer = null) {
-		parent::__construct ( $wurflContext, $userAgentNormalizer );
-	}
+	public static $constantIDs = array(
+		'docomo_generic_jap_ver1',	
+		'docomo_generic_jap_ver2',
+	);
 	
-	/**
-	 * Intercept all UAs starting with "DoCoMo"
-	 *
-	 * @param string $userAgent
-	 * @return boolean
-	 */
 	public function canHandle($userAgent) {
-		return WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "DoCoMo" );
+		if (WURFL_Handlers_Utils::isDesktopBrowser($userAgent)) return false;
+		return WURFL_Handlers_Utils::checkIfStartsWith($userAgent, "DoCoMo");
 	}
 	
-	/**
-	 * Exact Match
-	 *
-	 * @param string $userAgent
-	 * @return string
-	 */
-	public function lookForMatchingUserAgent($userAgent) {
-		return NULL;
-	}
-	
-	function applyRecoveryMatch($userAgent) {
-		if( WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "DoCoMo/2" )) {
-			return "docomo_generic_jap_ver2";
+	public function applyConclusiveMatch($userAgent) {
+		$tolerance = WURFL_Handlers_Utils::ordinalIndexOf($userAgent, '/', 2);
+		if ($tolerance === -1) {
+			//  DoCoMo/2.0 F01A(c100;TB;W24H17)
+			$tolerance = WURFL_Handlers_Utils::indexOfOrLength('(', $userAgent);
 		}
-		
-		return "docomo_generic_jap_ver1";
-
+		return $this->getDeviceIDFromRIS($userAgent, $tolerance);
 	}
-
+	
+	public function applyRecoveryMatch($userAgent) {
+		$versionIndex = 7;
+		$version = $userAgent[$versionIndex];
+		return ($version == '2')? 'docomo_generic_jap_ver2': 'docomo_generic_jap_ver1';
+	}
 }
-?>

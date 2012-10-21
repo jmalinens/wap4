@@ -1,91 +1,56 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
+ * Refer to the COPYING.txt file distributed with this package.
  *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- *  
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 
 /**
- * NokiaUserAgentHanlder
+ * NokiaUserAgentHandler
  *
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
-class WURFL_Handlers_NokiaHandler extends WURFL_Handlers_Handler  {
-
+class WURFL_Handlers_NokiaHandler extends WURFL_Handlers_Handler {
 	
 	protected $prefix = "NOKIA";
-
 	
-	public function __construct($wurflContext, $userAgentNormalizer=null) {
-		parent::__construct($wurflContext, $userAgentNormalizer);
+	public static $constantIDs = array(
+		'nokia_generic_series60',
+		'nokia_generic_series80',
+		'nokia_generic_meego',
+	);
+	
+	public function canHandle($userAgent) {
+		if (WURFL_Handlers_Utils::isDesktopBrowser($userAgent)) return false;
+		return WURFL_Handlers_Utils::checkIfContains($userAgent, 'Nokia');
 	}
 	
-	/**
-	 * Intercepting All User Agents containing "Nokia"
-	 *
-	 * @param string $userAgent
-	 * @return boolean
-	 */
-	function canHandle($userAgent) {
-		return WURFL_Handlers_Utils::checkIfContains($userAgent, "Nokia");
-	}
-
-
-	/**
-	 *
-	 * Apply RIS with FS (First Slash) after Nokia String as a threshold.
-	 * 
-	 * 
-	 * @param string $userAgent
-	 * @return string
-	 */
-	function lookForMatchingUserAgent($userAgent) {
-		$tollerance = WURFL_Handlers_Utils::indexOfOrLength($userAgent, "/", strpos($userAgent, "Nokia"));		
-		$userAgents = array_keys($this->userAgentsWithDeviceID);
-		return parent::applyRisWithTollerance($userAgents, $userAgent, $tollerance);
-				
+	public function applyConclusiveMatch($userAgent) {
+		$tolerance = WURFL_Handlers_Utils::indexOfAnyOrLength($userAgent, array('/', ' '), strpos($userAgent, 'Nokia'));
+		return $this->getDeviceIDFromRIS($userAgent, $tolerance);
 	}
 	
-	
-	/**
-	 * If the User Agent contains "Series60" and "Series80". 
-	 * Return "nokia_generic_series60" and "nokia_generic_series80" 
-	 * respectively in case of success.
-	 *
-	 * @param string $userAgent
-	 * @return string
-	 */
-	function applyRecoveryMatch($userAgent) {
-		if(!(strpos($userAgent, "Nokia") === false)) {
-			if (strpos($userAgent, "Series60") != 0) {
-				return "nokia_generic_series60";
-			}
-			if (strpos($userAgent, "Series80") != 0) {
-				return "nokia_generic_series80";
-			}
-		}
-
-		return WURFL_Constants::GENERIC;
+	public function applyRecoveryMatch($userAgent) {
+		if (WURFL_Handlers_Utils::checkIfContains($userAgent, 'Series60')) return 'nokia_generic_series60';
+		if (WURFL_Handlers_Utils::checkIfContains($userAgent, 'Series80')) return 'nokia_generic_series80';
+		if (WURFL_Handlers_Utils::checkIfContains($userAgent, 'MeeGo')) return 'nokia_generic_meego';
+		return null;
 	}
-
-	
 }
-?>

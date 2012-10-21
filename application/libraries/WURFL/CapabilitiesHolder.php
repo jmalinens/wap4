@@ -1,28 +1,44 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- *
- *
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Cache
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
+ */
+/**
+ * Holds WURFL Device capabilities
+ * @package	WURFL
  */
 class WURFL_CapabilitiesHolder {
 	
+	/**
+	 * @var WURFL_Xml_ModelDevice
+	 */
 	private $_device;
+	/**
+	 * @var WURFL_DeviceRepository
+	 */
 	private $_deviceRepository;
+	/**
+	 * @var WURFL_Cache_CacheProvider
+	 */
 	private $_cacheProvider;
 	
+	/**
+	 * @param WURFL_Xml_ModelDevice $device
+	 * @param WURFL_DeviceRepository $deviceRepository
+	 * @param WURFL_Cache_CacheProvider $cacheProvider
+	 */
 	public function __construct($device, $deviceRepository, $cacheProvider) {
 		$this->_device = $device;
 		$this->_deviceRepository = $deviceRepository;
@@ -33,7 +49,7 @@ class WURFL_CapabilitiesHolder {
 	 * Returns the value of a given capability name
 	 * 
 	 * @param string $capabilityName
-	 * @return string
+	 * @return string Capability value
 	 * @throws WURFLException if the value of the $capability name is illegal
 	 */
 	public function getCapability($capabilityName) {
@@ -58,15 +74,11 @@ class WURFL_CapabilitiesHolder {
  	}
 	
 	/**
-	 * Returns all the capabilities value of the
-	 * current device as <capabilityName, capabilityValue>
-	 * Map
-	 *
+	 * Returns all the capabilities value of the current device as <capabilityName, capabilityValue>
+	 * @return array All capabilities
 	 */
 	public function getAllCapabilities() {
 		return  $this->_deviceRepository->getAllCapabilitiesForDevice($this->_device->id);		
 	}
 	
 }
-
-?>

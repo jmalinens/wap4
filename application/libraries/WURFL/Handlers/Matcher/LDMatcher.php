@@ -1,54 +1,55 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- *
- *
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL_Handlers_Matcher
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers_Matcher
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
-
+/**
+ * WURFL Levenshtein distance user agent matcher.
+ * This User Agent Matcher uses the Levenshtein Distance algorithm to determine the
+ * distance between to User Agents.  A tolerance is specified on the match() method
+ * which limits the distance.  User Agents that match less than or equal to this
+ * tolerance are consider to be a match;
+ * @link http://en.wikipedia.org/wiki/Levenshtein_distance
+ * @link http://www.php.net/manual/en/function.levenshtein.php
+ * @see match()
+ * @package	WURFL_Handlers_Matcher
+ */
 class WURFL_Handlers_Matcher_LDMatcher implements WURFL_Handlers_Matcher_Interface {
 	
+	/**
+	 * Instance of WURFL_Handlers_Matcher_LDMatcher
+	 * @var WURFL_Handlers_Matcher_LDMatcher
+	 */
 	private static $instance;
 	
-	private function __construct() {
-	}
-	
+	/**
+	 * Returns an instance of the LDMatcher singleton
+	 * @return WURFL_Handlers_LDMatcher
+	 */
 	public static function INSTANCE() {
 		if (self::$instance === null) {
-			self::$instance = new self ( );
+			self::$instance = new self();
 		}
 		return self::$instance;
 	}
 	
-	/**
-	 * Search through the collection of strings
-	 * to find one with distance smaller than the
-	 * given one
-	 *
-	 * @param array $collection
-	 * @param string $needle
-	 * @param int $tollerance
-	 * @return string
-	 */
-	public function match(&$collection, $needle, $tollerance) {
-		
-		$best = $tollerance;
+	public function match(&$collection, $needle, $tolerance) {
+		$best = $tolerance;
 		$match = '';
 		foreach ( $collection as $userAgent ) {
-			if (abs ( strlen ( $needle ) - strlen ( $userAgent ) ) <= $tollerance) {
-				//$current = $this->levenshtein ( $needle, $userAgent, $tollerance );
+			if (abs ( strlen ( $needle ) - strlen ( $userAgent ) ) <= $tolerance) {
 				$current = levenshtein($needle, $userAgent);
 				if ($current <= $best) {
 					$best = $current - 1;
@@ -56,91 +57,7 @@ class WURFL_Handlers_Matcher_LDMatcher implements WURFL_Handlers_Matcher_Interfa
 				}
 			}
 		}
-		
 		return $match;
-	
 	}
-	
-	function levenshtein($s, $t, $tollerance) {
-		$m = strlen ( $s );
-		$n = strlen ( $t );
-		
-		for($i = 0; $i <= $m; $i ++)
-			$d [$i] [0] = $i;
-		for($j = 0; $j <= $n; $j ++)
-			$d [0] [$j] = $j;
-		
-		for($i = 1; $i <= $m; $i ++) {
-			for($j = 1; $j <= $n; $j ++) {
-				$c = ($s [$i - 1] == $t [$j - 1]) ? 0 : 1;
-				$d [$i] [$j] = min ( $d [$i - 1] [$j] + 1, $d [$i] [$j - 1] + 1, $d [$i - 1] [$j - 1] + $c );
-				if ($i == $j && $d [$i] [$j] > ($tollerance + 3)) {
-					return $d [$i] [$j];
-				}
-			}
-		}
-		
-		return $d [$m] [$n];
-	}
-	
-/*	private function levenshtein($s, $t, $tollerance) {
-		$n = strlen($s);
-		$m = strlen($t);
-		
-		
-                if (n == 0) {
-                        return m;
-                } else if (m == 0) {
-                        return n;
-                }
-
-                
-                $p = array();
-                $d = array();
-                $_d = array();
-                
-                //int p[] = new int[n + 1]; // 'previous' cost array, horizontally
-                //int d[] = new int[n + 1]; // cost array, horizontally
-                //int _d[]; // placeholder to assist in swapping p and d
-
-                // indexes into strings s and t
-                $i; // iterates through s
-                $j; // iterates through t
-
-                $t_j; // jth character of t
-
-                $cost; // cost
-
-                for ($i = 0; $i <= $n; $i++) {
-                        $p[$i] = $i;
-                }
-
-                for ($j = 1; $j <= $m; $j++) {
-                        $t_j =  strpos($t,) $t.charAt(j - 1);
-                        $d[0] = j;
-
-                        for ($i = 1; $i <= $n; $i++) {
-                                cost = s.charAt(i - 1) == t_j ? 0 : 1;
-                                // minimum of cell to the left+1, to the top+1, diagonally left
-                                // and up +cost
-                                $d[$i] = Math.min(Math.min(d[i - 1] + 1, p[i] + 1), p[i - 1]
-                                                + cost);
-
-                                // Performance check
-                                if ($i == $j && $d[i] > (tollerance + 3)) {
-                                        return d[i];
-                                }
-
-                        }
-
-                        // copy current distance counts to 'previous row' distance counts
-                        $_d = $p;
-                        $p = $d;
-                        $d = $_d;
-                }
-		
-	}*/
-
 }
 
-?>

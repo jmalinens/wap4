@@ -1,21 +1,20 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
+ * Refer to the COPYING.txt file distributed with this package.
  *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- * 
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 
 /**
@@ -23,60 +22,34 @@
  *
  *
  * @category   WURFL
- * @package    WURFL_Handlers
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL_Handlers
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
 class WURFL_Handlers_KDDIHandler extends WURFL_Handlers_Handler {
 	
 	protected $prefix = "KDDI";
 	
-	function __construct($wurflContext, $userAgentNormalizer = null) {
-		parent::__construct ( $wurflContext, $userAgentNormalizer );
-	}
+	public static $constantIDs = array(
+		'opwv_v62_generic'
+	);
 	
-	/**
-	 * Intercept all UAs containing "KDDI"
-	 *
-	 * @param string $userAgent
-	 * @return boolean
-	 */
 	public function canHandle($userAgent) {
-		return WURFL_Handlers_Utils::checkIfContains ( $userAgent, "KDDI" );
+		if (WURFL_Handlers_Utils::isDesktopBrowser($userAgent)) return false;
+		return WURFL_Handlers_Utils::checkIfContains($userAgent, 'KDDI-');
 	}
 	
-	/**
-	 */
-	function lookForMatchingUserAgent($userAgent) {
-		$tolerance = $this->tolerance ( $userAgent );
-		return WURFL_Handlers_Utils::risMatch ( array_keys ( $this->userAgentsWithDeviceID ), $userAgent, $tolerance );
-	}
-	
-	/**
-	 *
-	 * @param string $userAgent
-	 * @return string
-	 */
-	function applyRecoveryMatch($userAgent) {
-		if (WURFL_Handlers_Utils::checkIfContains ( $userAgent, "Opera" )) {
-			return "opera";
+	public function applyConclusiveMatch($userAgent) {
+		if (WURFL_Handlers_Utils::checkIfStartsWith($userAgent, 'KDDI/')) {
+			$tolerance = WURFL_Handlers_Utils::secondSlash($userAgent);
+		} else {
+			$tolerance = WURFL_Handlers_Utils::firstSlash($userAgent);
 		}
+		return $this->getDeviceIDFromRIS($userAgent, $tolerance);
+	}
+	
+	public function applyRecoveryMatch($userAgent) {
 		return "opwv_v62_generic";
 	}
-	
-	private function tolerance($userAgent) {
-		if (WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "KDDI/" )) {
-			return WURFL_Handlers_Utils::secondSlash ( $userAgent );
-		}
-		
-		if (WURFL_Handlers_Utils::checkIfStartsWith ( $userAgent, "KDDI" )) {
-			return WURFL_Handlers_Utils::firstSlash ( $userAgent );
-		}
-		
-		return WURFL_Handlers_Utils::indexOfOrLength ( $userAgent, ")" );
-	
-	}
-
 }
-?>

@@ -1,28 +1,30 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- *
- *
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
+ */
+/**
+ * WURFL related utilities
+ * @package	WURFL
  */
 class WURFL_WURFLUtils {
 
 	/**
-	 * returns the User Agent From $_SERVER
+	 * returns the User Agent From $request or empty string if not found one
 	 *
-	 * @param $_SERVER $request
+	 * @param array $request HTTP Request array (normally $_SERVER)
 	 * @return string
 	 */
 	public static function getUserAgent($request) {			
@@ -37,15 +39,13 @@ class WURFL_WURFLUtils {
 			return $request['HTTP_USER_AGENT'];
 		}
 		
-		throw new WURFL_WURFLException("No user-agent found in the request");
+		return '';
 	}
 
 	/**
-	 * returns the UA Profile from the $_SERVER object
-	 *
-	 *
-	 * @param $_SERVER $request
-	 * @return  string
+	 * Returns the UA Profile from the $request
+	 * @param array $request HTTP Request array (normally $_SERVER)
+	 * @return string UAProf URL
 	 */
 	public static function getUserAgentProfile($request) {
 		if (isset($request["HTTP_X_WAP_PROFILE"])) {
@@ -58,34 +58,35 @@ class WURFL_WURFLUtils {
 			$opt = $request["Opt"];
 			$regex = "/ns=\\d+/";
 			$matches = array();
+			$namespaceProfile = null;
 			if (preg_match($regex, $opt, $matches)) {
 				$namespaceProfile = substr($matches[0], 2) . "-Profile";
 			}
-			if (isset($request[$namespaceProfile])) {
+			if ($namespaceProfile !== null && isset($request[$namespaceProfile])) {
 				return $request[$namespaceProfile];
 			}
 		}
 
-		return NULL;
+		return null;
 	}
 
 	/**
-	 * Checks if the requester device is xhtml enaabled
+	 * Checks if the requester device is xhtml enabled
 	 *
-	 * @param $_SERVER $request
-	 * @return boolean
+	 * @param array $request HTTP Request array (normally $_SERVER)
+	 * @return bool
 	 */
 	public static function isXhtmlRequester($request) {
 		if (!isset($request["accept"])) {
-			return FALSE;
+			return false;
 		}
 		
 		$accept = $request["accept"];
 		if (isset($accept)) {
-			if ((strpos($accept, WURFL_Constants.ACCEPT_HEADER_VND_WAP_XHTML_XML) !== 0)
-			|| (strpos($accept, WURFL_Constants.ACCEPT_HEADER_XHTML_XML) !== 0)
-			|| (strpos($accept, WURFL_Constants.ACCEPT_HEADER_TEXT_HTML) !== 0)) {
-				return true;;
+			if ((strpos($accept, WURFL_Constants::ACCEPT_HEADER_VND_WAP_XHTML_XML) !== 0)
+			|| (strpos($accept, WURFL_Constants::ACCEPT_HEADER_XHTML_XML) !== 0)
+			|| (strpos($accept, WURFL_Constants::ACCEPT_HEADER_TEXT_HTML) !== 0)) {
+				return true;
 			}
 		}
 
@@ -93,7 +94,11 @@ class WURFL_WURFLUtils {
 
 	}
 
-
+	/**
+	 * Returns true if given $deviceID is the 'generic' WURFL device
+	 * @param string $deviceID
+	 * @return bool
+	 */
 	public static function isGeneric($deviceID) {
 		if (strcmp($deviceID, WURFL_Constants::GENERIC) === 0) {
 			return true;
@@ -101,6 +106,12 @@ class WURFL_WURFLUtils {
 		return false;
 	}
 	
+	/**
+	 * Recursively merges $array1 with $array2, returning the result
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
 	public static function array_merge_recursive_unique($array1, $array2) {
 		// LOOP THROUGH $array2
 		foreach($array2 AS $k => $v) {
@@ -124,22 +135,6 @@ class WURFL_WURFLUtils {
 
 		return $array1;
 	}
-	
-	public static function return_bytes($val) {
-		$val = trim($val);
-		$last = strtolower($val[strlen($val)-1]);
-		switch($last) {
-			// The 'G' modifier is available since PHP 5.1.0
-			case 'g':
-				$val *= 1024;
-			case 'm':
-				$val *= 1024;
-			case 'k':
-				$val *= 1024;
-		}
 
-		return $val;
-	}
 }
 
-?>

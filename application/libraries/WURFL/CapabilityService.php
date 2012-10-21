@@ -1,31 +1,42 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
- *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- *
- *
+ * Refer to the COPYING.txt file distributed with this package.
  *
  * @category   WURFL
- * @package    WURFL
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
+ */
+/**
+ * WURFL Capability Service
+ * @package	WURFL
  */
 class WURFL_CapabilityService {
 
 	/**
+	 * @var WURFL_DeviceRepository
+	 */
+	private $_deviceRepository;
+	/**
+	 * @var WURFL_Storage_Base
+	 */
+	private $_cacheProvider;
+	
+	/**
 	 * Initialize the CapabilityService
 	 *
 	 * @param WURFL_DeviceRepository $deviceRepository
-	 * @param WURFL_Cache_CacheProvider $cacheProvider
+	 * @param WURFL_Storage_Base $cacheProvider
 	 */
-	function __construct($deviceRepository, $cacheProvider) {
+	public function __construct($deviceRepository, $cacheProvider) {
 		$this->_deviceRepository = $deviceRepository;
 		$this->_cacheProvider = $cacheProvider;
 	}
@@ -37,7 +48,7 @@ class WURFL_CapabilityService {
 	 * @param string $capabilityName
 	 * @return string
 	 */
-	function getCapabilityForDevice($deviceID, $capabilityName) {
+	public function getCapabilityForDevice($deviceID, $capabilityName) {
 		$key = $deviceID . $capabilityName;
 		$capabilityValue = $this->_cacheProvider->get($key);
 		if (empty($capabilityValue)) {
@@ -54,12 +65,12 @@ class WURFL_CapabilityService {
 	 * @param string $deviceID
 	 * @return array
 	 */
-	function getAllCapabilitiesForDevice($deviceID) {
+	public function getAllCapabilitiesForDevice($deviceID) {
 		return $this->_deviceRepository->getAllCapabilitiesForDevice($deviceID);
 	}
 
 	/**
-	 * Returns an array of all groups id
+	 * Returns an array of all group ids
 	 *
 	 * @return array
 	 */
@@ -90,7 +101,7 @@ class WURFL_CapabilityService {
 	}
 
 	/**
-	 *  
+	 * 
 	 *
 	 * @param string $deviceID
 	 * @return array
@@ -103,9 +114,4 @@ class WURFL_CapabilityService {
 		}
 		return $fallBacks;
 	}
-
-	private $_deviceRepository;
-	private $_cacheProvider;
 }
-
-?>

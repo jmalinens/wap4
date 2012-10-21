@@ -100,7 +100,7 @@
 */
 class Google_load {
 
-    function Google_load($config=array()) {
+    function __construct($config=array()) {
         // Get CI instance
         $this->ci = & get_instance();
         if (!empty($config)) {

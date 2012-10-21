@@ -1,41 +1,41 @@
 <?php
 /**
- * WURFL API
+ * Copyright (c) 2012 ScientiaMobile, Inc.
  *
- * LICENSE
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This file is released under the GNU General Public License. Refer to the
- * COPYING file distributed with this package.
+ * Refer to the COPYING.txt file distributed with this package.
  *
- * Copyright (c) 2008-2009, WURFL-Pro S.r.l., Rome, Italy
- * 
- *  
  *
  * @category   WURFL
- * @package    WURFL
- * @copyright  WURFL-PRO SRL, Rome, Italy
- * @license
- * @version    $id$
+ * @package	WURFL
+ * @copyright  ScientiaMobile, Inc.
+ * @license	GNU Affero General Public License
+ * @version	$id$
  */
-
+/**
+ * Handles the chain of WURFL_Handlers_Handler objects
+ * @package	WURFL
+ * @see WURFL_Handlers_Handler
+ */
 class WURFL_UserAgentHandlerChain {
 	 
-
+	/**
+	 * @var array of WURFL_Handlers_Handler objects
+	 */
 	private $_userAgentHandlers = array();
 	
-	
-	public function __construct() {	
-	}
-	
-	
 	/**
-	 * Adds a UserAgentHandler to the chain
+	 * Adds a WURFL_Handlers_Handler to the chain
 	 *
-	 * @param WURFL_UserAgentHandler_Interface $handler
-	 * @return 
+	 * @param WURFL_Handlers_Handler $handler
+	 * @return WURFL_UserAgentHandlerChain $this
 	 */
 	public function addUserAgentHandler(WURFL_Handlers_Handler $handler) {
-		$size = sizeof($this->_userAgentHandlers); 
+		$size = count($this->_userAgentHandlers); 
 		if ($size > 0) {
 			$this->_userAgentHandlers[$size-1]->setNextHandler($handler);
 		}
@@ -43,6 +43,9 @@ class WURFL_UserAgentHandlerChain {
 		return $this;
 	}
 	
+	/**
+	 * @return array An array of all the WURFL_Handlers_Handler objects
+	 */
 	public function getHandlers() {
 		return $this->_userAgentHandlers;
 	}
@@ -52,19 +55,13 @@ class WURFL_UserAgentHandlerChain {
 	 *
 	 * @param String $userAgent
 	 * @param String $deviceID
+	 * @see WURFL_Handlers_Handler::filter()
 	 */
 	public function filter($userAgent, $deviceID) {
+		WURFL_Handlers_Utils::reset();
 		$this->_userAgentHandlers[0]->filter($userAgent, $deviceID);
 	}
 	
-	
-	public function findHandler($userAgent) {
-		foreach ($this->_userAgentHandlers as $handler) {
-			if($handler->canHandle($userAgent)) {
-				return $handler;
-			}
-		}
-	}
 	
 	
 	/**
@@ -74,9 +71,14 @@ class WURFL_UserAgentHandlerChain {
 	 * @return String deviceID
 	 */
 	public function match(WURFL_Request_GenericRequest $request) {
+		WURFL_Handlers_Utils::reset();
 		return $this->_userAgentHandlers[0]->match($request);
 	}
 	
+	/**
+	 * Save the data from each WURFL_Handlers_Handler
+	 * @see WURFL_Handlers_Handler::persistData()
+	 */
 	public function persistData() {
 		foreach ($this->_userAgentHandlers as $userAgentHandler) {
 			$userAgentHandler->persistData();
@@ -84,22 +86,21 @@ class WURFL_UserAgentHandlerChain {
 		
 	}
 	
-	
+	/**
+	 * Collect data
+	 * @return array data
+	 */
 	public function collectData() {
 		$userAgentsWithDeviceId = array();		
 		foreach ($this->_userAgentHandlers as $userAgentHandler) {
+			/**
+			 * @see WURFL_Handlers_Handler::getUserAgentsWithDeviceId()
+			 */
 			$current = $userAgentHandler->getUserAgentsWithDeviceId();
 			if(!empty($current)) {
 				$userAgentsWithDeviceId = array_merge($userAgentsWithDeviceId, $current);
 			} 
 		}
-				
 		return $userAgentsWithDeviceId;
-	}
-	
-	
-	
-	
+	}	
 }
-
-?>
