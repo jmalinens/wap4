@@ -135,7 +135,7 @@ $.get("/en/converter/convert/"
      $('#percents').width(400);
      $('#bar_convert').hide();
      var fails          = opt_uniqid + "." + getFormat($("input[name='format']:checked").val());
-     var saite_uz_failu = opt_mobile_download+': <a href="/files/converted/' + fails + '">' + fails + '</a>';
+     var saite_uz_failu = opt_mobile_download+': <a href="/files/converted/' + fails + '">' + fails + '</a><br/><a href="/dropbox.php?file=' + fails + '">Save to Dropbox</a>';
 
      $('#download').html(saite_uz_failu);
      $('#download').show("slow");
@@ -146,6 +146,7 @@ $.get("/en/converter/convert/"
       $("#percents").load("/en/converter/convert_status/"+opt_uniqid, function(response, status, xhr) {
       if (status == "error") {
         var msg = opt_upload_sorry+": ";
+        console.log('error...')
         $("#error").html(msg + xhr.status + " " + xhr.statusText);
         
         clearInterval(refreshIntervalId);
@@ -156,8 +157,8 @@ $.get("/en/converter/convert/"
           $('#percents').width(400);
           $('#bar_convert').hide();
           var file_name    = opt_uniqid + "." + getFormat($("input[name='format']:checked").val());
-          var link_to_file = opt_download+': <a href="/files/converted/' + file_name + '">' + file_name + '</a>';
-
+          var link_to_file = opt_download+': <a href="/files/converted/' + file_name + '">' + file_name + '</a><br/><a href="/dropbox.php?file=' + file_name + '">Save to Dropbox</a>';
+          console.log('bigger than 100...')
           $('#download').html(link_to_file);
           $('#download').show("slow");
           clearInterval(refreshIntervalId);
@@ -165,21 +166,21 @@ $.get("/en/converter/convert/"
            $('#percents').html(response);
            $('#percents').width(response*4);
            $("#percents").append("%");
-		   
+           console.log('other...')
            if(response > 99) {
                  var fails          = opt_uniqid + "." + getFormat($("input[name='format']:checked").val());
-                 var saite_uz_failu = opt_download+': <a href="/files/converted/' + fails + '">' + fails + '</a>';
+                 var saite_uz_failu = opt_download+': <a href="/files/converted/' + fails + '">' + fails + '</a><br/><a href="/dropbox.php?file=' + fails + '">Save to Dropbox</a>';
                  $('#bar_convert').hide();
                  $('#percents').width(400);
                  $('#download').html(saite_uz_failu);
                  $('#download').show("slow");
-                 
+                  console.log('bigger than 99...')
                  clearInterval(refreshIntervalId);
                }
 
       }
     });
-},3000);
+},5000);
 //end refreshinterval
     
 }
@@ -200,36 +201,6 @@ function video_sharing_sites_upload() {
     $('#bar_youtube').show("slow");
     $('#demo').hide("slow");
 
-     /*$.ajax({
-       type: "POST",
-       url: "/en/converter/ajax_is_link_recognized/"+opt_uniqid+"/",
-       data: ({link : $('#youtube_link').val(), key: opt_uniqid, ajax: 'yes'}),
-       success: function(msg){
-       opt_link_type = msg;
-       console.log('ajax_is_link_recognized: '+msg);
-       tube_title = msg;
-
-             $.ajax({
-               type: "POST",
-               url: "/en/converter/get_title/"+opt_uniqid+"/",
-               data: ({
-                   link : $('#youtube_link').val(),
-                   key: opt_uniqid,
-                   ajax: 'yes',
-                   is_link_recognized: opt_link_type
-               }),
-               success: function(msg){ 
-
-               console.log('get_title: '+msg);
-
-               tube_title = msg;
-               }
-             });
-
-
-       }
-     });*/
-
      tube_title = opt_uniqid
      
      $.ajax({
@@ -244,14 +215,6 @@ function video_sharing_sites_upload() {
        success: function(msg){
 
        console.log('link_upload: '+msg);
-       /*
-       $('#youtube_uploaded').html(msg);
-       $('.media').hide("slow");
-       $('#bar_youtube').hide();
-       $('#youtube_uploaded').hide();
-       $('#converter_right').show();
-       $('#converter2').show();
-       */
          $.ajax({
            type: "POST",
            url: "/en/converter/get_extension/"+opt_uniqid+"/uploaded_video_extension",
@@ -261,7 +224,7 @@ function video_sharing_sites_upload() {
 
            console.log('upload_extension: '+msg);
            opt_upload_extension = msg;
-           opt_filename = tube_title + "."+opt_upload_extension;
+           opt_filename = tube_title;
            }
          });
        },
@@ -297,7 +260,7 @@ function video_sharing_sites_upload() {
                $('#youtube_uploaded').html(opt_done);    
                clearInterval(refreshIntervalId2);
                console.log('refresh interval cleared because '+response+' is >= 99');
-               opt_filename = tube_title + "."+opt_upload_extension;
+               opt_filename = tube_title;
                $('#youtube_uploaded2').html("100%");
                $('#youtube_uploaded2').width(400);
                

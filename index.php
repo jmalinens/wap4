@@ -1,6 +1,6 @@
 <?php
 ini_set("cgi.fix_pathinfo","0");
-ini_set("display_errors",1);
+ini_set("log_errors",1);
 ignore_user_abort(true);
 set_time_limit(0);
 if($_SERVER["REQUEST_URI"] == "/redirect/fromJavaApplicationWap4M0-0") {
@@ -48,11 +48,13 @@ if (defined('ENVIRONMENT'))
 	{
 		case 'development':
 			error_reporting(E_ALL);
+                        ini_set("display_errors",1);
 		break;
 	
 		case 'testing':
 		case 'production':
-			error_reporting(0);
+			error_reporting(E_ALL);
+                        ini_set("display_errors",0);
 		break;
 
 		default:

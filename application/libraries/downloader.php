@@ -169,24 +169,17 @@ class Downloader
         if($bRunInBackground === FALSE)
             $sCmdEnd = "";
         
+        $sFormatCmd = "";
         if(stripos($this->sLink, 'youtube') !== FALSE)
             $sFormatCmd = " --format $nYoutubeFormat ";
-        else
-            $sFormatCmd = "";
-        
-        //$sCmd = $this->sCmdStart.' '.' --console-title -o "'.$this->sUploadPath.$this->sFileBody.
-        //        '.%(ext)s" "'.$this->sLink.'" > '.$this->sDownloadOutputFile.$sCmdEnd;
+
         $sCmd = $this->sCmdStart.' '.' '.$sFormatCmd.' --console-title -o "'.$this->sUploadPath.
                 $this->sUniqueId.'" "'.$this->sLink.'" > '.$this->sDownloadOutputFile.$sCmdEnd;
         //echo $sCmd;
-        log_message('error', $sCmd);
+        log_message('debug', $sCmd);
         exec($sCmd, $aOutput, $nReturnCode);
         
-        if($nReturnCode == 0)
-            return TRUE;
-        else
-            return FALSE;
-        
+        return $nReturnCode == 0 ? TRUE : FALSE;
     }
     
     /**

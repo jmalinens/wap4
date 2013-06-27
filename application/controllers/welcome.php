@@ -28,15 +28,6 @@ class Welcome extends CI_Controller {
                     $uniqid             = uniqid();
                 }
 
-                $xmlUrl = $this->config->item("ffmpeg_files_dir")."presets.xml"; // XML feed file/URL
-                $xmlStr = file_get_contents($xmlUrl);
-
-                $xmlObj = simplexml_load_string($xmlStr);
-                $arrXml = objectsIntoArray($xmlObj);
-
-                array_sort($arrXml, 'category', SORT_DESC);
-
-                $this->data['presets']    = $arrXml;
             	$this->data['allowed']    = "'".implode("','", $this->config->item('ffmpeg_allowed'))."'";
                 $this->data['uniqid']     = $uniqid;
                 $this->data['message']    = '';

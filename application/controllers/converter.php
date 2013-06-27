@@ -69,9 +69,13 @@ class Converter extends CI_Controller
        
        if(!empty($this->aError)) {
            file_put_contents($this->config->item("ffmpeg_files_dir")."error_log",
-                             date("Y-m-d H:i:s")." :: ".implode(" ** ", $this->aError)."\n", FILE_APPEND);
+           date("Y-m-d H:i:s")." :: ".implode(" ** ", $this->aError)."\n", FILE_APPEND);
        }
        
+   }
+   
+   public function phpinfo() {
+       phpinfo();
    }
     
    private function _set_uniqid_and_link() {
@@ -137,17 +141,6 @@ class Converter extends CI_Controller
 	$this->datb['allowed'] = "'".implode("','", $this->config->item('ffmpeg_allowed'))."'";
         $this->datb['max']     = $this->data['max'];
         $this->datb['uniqid']  = $this->uniqid;
-        
-
-        $xmlUrl = $this->config->item("ffmpeg_files_dir")."presets.xml"; // XML feed file/URL
-        $xmlStr = file_get_contents($xmlUrl);
-
-        $xmlObj = simplexml_load_string($xmlStr);
-        $arrXml = objectsIntoArray($xmlObj);
-
-        array_sort($arrXml, 'category', SORT_DESC);
-
-        $this->data['presets']    = $arrXml;
         
         $aData['data'] = $this->data;
         $this->load->view('v2/includes/header', $aData);
@@ -631,18 +624,13 @@ class Converter extends CI_Controller
             
         }
 
-        
         sleep(2);
         $this->db->reconnect();
         $aVideoData = $this->ffmpeg_model->get_video($key);
         //print_r($aVideoData);
         
         if($aVideoData) {
-            
-            //$sUploadBody = $aVideoData->uploaded_video_body;
-            //$sUploadExtension = $aVideoData->uploaded_video_extension;
             $sUploadTotalSize = $aVideoData->video_size;
-            
         } else {
             
             log_message('error', 'video data for upload status not found for key '.$key);
@@ -654,7 +642,6 @@ class Converter extends CI_Controller
                 return 0;
             
         }
-        //$sDownloadingFile = $this->config->item("ffmpeg_before_dir").$sUploadBody.".".$sUploadExtension;
         $sDownloadingFile = $this->config->item("ffmpeg_before_dir").$key;
         
         $this->load->library('downloader');
@@ -751,7 +738,6 @@ class Converter extends CI_Controller
     function mobile_status($key) {
         
         $data["key"]   = $this->uniqid = $key;
-        
         $this->db->reconnect();
         $aVideoData = $this->ffmpeg_model->get_video($key);
         //print_r($aVideoData);
@@ -964,20 +950,14 @@ class Converter extends CI_Controller
                     
                     $ext = $this->config->item("ffmpeg_allowed");
                     
-                    if(!in_array(strtolower($file_end), $ext)) {
+                    if (!in_array(strtolower($file_end), $ext)) {
                         log_message('error', 'security warning: upload file extension: '.$file_end.' not allowed');
-                        $this->write_fail_report("fail.extension $ext", $_POST["key"]);
+                        $this->write_fail_report("fail.extension $file_end allowed: ".implode(', ', $ext), $_POST["key"]);
                         die('security warning: security warning: upload file extension: '.$file_end.' not allowed');
                     }
                     
-                    if(
-                            
-                    //        !move_uploaded_file($_FILES['qqfile']['tmp_name'],
-                    //$this->config->item('ffmpeg_before_dir').$file_body.".".$file_end)
-                            !move_uploaded_file($_FILES['qqfile']['tmp_name'],
-                    $this->config->item('ffmpeg_before_dir').$this->uniqid)
-                            
-                            ) {
+                    if (!move_uploaded_file($_FILES['qqfile']['tmp_name'],
+                        $this->config->item('ffmpeg_before_dir').$this->uniqid)) {
                         $this->aError[] = "move_uploaded_file error, when trying
                             to upload file in no_js";
                         $this->write_fail_report("fail.upload", $_POST["key"]);
@@ -1034,11 +1014,10 @@ class Converter extends CI_Controller
                 $this->ffmpeg->setInputFile($this->title.".".$sExtension);
 
             }
-            
-            
+
         $this->db->reconnect();
         $aVideoData = $this->ffmpeg_model->get_video($this->uniqid);
-        if($aVideoData->video_size > $this->data['max']*1024) {
+        if(isset($aVideoData->video_size) && $aVideoData->video_size > $this->data['max']*1024) {
             
             $sErr = "Video $this->uniqid  has bigger data size ($aVideoData->video_size) than MAX allowed (".($this->data['max']*1024).")";
             
@@ -1154,17 +1133,7 @@ class Converter extends CI_Controller
 
         $ext      = $this->config->item("ffmpeg_allowed");
         $file_end = end(explode(".", $link));
-        /*if(!in_array(strtolower($file_end), $ext)) {
-            $this->aError[] = "Direct upload file extension not allowed";
-            log_message('error', 'security warning: upload file extension not allowed');
-            return FALSE;
-        }*/
-        
-        //$this->_set_extension($file_end, 'uploaded_video_extension');
-        
         $this->extension = $file_end;
-        //file_put_contents($this->config->item("ffmpeg_key_dir")."".$this->uniqid.".extension", $this->extension);
-        //$location = $location.".".$file_end;
 
         $loc  = $this->config->item("ffmpeg_before_dir").$location;
         $file = fopen($loc, 'w');

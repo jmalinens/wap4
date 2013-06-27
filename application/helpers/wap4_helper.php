@@ -383,11 +383,13 @@ if(!function_exists('isMobile')) {
      */
     function isMobile() {
         $ci=& get_instance();
-        if($_SERVER["SERVER_NAME"] == $ci->config->item("mobile_host") || $_SERVER["SERVER_NAME"] == "testm.wap4.org")
+        if($_SERVER["SERVER_NAME"] == $ci->config->item("mobile_host")
+                || $_SERVER["SERVER_NAME"] == "testm.wap4.org"
+                || $_SERVER["SERVER_NAME"] == "m.wap4.localhost"
+                )
             return true;
         else
             return false;
-
     }
 
 }

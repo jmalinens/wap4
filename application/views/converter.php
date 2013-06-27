@@ -46,19 +46,6 @@
 	<?php endforeach; ?>
         
 	</select><br/>
-        
-        <?php
-        /*
-        <?=//$this->lang->line('ffmpeg.formats')?>:<br/>
-	<select name="preset" id="preset">
-            
-	<?php //foreach($presets as $preset => $key): ?>
-	<option value="<?=//$preset?>"><?=//$preset?></option>
-	<?php //endforeach; ?>
-
-	</select><br/>
-        */
-	?>
 
         <?=$this->lang->line('ffmpeg.cut')?><br/>
         <input type="checkbox" id="cut" name="cut" value="yes"/><br/>

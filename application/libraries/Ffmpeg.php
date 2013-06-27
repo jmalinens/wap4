@@ -71,7 +71,7 @@ function setKey($key_x)
 {
     
    if(!ctype_alnum ($key_x)) {
-       log_message('error', 'security warning: illegal key');
+       log_message('error', 'security warning: illegal key: '.$key_x);
        die("illegal key $key_x");
    }
    $this->key = $key_x;
@@ -216,26 +216,15 @@ function resize ($width, $height) {
     return ' -ab 128000 -ar 44100 ';
     }
     */
-    log_message('error', "format: ".$this->ffmpeg_formats["$this->format"]);
-    return $this->cut.''.$this->ffmpeg_formats["$this->format"];
+    log_message('error', "format: ".$this->ffmpeg_formats[$this->format]);
+    return $this->cut.$this->ffmpeg_formats[$this->format];
 
 }
 
 //Get fextension from selected format
  function getExtension()
 {
-    /*
-    switch($this->format) {
-    case 'mp3-128kbps':
-    return 'mp3';
-    case 'amr-mono,12.2kbps':
-    return 'amr';
-    case '3gp-176x144,AMR':
-    return '3gp';
-    default:
-    return "mp4";
-    }
-    */
+
     if(!$this->format) {
         log_message('error', "failed to this->ffmpeg->getExtension because \$this->format is empty");
     }
@@ -347,11 +336,6 @@ public function sec2hms($sekunden)
 public function startConvert($mode="js")
 {
     
-    /*$ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i \"".
-        urldecode($this->ffmpeg_before_dir.$this->input_file)."\" ".
-        $this->getFfmpegOptions()." -report \"".
-        urldecode($this->ffmpeg_after_dir.$this->file_body."-$this->key.".
-        $this->getExtension())."\" 2> {$this->ffmpeg_key_dir}{$this->key}.ffmpeg";*/
     $sOriginalPath = getcwd();
     
     $this->mode = $mode;
@@ -359,18 +343,26 @@ public function startConvert($mode="js")
     $sConvertTime = date("Ymd-His");
     $sExt = $this->getExtension();
     $sFfmpegOptions = $this->getFfmpegOptions();
-    $ffmpeg_command = "$this->ffmpeg_prefix $this->ffmpeg_path -i {$this->ffmpeg_before_dir}{$this->key} $sFfmpegOptions -report {$this->ffmpeg_after_dir}{$this->key}.$sExt";
-    
+    $ffmpeg_command = "cd files/keys && $this->ffmpeg_prefix $this->ffmpeg_path -i {$this->ffmpeg_before_dir}{$this->key} $sFfmpegOptions -report {$this->ffmpeg_after_dir}{$this->key}.$sExt";
+    log_message('debug', 'ffmpeg process started1...');
     $aParams = array(
         'uniqid' => $this->key,
         'ffmpeg_log_date' => $sConvertTime,
         'ffmpeg_command' => $ffmpeg_command);
     $this->ci->ffmpeg_model->set_video($aParams);
-    
-    chdir($this->ffmpeg_key_dir);
-    $proc = popen($ffmpeg_command, "r");
+    log_message('debug', 'ffmpeg process started2...');
+    $proc = popen($ffmpeg_command." 2>&1", "r");
+    log_message('debug', "'$proc'; ".gettype($proc));
+    $read = fread($proc, 2096);
+    log_message('debug', 'read: '.$read);
     pclose($proc);
+    log_message('debug', 'ffmpeg process started3...');
+    //$aParamsNew = [];
+    //exec($ffmpeg_command, $aParamsNew, $nReturn);
+    //log_message('error', 'params: '.implode(", ", $aParamsNew).'return code: '.$nReturn);
+    
     chdir($sOriginalPath);
+    log_message('debug', 'ffmpeg process start done...');
     //$gif_optimize = "gifsicle --batch --optimize ".urldecode($this->ffmpeg_after_dir).urldecode($this->file_body)."-".$this->key.".".$this->getExtension();
     //if($this->getExtension() == "gif") {
     //    $proc = popen($gif_optimize, "r");

@@ -3,14 +3,6 @@
  * Juris Malinens, 2010-2012
  */
 
-
-//$config['ffmpeg_path']	 = "C:/ffmpeg.exe"; //ffmpeg windows path
-//$config['ffmpeg_prefix']	 = "cd C:/ & START \"converting in background...\" /B "; //to run process in background
-//$config['ffmpeg_suffix']	 = "";
-//$config['ffmpeg_before_dir']   = "C:/"; //directory where we store temp videos which we are going to convert
-//$config['ffmpeg_after_dir']    = "C:/"; //directory for converted videos
-//$config['ffmpeg_key_dir']      = "C:/"; //directory for key files
-
 $config['ffmpeg_allowed']    = array('mp3','avi','flv','mov','mp4','3gp','amr','ogg','flac','aac','wmv','mpg','mpeg', 'ac3', 'mkv', 'webm');
 $config['ffmpeg_max']        = 300*1024; //in kilobytes
 
@@ -97,16 +89,6 @@ $config['ffmpeg_high'] = array(
 'ogg-audio-video'   => array("128" => "192"),
 );
 
-        
-/*
-$config['ffmpeg_formats']      = array(
-'mp3'    => ' -ab 128000 -ar 44100 ',
-'amr' 	=> ' -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k ',
-'3gp' 	=> ' -f 3gp -vcodec h263 -b 80k -r 15 -acodec libopencore_amrnb -ac 1 -ar 8000 -ab 12.2k -y ',
-'mp4' 	=> ' -f mp4 -vcodec mpeg4 -b 256k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 48k -y ',
-'iphone' => ' -f mp4 -vcodec mpeg4 -b 256k -r 15 -acodec libfaac -ac 2 -ar 24000 -ab 48k -y ');
-*/
-
 
 if(strtolower(substr(PHP_OS, 0, 3)) == "win") {
     //for windows
@@ -119,7 +101,7 @@ if(strtolower(substr(PHP_OS, 0, 3)) == "win") {
 } else {
     //for linux
     $config['public_html'] = "/home/wap4/public_html/";
-    $config['ffmpeg_path'] = "nice -n 12 ffmpeg";
+    $config['ffmpeg_path'] = " nice -n 12 /usr/local/bin/ffmpeg";
     $config['ffmpeg_suffix'] = " &"; //to run process in background
     
 }

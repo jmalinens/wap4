@@ -5,7 +5,7 @@ RewriteRule ^(.*)fromJavaApplication(.*)$ / [R]
 RewriteCond %{HTTP_HOST} www.wap4.org$ [NC]
 RewriteRule (.*)$ http://wap4.org/$1 [R=301,L] 
 
-RewriteCond $1 !^(index\.php|phpinfo\.php|LayoutGala40\.html|Rss-button\.png|Twitter-button\.png|Facebook-button\.png|apc\.php|yandex_40c4d165b3b00416\.html|y_key_a357eb9e00cfb0e3\.html|y_key_9c905fa9098cd9a3\.html|yandex_60c3b750e23e6a4e\.html|wap4\.jad|wap4\.jar|google7ce006f3052bd2a8.html|images|BingSiteAuth\.xml|downloads|dload|dir|jiffwap|logo|source\.php|rat|youtube|files|img|ffmpeg|css|js|xampp|robots\.txt|y_key|favicon.ico)
+RewriteCond $1 !^(index\.php|phpinfo\.php|LayoutGala40\.html|Rss-button\.png|Twitter-button\.png|Facebook-button\.png|apc\.php|yandex_40c4d165b3b00416\.html|y_key_a357eb9e00cfb0e3\.html|y_key_9c905fa9098cd9a3\.html|yandex_60c3b750e23e6a4e\.html|wap4\.jad|wap4\.jar|google7ce006f3052bd2a8.html|images|BingSiteAuth\.xml|downloads|dload|dir|jiffwap|logo|source\.php|rat|youtube|files|img|ffmpeg|css|js|xampp|robots\.txt|y_key|favicon\.ico|dropbox\.php)
 RewriteRule ^(.+)$ index.php?$1 [L]
 
 <FilesMatch “^index.php$”>

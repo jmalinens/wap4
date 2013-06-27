@@ -17,7 +17,9 @@ header("Content-type: text/html");
 <br/><br/>
 <?php if($Convert_percents_complete >= 98):?>
     <?=lang('mobile.download')?>: <br/>
-    <a href="http://<?=$download_url?>">http://<?=$download_url?></a>
+    <a href="http://<?=$download_url?>">http://<?=$download_url?></a><br/>
+    
+    <a href="/dropbox.php?file=51cbd143539f2.amr">Save to Dropbox</a><br/>
 <?php else:?>
     <?=anchor('converter/mobile_status/'.$key.'/'.uniqid(), lang('mobile.reload'))?>
 <?php endif;?>

@@ -2,7 +2,7 @@
 class ffmpeg_model extends CI_Model
 {
     
-    var $sVideoTable;
+    public $sVideoTable;
     
     
 function __construct()
@@ -30,20 +30,13 @@ function add_video_to_db($user, $video, $apraksts)
 
 function get_video($sUniqueId) {
     
-    //$query = $this->db->get_where('video_details', array('uniqid' => $sUniqueId));
-    
     $sSql = "
     SELECT  *
     FROM `video_details`
-    WHERE `uniqid` = '$sUniqueId'
-    ";
-    
+    WHERE `uniqid` = '$sUniqueId'";
     $query = $this->db->query($sSql);
     //echo $this->db->last_query();
-    if ($query->num_rows() > 0)
-        return $query->row();
-    else
-        return FALSE;
+    return $query->num_rows() > 0 ? $query->row() : FALSE;
 }
 
 function set_video($aParams) {
@@ -60,8 +53,9 @@ function set_video($aParams) {
             $this->db->insert($this->sVideoTable, $aParams); 
         }
           //echo $this->db->last_query();  
+        log_message('debug', 'ffmpeg process started2.4...');
         log_message('debug', 'query: '.$this->db->last_query());
-        
+        log_message('debug', 'ffmpeg process started2.6...');
     }
     
 }

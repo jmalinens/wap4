@@ -16,8 +16,8 @@
 
 <?php endif; ?>
 <a href="/wap4.jad" title="<?=lang('bookmark.us')?>"><?=lang('bookmark.us')?></a><br/>
-<?php include_once "/home/wap4/public_html/mobgold_m_wap4.php"; ?>
-<?php include_once "/home/wap4/public_html/MkhojAd_m_wap4_simple.php"; ?>
+<?php include_once dirname(__FILE__)."/../../../../mobgold_m_wap4.php"; ?>
+<?php include_once dirname(__FILE__)."/../../../../MkhojAd_m_wap4_simple.php"; ?>
 <br/>
 <a href="http://topwapi.com/?id=mwap4org">New Downloads</a><br/>
 &gt; <a href="/<?=$this->lang->switch_uri('en')?>" title="<?=lang('lang.english')?>"><?=lang('lang.english')?></a> 
