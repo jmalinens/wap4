@@ -30,7 +30,7 @@ class Wurfl {
         $this->wurflConfig->matchMode('performance');
         $this->wurflConfig->allowReload(true);
         $this->wurflConfig->persistence('file', array('dir' => $persistenceDir));
-        $this->wurflConfig->cache('file', array('dir' => $cacheDir, 'expiration' => 36000));
+        $this->wurflConfig->cache('file', array('dir' => $cacheDir, 'expiration' => WURFL_Storage::ONE_MONTH));
         $wurflManagerFactory = new WURFL_WURFLManagerFactory($this->wurflConfig);
         $wurflManager = $wurflManagerFactory->create();
         $wurflInfo = $wurflManager->getWURFLInfo();

@@ -39,7 +39,6 @@ if($bIsMobile) {
 ?>
 <a href="/wap4.jad" title="<?=lang('bookmark.us')?>"><?=lang('bookmark.us')?></a><br/>
 <?php
-include_once "/home/wap4/public_html/mobgold_m_wap4.php";
 include_once "/home/wap4/public_html/MkhojAd_m_wap4_simple.php";
 echo "<br/>Ad: <a href=\"http://topwapi.com/?id=mwap4org\">New Downloads</a><br/>";
 ?>

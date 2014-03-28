@@ -16,19 +16,6 @@
 <?php if(in_array("index", $this->uri->segment_array())): ?>
 <link rel="canonical" href="/<?=str_replace("index", "", $this->uri->uri_string())?>"/>
 <?php endif; ?>
-<!--[if lte IE 8]>
-<script src="/js/roundies.min.js">
-</script>
-<script>
-function round_corn() {
-DD_roundies.addRule('#login', '0px 0px 6px 6px', true);
-DD_roundies.addRule('#top_navigation', 5, true);
-DD_roundies.addRule('.content_left', 5, true);
-DD_roundies.addRule('.content_right', 5, true);
-}
-window.onload = round_corn;
-</script>
-<![endif]-->
 <script></script>
 
 <script>
@@ -86,15 +73,14 @@ var opt_link_type;
 		<h2><?=lang('title.header')?></h2>
 	</div>
 	<div class="header_ad">
-<script type="text/javascript"><!--
-google_ad_client = "ca-pub-2212583322739900";
-/* wap4.org test */
-google_ad_slot = "9205790398";
-google_ad_width = 468;
-google_ad_height = 60;
-//-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- wap4 new top -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:468px;height:60px"
+     data-ad-client="ca-pub-2212583322739900"
+     data-ad-slot="1941865515"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 	</div>
 </div>
@@ -120,14 +106,14 @@ google_ad_height = 60;
         </li>
     </ul>
 </div>
-<div class="pad_top"></div><script type="text/javascript"><!--
-google_ad_client = "ca-pub-2212583322739900";
-/* wap4 under nav */
-google_ad_slot = "3319438414";
-google_ad_width = 728;
-google_ad_height = 15;
-//-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+<div class="pad_top"></div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- wap4 new big -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-2212583322739900"
+     data-ad-slot="3418598719"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 	<div id="content">

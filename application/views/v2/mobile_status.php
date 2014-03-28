@@ -2,11 +2,13 @@
 header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 header("Content-type: text/html");
-?><html>
+?><!DOCTYPE html><html>
 <head>
 <meta http-equiv="expires" content="0"/>
 <meta http-equiv="pragma" content="no-cache"/>
 <meta http-equiv="cache-control" content="no-cache, must-revalidate"/>
+<meta name="viewport" content="width=device-width,initial-zoom=1"/>
+<meta name="HandheldFriendly" content="true" />
 <link rel="stylesheet" href="/css/mobile.css"/>
 <title><?=$_SERVER["SERVER_NAME"]?></title></head><body>
     <p>Youtube upload works but upload progress will show 0%.</p>

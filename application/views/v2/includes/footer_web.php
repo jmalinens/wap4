@@ -10,6 +10,32 @@
 				<li><p><?=lang('footer.allows')?></p></li>
 				<li><p><?=lang('footer.three')?></p></li>
 				<li><p><?=lang('footer.free')?></p></li>
+                                
+                                <li><p><?=lang('footer.supported_sources')?></p>
+                                    <ul>
+                                        <li>Youtube</li>
+                                        <li>Metacafe</li>
+                                        <li>Dailymotion</li>
+                                        <li>Photobucket</li>
+                                        <li>Yahoo video</li>
+                                        <li>Deposit Files</li>
+                                        <li>Facebook</li>
+                                        <li>blip.tv</li>
+                                        <li>Vimeo</li>
+                                        <li>myvideo</li>
+                                        <li>Comedy Central</li>
+                                        <li>escapist</li>
+                                        <li>College Humor</li>
+                                        <li>xvideos</li>
+                                        <li>Soundcloud</li>
+                                        <li>infoQ</li>
+                                        <li>mixcloud</li>
+                                        <li>MTV</li>
+                                        <li>Youku</li>
+                                        <li>xnxx</li>
+                                        <li>Google+</li>
+                                    </ul>
+                                </li>
 			</ul>
 		</div>
 		<div class="footer_navigation_col">
@@ -37,16 +63,14 @@
 		</div>
 	</div>
 <div class="google_bot">
-<script type="text/javascript"><!--
-google_ad_client = "ca-pub-2212583322739900";
-/* wap4 botom footer big */
-google_ad_slot = "7327102207";
-google_ad_width = 728;
-google_ad_height = 90;
-//-->
-</script>
-<script type="text/javascript"
-src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- wap4 new footer -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:15px"
+     data-ad-client="ca-pub-2212583322739900"
+     data-ad-slot="4895331913"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 </div>
 	<div class="clear">

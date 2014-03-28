@@ -18,27 +18,16 @@ AcceptPathInfo On
 </FilesMatch>
 
 <IfModule mod_expires.c>
-
 ExpiresActive On
-
 ExpiresByType image/x-icon A2419200
-
 ExpiresByType image/gif A604800
-
 ExpiresByType image/png A604800
-
 ExpiresByType image/jpeg A604800
-
 ExpiresByType text/css A604800
-
 ExpiresByType application/x-javascript A604800
-
 ExpiresByType application/x-shockwave-flash A604800
-
 ExpiresByType application/pdf A604800
-
 </IfModule>
-
 Header unset ETag
 FileETag None
 

@@ -75,6 +75,7 @@ $lang['footer.support']     = "Var konvertēt Youtube mūzikas klipus mp3 formā
 $lang['footer.allows']      = "Jebkuru videoklipu var pārvērst mobilajiem telefoniem saprotamā formātā.";
 $lang['footer.three']       = "Konvertētājs ir pieejams 3 valodās.";
 $lang['footer.free']        = "Konvertēt VIENMĒR varēs par velti";
+$lang['footer.supported_sources'] = "Atļautas saites no:";
 $lang['footer.follow']      = "Seko mums";
 $lang['footer.download']    = "Lejupielādē aplikācijas izejas kodu";
 $lang['footer.created']     = "Izveidoja Juris Malinens";

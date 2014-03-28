@@ -7,6 +7,8 @@ header("Content-type: text/html");
 <meta http-equiv="expires" content="0"/>
 <meta http-equiv="pragma" content="no-cache"/>
 <meta http-equiv="cache-control" content="no-cache, must-revalidate"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, initial-zoom=1"/>
+<meta name="HandheldFriendly" content="true" />
 <link rel="stylesheet" href="/css/mobile.css"/>
 <title><?=$_SERVER["SERVER_NAME"]?></title></head><body>
 <?php
@@ -23,10 +25,17 @@ if($Upload_percents_complete == 0 && $Convert_percents_complete == 100) {
 <br/>
 <?=lang('mobile.conv_perc')?>: <?=$Convert_percents_complete?> %
 <br/><br/>
+<!-- wap4 new mobile header -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:320px;height:50px"
+     data-ad-client="ca-pub-2212583322739900"
+     data-ad-slot="6372065116"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 <?php if($Convert_percents_complete >= 98): ?>
     <?=lang('mobile.download')?>: <br/>
     <a href="http://<?=$download_url?>">http://<?=$download_url?></a><br/><br/>
-<?php include_once "/home/wap4/public_html/mobgold_m_wap4.php";?><br/>
 <?php include_once "/home/wap4/public_html/MkhojAd_m_wap4_simple.php";?><br/>
 <?php
 else:

@@ -861,7 +861,7 @@ class Converter extends CI_Controller
             $data["download_url"] = $_SERVER["SERVER_NAME"].
             "/files/converted/$key.$extension";
             //$this->load->library('ffmpeg');
-            //$this->ffmpeg->cleanAfterConverter($this->uniqid);
+            $this->ffmpeg->cleanAfterConverter($this->uniqid);
         }
         
         if(!empty($aVideoData->is_failed) && !empty($aVideoData->fail_log))
@@ -1094,7 +1094,8 @@ class Converter extends CI_Controller
         
         if($converter_completed_percents > 98)
             $converter_completed_percents = 100;
-        
+        sleep(2);
+        $this->ffmpeg->cleanAfterConverter($unikaalais);
         log_message('debug', 'converted so far: '.$converter_completed_percents.' percents');
         
         if(!$return) {

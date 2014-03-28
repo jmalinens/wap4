@@ -180,9 +180,14 @@ function cleanAfterConverter($uniqid)
     if(is_file($key_dir.".youtube_dl"))
         unlink($key_dir.".youtube_dl");
     
+    if(is_file($upl_dir.$uniqid))
+        unlink($upl_dir.$uniqid);
+    if(is_file($upl_dir."filesizes.txt"))
+        unlink($upl_dir."filesizes.txt");
+    
     $aVideo = $this->get_video($uniqid);
     
-    if(isset($aVideoData->uploaded_video_body) && isset($aVideoData->uploaded_video_extension)) {
+    /*if(isset($aVideoData->uploaded_video_body) && isset($aVideoData->uploaded_video_extension)) {
         
         $sFile1 = $upl_dir.$aVideoData->uploaded_video_body.'.'.$aVideoData->uploaded_video_extension;
         if(is_file($sFile1))
@@ -192,7 +197,7 @@ function cleanAfterConverter($uniqid)
         if(is_file($sFile2))
             unlink($sFile2);
         
-    }
+    }*/
     
     
     

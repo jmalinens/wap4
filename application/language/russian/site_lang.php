@@ -72,10 +72,11 @@ $lang['quality.low']        = "Низкое";
 $lang['bookmark.us']        = "Добавь в закладки wap4.org!";
 
 $lang['footer.features']    = "Особенности wap4.org";
-$lang['footer.support']     = "Поддержка Youtube видео преобразования в mp3.";
-$lang['footer.allows']      = "позволяет конвертировать любой видео файл на мобильный телефон.";
-$lang['footer.three']       = "В трех языках.";
-$lang['footer.free']        = "бесплатно и навсегда..";
+$lang['footer.support']     = "Поддержка Youtube видео преобразования в mp3";
+$lang['footer.allows']      = "позволяет конвертировать любой видео файл на мобильный телефон";
+$lang['footer.three']       = "В трех языках";
+$lang['footer.free']        = "бесплатно навсегда..";
+$lang['footer.supported_sources'] = "Поддерживаемые источники видео: ";
 $lang['footer.follow']      = "Мы в социальных сетях";
 $lang['footer.download']    = "Скачать исходный код";
 $lang['footer.created']     = "Создал Juris Malinens";

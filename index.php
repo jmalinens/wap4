@@ -1,6 +1,7 @@
 <?php
 ini_set("cgi.fix_pathinfo","0");
 ini_set("log_errors",1);
+ini_set("display_errors",0);
 ignore_user_abort(true);
 set_time_limit(0);
 if($_SERVER["REQUEST_URI"] == "/redirect/fromJavaApplicationWap4M0-0") {

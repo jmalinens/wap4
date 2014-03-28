@@ -177,7 +177,7 @@ class Downloader
                 $this->sUniqueId.'" "'.$this->sLink.'" > '.$this->sDownloadOutputFile.$sCmdEnd;
         //echo $sCmd;
         log_message('debug', $sCmd);
-        exec($sCmd, $aOutput, $nReturnCode);
+        //exec($sCmd, $aOutput, $nReturnCode);
         
         return $nReturnCode == 0 ? TRUE : FALSE;
     }
@@ -232,7 +232,7 @@ class Downloader
             
         
         $sCmd = $this->sCmdStart.' '.' --get-url "'.$sLink.'"';
-        exec($sCmd, $aOutput, $nReturnCode);
+        //exec($sCmd, $aOutput, $nReturnCode);
         if($nReturnCode == 0) {
             
             $nPos = stripos($aOutput[0], "Invalid URL");

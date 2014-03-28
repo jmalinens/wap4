@@ -1,4 +1,13 @@
 </div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- wap4 new mobile bottom big -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:320px;height:100px"
+     data-ad-client="ca-pub-2212583322739900"
+     data-ad-slot="7848798312"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 <div class="bottom">
 <p><strong>&#160;</strong></p>
 </div>
